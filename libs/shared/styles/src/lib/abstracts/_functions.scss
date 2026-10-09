@@ -1,0 +1,18 @@
+@use 'sass:map';
+@use 'variables' as tokens;
+
+@function map-value($values, $key) {
+  @if not map.has-key($values, $key) {
+    @error 'Unknown token `#{$key}`. Available keys: #{map.keys($values)}.';
+  }
+
+  @return map.get($values, $key);
+}
+
+@function font-size($step) {
+  @if not map.has-key(tokens.$font-sizes, $step) {
+    @error 'Unknown font-size step `#{$step}`. Available steps: #{map.keys(tokens.$font-sizes)}.';
+  }
+
+  @return map.get(tokens.$font-sizes, $step);
+}

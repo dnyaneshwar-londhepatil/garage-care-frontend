@@ -1,0 +1,33 @@
+@use '../abstracts/variables' as tokens;
+
+.gc-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: var(--border-default, #{tokens.$border-default});
+  border-radius: tokens.$border-radius-md;
+  background: var(--color-surface, #{tokens.$color-surface});
+}
+
+.gc-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+
+  th,
+  td {
+    padding: tokens.$spacing-3 tokens.$spacing-4;
+    border-bottom: var(--border-default, #{tokens.$border-default});
+    vertical-align: middle;
+  }
+
+  th {
+    background: var(--color-background, #{tokens.$color-background});
+    color: var(--color-text-secondary, #{tokens.$color-text-secondary});
+    font-size: tokens.$font-size-xs;
+    font-weight: tokens.$font-weight-semibold;
+  }
+
+  tr:last-child td {
+    border-bottom: 0;
+  }
+}

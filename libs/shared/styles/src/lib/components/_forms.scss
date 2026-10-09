@@ -1,0 +1,47 @@
+@use '../abstracts/variables' as tokens;
+
+.gc-form-field {
+  display: grid;
+  gap: tokens.$spacing-2;
+
+  &__label {
+    color: var(--color-text-primary, #{tokens.$color-text-primary});
+    font-size: tokens.$font-size-sm;
+    font-weight: tokens.$font-weight-medium;
+  }
+
+  &__control {
+    width: 100%;
+    min-height: 42px;
+    padding: tokens.$spacing-2 tokens.$spacing-3;
+    border: var(--border-default, #{tokens.$border-default});
+    border-radius: tokens.$border-radius-sm;
+    background: var(--color-surface, #{tokens.$color-surface});
+    color: var(--color-text-primary, #{tokens.$color-text-primary});
+
+    &::placeholder {
+      color: var(--color-text-secondary, #{tokens.$color-text-secondary});
+      opacity: 0.8;
+    }
+
+    &:focus-visible {
+      border-color: var(--color-accent, #{tokens.$color-accent});
+      outline: 0;
+      box-shadow: var(--focus-ring, #{tokens.$focus-ring});
+    }
+
+    &[aria-invalid='true'] {
+      border-color: var(--color-error, #{tokens.$color-error});
+    }
+  }
+
+  &__hint {
+    color: var(--color-text-secondary, #{tokens.$color-text-secondary});
+    font-size: tokens.$font-size-sm;
+  }
+
+  &__error {
+    color: var(--color-error, #{tokens.$color-error});
+    font-size: tokens.$font-size-sm;
+  }
+}

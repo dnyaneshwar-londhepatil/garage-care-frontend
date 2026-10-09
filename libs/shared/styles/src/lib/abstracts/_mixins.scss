@@ -1,0 +1,30 @@
+@use 'variables' as tokens;
+
+@mixin container($max-width: tokens.$container-max-width) {
+  width: min(100% - (2 * tokens.$container-gutter), $max-width);
+  margin-inline: auto;
+}
+
+@mixin text-style($size, $line-height: tokens.$line-height-base, $weight: tokens.$font-weight-regular) {
+  font-size: $size;
+  font-weight: $weight;
+  line-height: $line-height;
+}
+
+@mixin focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: tokens.$focus-ring;
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,36 @@
+@use '../abstracts/variables' as tokens;
+
+.gc-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: tokens.$spacing-3;
+  padding: tokens.$spacing-3 tokens.$spacing-4;
+  border: var(--border-default, #{tokens.$border-default});
+  border-radius: tokens.$border-radius-sm;
+  background: var(--color-surface, #{tokens.$color-surface});
+  color: var(--color-text-primary, #{tokens.$color-text-primary});
+
+  &--success {
+    border-color: rgb(21 128 61 / 24%);
+    background: rgb(21 128 61 / 6%);
+  }
+
+  &--warning {
+    border-color: rgb(180 83 9 / 24%);
+    background: rgb(180 83 9 / 6%);
+  }
+
+  &--error {
+    border-color: rgb(185 28 28 / 24%);
+    background: rgb(185 28 28 / 6%);
+  }
+
+  &__message {
+    min-width: 0;
+  }
+}
+
+.gc-validation-message {
+  color: var(--color-error, #{tokens.$color-error});
+  font-size: tokens.$font-size-sm;
+}

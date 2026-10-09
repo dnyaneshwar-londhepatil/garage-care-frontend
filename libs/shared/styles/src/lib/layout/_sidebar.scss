@@ -1,0 +1,37 @@
+@use '../abstracts/variables' as tokens;
+
+.gc-sidebar {
+  min-width: 0;
+  padding: tokens.$spacing-6;
+  border-right: var(--border-default, #{tokens.$border-default});
+  background: var(--color-surface, #{tokens.$color-surface});
+
+  &__nav {
+    display: grid;
+    gap: tokens.$spacing-1;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    padding: tokens.$spacing-2 tokens.$spacing-3;
+    border-radius: tokens.$border-radius-sm;
+    color: var(--color-text-secondary, #{tokens.$color-text-secondary});
+    text-decoration: none;
+
+    &:hover,
+    &[aria-current='page'] {
+      background: var(--color-background, #{tokens.$color-background});
+      color: var(--color-primary, #{tokens.$color-primary});
+    }
+  }
+}
+
+@media (max-width: 767.98px) {
+  .gc-sidebar {
+    padding: tokens.$spacing-3 tokens.$spacing-4;
+    border-right: 0;
+    border-bottom: var(--border-default, #{tokens.$border-default});
+  }
+}

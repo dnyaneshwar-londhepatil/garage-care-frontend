@@ -1,0 +1,98 @@
+{
+  "name": "garage-care",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/garage-care/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "inputs": [
+        "production",
+        "^production",
+        "{workspaceRoot}/libs/shared/styles/src/**/*.scss"
+      ],
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/garage-care",
+        "browser": "apps/garage-care/src/main.ts",
+        "tsConfig": "apps/garage-care/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/shared/styles/src"]
+        },
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/garage-care/public"
+          }
+        ],
+        "styles": ["apps/garage-care/src/styles.scss"],
+        "server": "apps/garage-care/src/main.server.ts",
+        "ssr": {
+          "entry": "apps/garage-care/src/server.ts"
+        },
+        "outputMode": "server",
+        "security": {
+          "allowedHosts": []
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "configurations": {
+        "production": {
+          "buildTarget": "garage-care:build:production"
+        },
+        "development": {
+          "buildTarget": "garage-care:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "watch": false
+      }
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "garage-care:build",
+        "port": 4200,
+        "staticFilePath": "dist/apps/garage-care/browser",
+        "spa": true
+      }
+    }
+  }
+}

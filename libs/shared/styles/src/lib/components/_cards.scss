@@ -1,0 +1,22 @@
+@use '../abstracts/variables' as tokens;
+
+.gc-card {
+  min-width: 0;
+  padding: tokens.$spacing-6;
+  border: var(--border-default, #{tokens.$border-default});
+  border-radius: tokens.$border-radius-md;
+  background: var(--color-surface, #{tokens.$color-surface});
+  box-shadow: var(--shadow-sm, #{tokens.$shadow-sm});
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: tokens.$spacing-4;
+    margin-bottom: tokens.$spacing-4;
+  }
+
+  &__body {
+    min-width: 0;
+  }
+}

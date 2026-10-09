@@ -1,0 +1,21 @@
+@use '../abstracts/mixins' as shared;
+
+.gc-flex {
+  display: flex;
+}
+
+.gc-inline-flex {
+  display: inline-flex;
+}
+
+.gc-grid {
+  display: grid;
+}
+
+.gc-hidden {
+  display: none !important;
+}
+
+.gc-visually-hidden {
+  @include shared.visually-hidden;
+}

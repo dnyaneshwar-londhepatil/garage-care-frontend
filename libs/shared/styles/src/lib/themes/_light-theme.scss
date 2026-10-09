@@ -1,0 +1,39 @@
+@use '../abstracts/variables' as tokens;
+
+:root {
+  color-scheme: light;
+
+  --color-primary: #{tokens.$color-primary};
+  --color-accent: #{tokens.$color-accent};
+  --color-background: #{tokens.$color-background};
+  --color-surface: #{tokens.$color-surface};
+  --color-text-primary: #{tokens.$color-text-primary};
+  --color-text-secondary: #{tokens.$color-text-secondary};
+  --color-secondary: #{tokens.$color-secondary};
+  --color-border: #{tokens.$color-border};
+  --border-default: 1px solid var(--color-border);
+  --color-success: #{tokens.$color-success};
+  --color-warning: #{tokens.$color-warning};
+  --color-error: #{tokens.$color-error};
+
+  --font-family-base: #{tokens.$font-family-base};
+  --font-family-mono: #{tokens.$font-family-mono};
+
+  --space-1: #{tokens.$spacing-1};
+  --space-2: #{tokens.$spacing-2};
+  --space-3: #{tokens.$spacing-3};
+  --space-4: #{tokens.$spacing-4};
+  --space-5: #{tokens.$spacing-5};
+  --space-6: #{tokens.$spacing-6};
+  --space-8: #{tokens.$spacing-8};
+  --space-10: #{tokens.$spacing-10};
+  --space-12: #{tokens.$spacing-12};
+
+  --radius-sm: #{tokens.$border-radius-sm};
+  --radius-md: #{tokens.$border-radius-md};
+  --radius-lg: #{tokens.$border-radius-lg};
+  --shadow-sm: #{tokens.$shadow-sm};
+  --shadow-md: #{tokens.$shadow-md};
+  --shadow-lg: #{tokens.$shadow-lg};
+  --focus-ring: #{tokens.$focus-ring};
+}

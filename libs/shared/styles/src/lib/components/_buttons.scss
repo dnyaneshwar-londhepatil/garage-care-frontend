@@ -1,0 +1,55 @@
+@use '../abstracts/variables' as tokens;
+
+.gc-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: tokens.$spacing-2;
+  min-height: 40px;
+  padding: tokens.$spacing-2 tokens.$spacing-4;
+  border: 1px solid transparent;
+  border-radius: tokens.$border-radius-sm;
+  font: inherit;
+  font-weight: tokens.$font-weight-medium;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: var(--color-primary, #{tokens.$color-primary});
+    color: #fff;
+
+    &:hover:not(:disabled, [aria-disabled='true']) {
+      background: #203956;
+    }
+  }
+
+  &--secondary {
+    border-color: var(--color-border, #{tokens.$color-border});
+    background: var(--color-surface, #{tokens.$color-surface});
+    color: var(--color-text-primary, #{tokens.$color-text-primary});
+
+    &:hover:not(:disabled, [aria-disabled='true']) {
+      background: var(--color-background, #{tokens.$color-background});
+    }
+  }
+
+  &--text {
+    min-height: 36px;
+    padding-inline: tokens.$spacing-2;
+    background: transparent;
+    color: var(--color-accent, #{tokens.$color-accent});
+
+    &:hover:not(:disabled, [aria-disabled='true']) {
+      background: rgb(57 120 246 / 8%);
+    }
+  }
+}

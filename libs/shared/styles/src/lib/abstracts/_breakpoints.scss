@@ -1,0 +1,24 @@
+@use 'sass:map';
+@use 'variables' as tokens;
+
+@mixin up($name) {
+  @if not map.has-key(tokens.$breakpoints, $name) {
+    @error 'Unknown breakpoint `#{$name}`. Available breakpoints: #{map.keys(tokens.$breakpoints)}.';
+  }
+
+  @media (min-width: map.get(tokens.$breakpoints, $name)) {
+    @content;
+  }
+}
+
+@mixin down($name) {
+  @if not map.has-key(tokens.$breakpoints, $name) {
+    @error 'Unknown breakpoint `#{$name}`. Available breakpoints: #{map.keys(tokens.$breakpoints)}.';
+  }
+
+  $max-width: map.get(tokens.$breakpoints, $name) - 0.02px;
+
+  @media (max-width: $max-width) {
+    @content;
+  }
+}

@@ -1,0 +1,78 @@
+@use 'sass:map';
+
+$color-primary: #14263d !default;
+$color-accent: #3978f6 !default;
+$color-background: #f7f9fc !default;
+$color-surface: #fff !default;
+$color-text-primary: #172b4d !default;
+$color-text-secondary: #64748b !default;
+$color-secondary: $color-text-secondary !default;
+$color-border: #e2e8f0 !default;
+$color-success: #15803d !default;
+$color-warning: #b45309 !default;
+$color-error: #b91c1c !default;
+
+$font-family-base: 'Inter', 'Segoe UI', sans-serif !default;
+$font-family-mono: 'Cascadia Code', Consolas, monospace !default;
+
+$font-size-xs: 0.75rem !default;
+$font-size-sm: 0.875rem !default;
+$font-size-md: 1rem !default;
+$font-size-lg: 1.125rem !default;
+$font-size-xl: 1.25rem !default;
+$font-size-2xl: 1.5rem !default;
+$font-size-3xl: 1.875rem !default;
+$font-size-4xl: 2.25rem !default;
+$line-height-tight: 1.25 !default;
+$line-height-base: 1.5 !default;
+$line-height-relaxed: 1.65 !default;
+$font-weight-regular: 400 !default;
+$font-weight-medium: 500 !default;
+$font-weight-semibold: 600 !default;
+$font-weight-bold: 700 !default;
+
+$border-radius-sm: 6px !default;
+$border-radius-md: 10px !default;
+$border-radius-lg: 14px !default;
+$border-radius-pill: 999px !default;
+$border-width: 1px !default;
+$border-style: solid !default;
+$border-default: $border-width $border-style $color-border !default;
+
+$shadow-sm: 0 1px 2px rgb(20 38 61 / 6%) !default;
+$shadow-md: 0 4px 12px rgb(20 38 61 / 8%) !default;
+$shadow-lg: 0 12px 28px rgb(20 38 61 / 12%) !default;
+$focus-ring: 0 0 0 3px rgb(57 120 246 / 24%) !default;
+
+$spacing-1: 4px !default;
+$spacing-2: 8px !default;
+$spacing-3: 12px !default;
+$spacing-4: 16px !default;
+$spacing-5: 20px !default;
+$spacing-6: 24px !default;
+$spacing-8: 32px !default;
+$spacing-10: 40px !default;
+$spacing-12: 48px !default;
+
+$container-max-width: 1200px !default;
+$container-gutter: 24px !default;
+$sidebar-width: 256px !default;
+$header-height: 64px !default;
+
+$breakpoints: (
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px
+) !default;
+
+$font-sizes: (
+  'xs': $font-size-xs,
+  'sm': $font-size-sm,
+  'md': $font-size-md,
+  'lg': $font-size-lg,
+  'xl': $font-size-xl,
+  '2xl': $font-size-2xl,
+  '3xl': $font-size-3xl,
+  '4xl': $font-size-4xl
+) !default;

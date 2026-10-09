@@ -1,0 +1,24 @@
+@use '../abstracts/variables' as tokens;
+
+.gc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  min-height: tokens.$header-height;
+  padding-inline: tokens.$spacing-6;
+  border-bottom: var(--border-default, #{tokens.$border-default});
+  background: var(--color-surface, #{tokens.$color-surface});
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: tokens.$spacing-3;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .gc-header {
+    padding-inline: tokens.$spacing-4;
+  }
+}

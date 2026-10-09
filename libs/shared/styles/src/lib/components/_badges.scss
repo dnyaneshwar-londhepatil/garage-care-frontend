@@ -1,0 +1,35 @@
+@use '../abstracts/variables' as tokens;
+
+.gc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: tokens.$spacing-1;
+  min-height: 24px;
+  padding: 2px tokens.$spacing-2;
+  border-radius: tokens.$border-radius-pill;
+  background: var(--color-background, #{tokens.$color-background});
+  color: var(--color-text-secondary, #{tokens.$color-text-secondary});
+  font-size: tokens.$font-size-xs;
+  font-weight: tokens.$font-weight-medium;
+  line-height: 1.2;
+
+  &--success {
+    background: rgb(21 128 61 / 10%);
+    color: var(--color-success, #{tokens.$color-success});
+  }
+
+  &--warning {
+    background: rgb(180 83 9 / 10%);
+    color: var(--color-warning, #{tokens.$color-warning});
+  }
+
+  &--error {
+    background: rgb(185 28 28 / 10%);
+    color: var(--color-error, #{tokens.$color-error});
+  }
+
+  &--primary {
+    background: rgb(57 120 246 / 10%);
+    color: var(--color-accent, #{tokens.$color-accent});
+  }
+}

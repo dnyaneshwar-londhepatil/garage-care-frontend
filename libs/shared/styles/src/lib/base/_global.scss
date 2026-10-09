@@ -1,0 +1,30 @@
+@use '../abstracts/variables' as tokens;
+
+body {
+  min-height: 100vh;
+  background: var(--color-background, #{tokens.$color-background});
+  color: var(--color-text-primary, #{tokens.$color-text-primary});
+  font-family: var(--font-family-base, #{tokens.$font-family-base});
+  font-size: tokens.$font-size-md;
+  line-height: tokens.$line-height-base;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+a {
+  color: var(--color-accent, #{tokens.$color-accent});
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent, #{tokens.$color-accent});
+  outline-offset: 2px;
+}

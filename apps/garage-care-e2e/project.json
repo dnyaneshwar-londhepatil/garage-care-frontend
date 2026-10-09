@@ -1,0 +1,9 @@
+{
+  "name": "garage-care-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/garage-care-e2e/src",
+  "implicitDependencies": ["garage-care"],
+  "// targets": "to see all targets run: nx show project garage-care-e2e --web",
+  "targets": {}
+}

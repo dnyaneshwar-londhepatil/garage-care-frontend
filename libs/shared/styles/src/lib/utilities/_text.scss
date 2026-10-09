@@ -1,0 +1,23 @@
+@use '../abstracts/variables' as tokens;
+
+.gc-text-center {
+  text-align: center;
+}
+
+.gc-text-right {
+  text-align: right;
+}
+
+.gc-text-muted {
+  color: var(--color-text-secondary, #{tokens.$color-text-secondary});
+}
+
+.gc-text-error {
+  color: var(--color-error, #{tokens.$color-error});
+}
+
+.gc-text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
