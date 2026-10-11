@@ -1,4 +1,4 @@
-<aside class="right-column" aria-label="Sample reminders and workshop overview">
+<aside class="right-column" aria-label="Reminders and workshop overview">
   <section class="reminders">
     <div class="section-heading">
       <div class="reminders-title">
@@ -10,10 +10,10 @@
         type="button"
         (click)="previewAction.emit('All reminders')"
       >
-        View All (5)<app-dashboard-icon name="east" />
+        View All ({{ total() }})<app-dashboard-icon name="east" />
       </button>
     </div>
-    @for (reminder of reminders(); track reminder.name) {
+    @for (reminder of reminders(); track reminder.id ?? reminder.name) {
     <article class="reminder">
       <div class="reminder-details">
         <div class="reminder-heading">
@@ -40,7 +40,8 @@
           gcButton
           [variant]="reminder.action === 'View' ? 'subtle' : 'primary'"
           type="button"
-          (click)="previewAction.emit('Reminder for ' + reminder.name)"
+          [disabled]="busy()"
+          (click)="reminder.id ? viewReminder.emit(reminder.id) : previewAction.emit('Reminder for ' + reminder.name)"
         >
           {{ reminder.action }}
         </button>
@@ -48,31 +49,33 @@
     </article>
     }
     <p class="reminder-note">
-      Showing 3 of 5 sample reminders. Dates and delivery states are
-      illustrative; delivery is not connected.
+      Showing {{ reminders().length }} of {{ total() }} pending reminders.
+      Scheduling and delivery are managed by the server.
     </p>
   </section>
   <section class="floor">
     <div class="floor-heading">
       <h2><app-dashboard-icon name="analytics" /> Workshop Snapshot</h2>
-      <span class="sample-label">SAMPLE</span>
+      <span class="sample-label">LIVE</span>
     </div>
     <div class="floor-stats">
       <div class="floor-stat">
-        <span>Bays in use</span><strong>4/6 Active</strong>
-        <div class="progress"><span style="width: 66.67%"></span></div>
+        <span>Bays in use</span><strong>Unavailable</strong>
+        <div class="progress"><span style="width: 0%"></span></div>
       </div>
       <div class="floor-stat">
-        <span>Recent jobs</span><strong>2/5 Completed</strong>
+        <span>Completed jobs</span><strong>{{ completedJobs() }} total</strong>
         <div class="progress completed-progress">
-          <span style="width: 40%"></span>
+          <span
+            [style.width.%]="totalJobs() ? completedJobs() / totalJobs() * 100 : 0"
+          ></span>
         </div>
       </div>
     </div>
     <div class="floor-note">
       <app-dashboard-icon name="check_circle" /><span
-        >Sample snapshot. Invoice billing and collected payments remain
-        separate.</span
+        >Bay occupancy is not measured. Invoice billing and collected payments
+        remain separate.</span
       >
     </div>
   </section>

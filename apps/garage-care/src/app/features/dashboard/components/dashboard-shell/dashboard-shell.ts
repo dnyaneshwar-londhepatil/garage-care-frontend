@@ -11,6 +11,10 @@ import { DashboardIcon } from '../dashboard-icon/dashboard-icon';
   host: { '(document:keydown.escape)': 'menuOpen.set(false)' },
 })
 export class DashboardShell {
+  readonly garageName = input('Your garage');
+  readonly ownerName = input('Owner');
+  readonly busy = input(false);
+  readonly logout = output<void>();
   readonly search = input.required<FormControl<string>>();
   readonly previewAction = output<string>();
   readonly menuOpen = signal(false);

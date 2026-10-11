@@ -102,8 +102,10 @@
         </div>
         <button
           type="submit"
+          (click)="$event.preventDefault(); submit()"
           class="submit-button"
-          [disabled]="pending()"
+          [disabled]="!ready() || pending()"
+          [attr.disabled]="!ready() || pending() ? '' : null"
           [attr.aria-busy]="pending()"
         >
           {{ pending() ? 'Signing in…' : 'Sign In' }}

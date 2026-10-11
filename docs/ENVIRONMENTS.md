@@ -1,6 +1,6 @@
 # Frontend environments
 
-API URLs are configured in `apps/garage-care/src/environments/`. HTTP services import `environment` from `environment.ts`; Nx replaces that file for the selected build configuration.
+API URLs are configured in `apps/garage-care/src/environments/`. The application imports `environment` from `environment.ts` and provides its `apiBaseUrl` through the `API_BASE_URL` injection token in `app.config.ts`. API services in `libs/shared/data-access` consume that token; Nx replaces the environment file for the selected build configuration.
 
 | Configuration | File                       | API base URL                 |
 | ------------- | -------------------------- | ---------------------------- |

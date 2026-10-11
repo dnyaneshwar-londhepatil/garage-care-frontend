@@ -2,6 +2,7 @@ import { Component, input, output } from '@angular/core';
 import { ActionButton } from '@garage-care/shared/ui';
 import { DashboardIcon } from '../dashboard-icon/dashboard-icon';
 export interface DashboardReminder {
+  id?: string;
   name: string;
   vehicle: string;
   service: string;
@@ -19,5 +20,10 @@ export interface DashboardReminder {
 })
 export class DashboardOverview {
   readonly reminders = input.required<readonly DashboardReminder[]>();
+  readonly total = input(0);
+  readonly completedJobs = input(0);
+  readonly totalJobs = input(0);
+  readonly busy = input(false);
+  readonly viewReminder = output<string>();
   readonly previewAction = output<string>();
 }

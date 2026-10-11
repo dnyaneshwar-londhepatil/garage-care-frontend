@@ -1,7 +1,14 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AuthApi, apiErrorMessage } from '@garage-care/shared/data-access';
 
 @Component({
   selector: 'app-reset-password',
@@ -10,13 +17,22 @@ import { RouterLink } from '@angular/router';
   styleUrl: './reset-password.scss',
 })
 export class ResetPassword {
+  readonly ready = signal(false);
+  constructor() {
+    afterNextRender(() => this.ready.set(true));
+  }
+  private readonly api = inject(AuthApi);
+  private readonly route = inject(ActivatedRoute);
+  readonly pending = signal(false);
+  readonly completed = signal(false);
   readonly form = inject(FormBuilder).nonNullable.group(
     {
       password: [
         '',
         [
           Validators.required,
-          Validators.minLength(8),
+          Validators.minLength(12),
+          Validators.maxLength(128),
           Validators.pattern(/^(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).*$/),
         ],
       ],
@@ -38,7 +54,10 @@ export class ResetPassword {
     { initialValue: '' },
   );
   readonly rules = computed(() => [
-    { label: '8+ characters', met: this.password().length >= 8 },
+    {
+      label: '12–128 characters',
+      met: this.password().length >= 12 && this.password().length <= 128,
+    },
     { label: '1+ number', met: /\d/.test(this.password()) },
     {
       label: '1+ special symbol',
@@ -60,14 +79,35 @@ export class ResetPassword {
         (name === 'confirmation' && this.form.hasError('passwordMismatch')))
     );
   }
-  submit(): void {
+  async submit(): Promise<void> {
+    if (this.pending() || this.completed()) return;
     this.submitted.set(true);
     this.form.markAllAsTouched();
-    this.notice.set(
-      this.form.invalid
-        ? 'Please correct the highlighted fields.'
-        : 'This is a frontend preview. Your password has not been changed. Reset-link validation and password updates require the secure service.',
-    );
+    if (this.form.invalid) {
+      this.notice.set('Please correct the highlighted fields.');
+      return;
+    }
+    const token = this.route.snapshot.queryParamMap.get('token');
+    if (!token || token.length < 20 || token.length > 200) {
+      this.notice.set(
+        'Reset link is missing or invalid. Request a new reset link.',
+      );
+      return;
+    }
+    this.pending.set(true);
+    this.notice.set('');
+    try {
+      await this.api.resetPassword(token, this.form.controls.password.value);
+      this.form.reset();
+      this.completed.set(true);
+      this.notice.set(
+        'Password updated successfully. Sign in with your new password.',
+      );
+    } catch (error) {
+      this.notice.set(apiErrorMessage(error));
+    } finally {
+      this.pending.set(false);
+    }
   }
   unavailable(item: string): void {
     this.notice.set(`${item} is not available in this frontend preview yet.`);

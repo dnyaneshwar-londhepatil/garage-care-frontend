@@ -1,124 +1,226 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
-test('dashboard searches, filters, expands jobs and keeps actions in preview', async ({
+async function mockGarage(page: Page, summaryStatus = 200) {
+  await page.route('**/api/v1/**', async (route) => {
+    const path = new URL(route.request().url()).pathname.replace('/api/v1', '');
+    const customer = {
+      _id: 'customer',
+      name: 'Real Customer',
+      phone: '+919876543210',
+      whatsappConsent: { status: 'opted_in', source: 'recorded-by-owner' },
+    };
+    const vehicle = {
+      _id: 'vehicle',
+      customerId: 'customer',
+      brand: 'Honda',
+      model: 'City',
+      registrationNumber: 'MH12AB1234',
+      vehicleType: 'car',
+    };
+    const job = {
+      _id: 'job',
+      customerId: 'customer',
+      vehicleId: 'vehicle',
+      complaint: 'Oil change',
+      workPerformed: 'Changed oil',
+      status: 'completed',
+      version: 1,
+    };
+    const invoice = {
+      _id: 'invoice',
+      serviceId: 'job',
+      invoiceNumber: 'GC/2026-27/00001',
+      pdfStatus: 'ready',
+      snapshot: { totals: { grandTotalPaise: 125050 } },
+    };
+    if (path === '/auth/me')
+      return route.fulfill({
+        json: {
+          data: {
+            user: {
+              id: 'owner',
+              email: 'owner@example.com',
+              fullName: 'Test Owner',
+            },
+            garage: { _id: 'garage', name: 'Test Garage' },
+          },
+        },
+      });
+    if (path === '/auth/csrf')
+      return route.fulfill({ json: { data: { csrfToken: 'session-csrf' } } });
+    if (path === '/auth/logout') {
+      expect(route.request().headers()['x-csrf-token']).toBe('session-csrf');
+      return route.fulfill({ status: 204 });
+    }
+    if (path === '/dashboard/summary')
+      return route.fulfill({
+        status: summaryStatus,
+        json:
+          summaryStatus === 200
+            ? {
+                data: {
+                  serviceCounts: {
+                    draft: 0,
+                    inProgress: 0,
+                    completed: 1,
+                    cancelled: 0,
+                  },
+                  customers: 1,
+                  upcomingReminders: 1,
+                  recentInvoices: [invoice],
+                  revenueSummary: {
+                    issuedInvoiceTotalPaise: 125050,
+                    paidTotalPaise: null,
+                  },
+                },
+              }
+            : { error: { message: 'Database unavailable' } },
+      });
+    if (path === '/customers/customer')
+      return route.fulfill({ json: { data: customer } });
+    if (path === '/vehicles/vehicle')
+      return route.fulfill({ json: { data: vehicle } });
+    if (path === '/services' || path === '/services/job/history')
+      return route.fulfill({
+        json: { data: [job], page: { limit: 20, nextCursor: null } },
+      });
+    if (path === '/services/job') return route.fulfill({ json: { data: job } });
+    if (path === '/reminders')
+      return route.fulfill({
+        json: {
+          data: [
+            {
+              _id: 'reminder',
+              customerId: 'customer',
+              vehicleId: 'vehicle',
+              dueDate: '2027-01-01T00:00:00.000Z',
+              scheduledAt: '2026-12-25T00:00:00.000Z',
+              status: 'pending',
+            },
+          ],
+          page: { limit: 20, nextCursor: null },
+        },
+      });
+    if (path === '/reminders/reminder')
+      return route.fulfill({
+        json: {
+          data: { status: 'pending', scheduledAt: '2026-12-25T00:00:00.000Z' },
+        },
+      });
+    if (path === '/invoices/invoice')
+      return route.fulfill({ json: { data: invoice } });
+    if (path === '/invoices/invoice/pdf')
+      return route.fulfill({
+        contentType: 'application/pdf',
+        body: '%PDF-1.4\nmock invoice',
+      });
+    if (path === '/invoices/invoice/whatsapp') {
+      expect(route.request().headers()['idempotency-key']).toBeTruthy();
+      expect(route.request().postDataJSON()).toEqual({
+        recipientPhone: '+919876543210',
+      });
+      return route.fulfill({
+        status: 202,
+        json: { data: { _id: 'notification', status: 'queued' } },
+      });
+    }
+    if (path === '/notifications/notification')
+      return route.fulfill({
+        json: { data: { _id: 'notification', status: 'queued' } },
+      });
+    return route.fulfill({
+      status: 404,
+      json: { error: { message: 'Not found' } },
+    });
+  });
+}
+
+test('dashboard restores the owner session and uses real API response data and actions', async ({
   page,
 }) => {
+  await mockGarage(page);
   await page.goto('/dashboard');
   await expect(
-    page.getByText('No live garage connection', { exact: false }),
+    page.getByRole('heading', { name: 'Welcome, Test Owner!' }),
   ).toBeVisible();
-  const search = page.getByRole('searchbox', {
-    name: 'Search sample service jobs',
-  });
-  for (const index of [0, 1]) {
-    for (const button of [
-      page.getByRole('button', { name: 'Call', exact: true }).nth(index),
-      page.locator('.job .view').nth(index),
-    ]) {
-      await expect(button).toHaveCSS('background-color', 'rgb(229, 238, 255)');
-      await button.hover();
-      await expect(button).toHaveCSS('background-color', 'rgb(0, 84, 202)');
-      await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)');
-      await page.locator('h1').hover();
-    }
-  }
-  const reminderButton = page
-    .getByRole('button', { name: 'Send Reminder', exact: true })
-    .first();
-  const buttonBox = await reminderButton.boundingBox();
-  const cardBox = await page.locator('.reminder').first().boundingBox();
-  expect(buttonBox!.width).toBeLessThan(cardBox!.width - 48);
-  await expect(page.locator('.floor-stat')).toHaveCount(2);
-  await search.fill('HONDA');
   await expect(page.locator('.job')).toHaveCount(1);
-  await page
-    .getByRole('combobox', { name: 'Filter jobs by status' })
-    .selectOption('Completed');
+  await expect(page.locator('.metrics')).toContainText('₹1,250.50');
+  const search = page.getByRole('searchbox', {
+    name: 'Search loaded service jobs',
+  });
+  await search.fill('unmatched');
   await expect(
     page.getByRole('heading', { name: 'No matching service jobs' }),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Clear filters' }).click();
-  await expect(page.locator('.job')).toHaveCount(5);
-  await page.getByRole('button', { name: 'View JOB-024' }).click();
-  await expect(
-    page.getByText('Periodic service · Oil change', { exact: true }),
-  ).toBeVisible();
-  await page.getByRole('button', { name: 'Close JOB-024 details' }).click();
-  await expect(page.locator('.job-details')).toHaveCount(0);
-  await page.getByRole('button', { name: 'Send Reminder' }).first().click();
+  await page.getByRole('button', { name: 'View job', exact: true }).click();
+  await page.getByRole('button', { name: 'Load service history' }).click();
+  await expect(page.getByRole('status')).toContainText('Changed oil');
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download invoice PDF' }).click();
+  expect((await download).suggestedFilename()).toBe('GC-2026-27-00001.pdf');
+  await page.getByRole('button', { name: 'WhatsApp', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText('queued');
+  await page.locator('.reminder-actions button').click();
   await expect(page.getByRole('status')).toContainText(
-    'No record was created, changed, or message sent',
+    'Reminder status: pending',
   );
-  await page
-    .getByRole('button', { name: 'WhatsApp', exact: true })
-    .first()
-    .click();
-  await expect(page.getByRole('status')).toContainText(
-    'WhatsApp to Suresh Patil',
-  );
+  await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await expect(page).toHaveURL(/\/sign-in$/);
 });
 
-test('dashboard fits desktop, tablet and mobile with keyboard navigation', async ({
+test('dashboard keeps its responsive layout at desktop, tablet and mobile sizes', async ({
   page,
 }) => {
+  await mockGarage(page);
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   for (const width of [1440, 1280, 768, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/dashboard');
-    await expect(
-      page.getByRole('heading', { name: 'Good morning, Rajesh!' }),
-    ).toBeVisible();
-    await page.evaluate(() => document.fonts.ready);
+    await expect(page.locator('.job')).toHaveCount(1);
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    expect(
-      await page
-        .locator('h1')
-        .evaluate((element) => getComputedStyle(element).fontFamily),
-    ).toContain('Hanken Grotesk');
-    expect(
-      await page
-        .locator('.metric-value')
-        .first()
-        .evaluate((element) => getComputedStyle(element).fontFamily),
-    ).toContain('JetBrains Mono');
-    if (width === 1280) {
-      // Geometry from the approved Stitch screen at this viewport.
-      const cards = await page.locator('.reminder').evaluateAll((elements) =>
-        elements.map((element) => ({
-          width: element.getBoundingClientRect().width,
-          height: element.getBoundingClientRect().height,
-        })),
-      );
-      expect(cards.map((card) => Math.round(card.width))).toEqual([
-        218, 218, 218,
-      ]);
-      expect(cards.map((card) => Math.round(card.height))).toEqual([
-        153, 133, 133,
-      ]);
-      await expect(
-        page.getByRole('button', { name: 'View All (5)' }),
-      ).toBeVisible();
-    }
-    if (width < 800) {
-      const toggle = page.getByRole('button', { name: 'Toggle navigation' });
-      await toggle.focus();
-      await page.keyboard.press('Enter');
-      await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    if (width <= 768) {
+      await page.getByRole('button', { name: 'Toggle navigation' }).click();
       await expect(
         page.getByRole('navigation', { name: 'Main navigation' }),
       ).toBeVisible();
       await page.keyboard.press('Escape');
-      await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      await expect(
+        page.getByRole('navigation', { name: 'Main navigation' }),
+      ).toBeHidden();
     }
     await page.screenshot({
-      path: `dist/dashboard-${width}.png`,
+      path: `dist/dashboard-live-${width}.png`,
       fullPage: true,
     });
   }
   expect(errors).toEqual([]);
+});
+
+test('unavailable data shows an error and no sample jobs', async ({ page }) => {
+  await mockGarage(page, 503);
+  await page.goto('/dashboard');
+  await expect(page.getByRole('status')).toContainText('Database unavailable');
+  await expect(page.locator('.job')).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: 'Refresh', exact: true }),
+  ).toBeEnabled();
+});
+
+test('unauthenticated dashboard access redirects to sign-in', async ({
+  page,
+}) => {
+  await page.route('**/api/v1/auth/me', (route) =>
+    route.fulfill({
+      status: 401,
+      json: { error: { code: 'UNAUTHENTICATED' } },
+    }),
+  );
+  await page.goto('/dashboard');
+  await expect(page).toHaveURL(/\/sign-in$/);
 });

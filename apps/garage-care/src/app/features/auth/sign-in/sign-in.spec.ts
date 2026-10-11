@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { SignIn } from './sign-in';
-import { AuthApi } from '../../../core/api/auth-api';
+import { AuthApi } from '@garage-care/shared/data-access';
 import { HttpErrorResponse } from '@angular/common/http';
 
 describe('SignIn', () => {

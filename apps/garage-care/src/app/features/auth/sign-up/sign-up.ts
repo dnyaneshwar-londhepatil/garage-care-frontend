@@ -1,8 +1,14 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AuthApi } from '../../../core/api/auth-api';
+import { AuthApi } from '@garage-care/shared/data-access';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
@@ -12,6 +18,10 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './sign-up.scss',
 })
 export class SignUp {
+  readonly ready = signal(false);
+  constructor() {
+    afterNextRender(() => this.ready.set(true));
+  }
   private readonly auth = inject(AuthApi);
   private readonly router = inject(Router);
   readonly pending = signal(false);

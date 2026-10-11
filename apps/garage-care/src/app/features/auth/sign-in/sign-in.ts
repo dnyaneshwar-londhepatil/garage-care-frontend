@@ -1,8 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { afterNextRender, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AuthApi } from '../../../core/api/auth-api';
+import { AuthApi } from '@garage-care/shared/data-access';
 
 @Component({
   selector: 'app-sign-in',
@@ -11,6 +11,10 @@ import { AuthApi } from '../../../core/api/auth-api';
   styleUrl: './sign-in.scss',
 })
 export class SignIn {
+  readonly ready = signal(false);
+  constructor() {
+    afterNextRender(() => this.ready.set(true));
+  }
   private readonly fb = inject(FormBuilder);
   private readonly api = inject(AuthApi);
   private readonly router = inject(Router);

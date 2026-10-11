@@ -1,5 +1,11 @@
 # GarageCare frontend implementation guide
 
+## Current integration status — 2026-10-12
+
+Existing authentication and dashboard screens now use injectable services from `libs/shared/data-access`. The sibling `../garage-care-backend` supplies the implemented REST contract. Sign-up retains the approved minimal layout; recovery submits real requests; the guarded dashboard restores the session and loads live garage records. Full endpoint coverage, configuration, security behavior, verification, and the remaining unbuilt pages are documented in [API_INTEGRATION.md](API_INTEGRATION.md).
+
+The earlier preview descriptions below record the visual baseline and are superseded by this integration status where they describe disconnected authentication, recovery, or sample dashboard data. Customer, vehicle, parts, invoice, reminder-management and settings pages remain future work; their typed API services are available now. Provider delivery, GST/setup restrictions and worker/storage readiness still depend on the backend.
+
 ## Purpose and source documents
 
 GarageCare helps independent garage owners manage customers, vehicles, parts and labour, service jobs, invoices, WhatsApp PDF delivery, and service reminders. V1 targets India and one owner account per garage.
@@ -11,6 +17,7 @@ The product baseline is [PRD.md](PRD.md). Planned platform architecture is in [S
 - `apps/garage-care`: Angular 22 standalone application with routing, SSR, and hydration. The root renders the route outlet; `/` redirects to the sign-up preview at `/sign-up`.
 - `apps/garage-care-e2e`: Playwright test project.
 - `libs/shared/styles`: reusable Sass abstracts, base styles, components, layouts, themes, and utilities.
+- `libs/shared/data-access`: all injectable browser API services and typed DTOs.
 - `docs`: product and engineering specifications.
 
 The backend, worker, MongoDB, Redis/BullMQ, PDF storage, and WhatsApp integration are planned dependencies and are not implemented in this frontend checkout. PWA support is a product requirement rather than an already verified capability. Preserve the existing application name and folder structure.

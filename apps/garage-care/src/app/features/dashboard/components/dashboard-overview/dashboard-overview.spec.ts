@@ -28,6 +28,6 @@ describe('DashboardOverview', () => {
     expect(fixture.nativeElement.querySelectorAll('.floor-stat')).toHaveLength(
       2,
     );
-    expect(fixture.nativeElement.textContent).toContain('Sample snapshot');
+    expect(fixture.nativeElement.textContent).toContain('Bay occupancy is not measured');
   });
 });

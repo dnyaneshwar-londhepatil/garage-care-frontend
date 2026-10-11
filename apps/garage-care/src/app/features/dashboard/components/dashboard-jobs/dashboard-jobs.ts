@@ -10,7 +10,15 @@ import { ActionButton } from '@garage-care/shared/ui';
 })
 export class DashboardJobs {
   readonly jobs = input.required<readonly Job[]>();
+  readonly busy = input(false);
+  readonly jobAction = output<{
+    kind: 'history' | 'whatsapp' | 'pdf';
+    job: Job;
+  }>();
   readonly selectedJob = signal<Job | null>(null);
   readonly previewAction = output<string>();
   readonly clearFilters = output<void>();
+  call(phone: string): void {
+    if (/^\+91[6-9]\d{9}$/.test(phone)) window.location.href = 'tel:' + phone;
+  }
 }

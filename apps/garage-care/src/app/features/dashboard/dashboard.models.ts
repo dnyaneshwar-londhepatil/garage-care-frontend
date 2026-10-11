@@ -7,6 +7,9 @@ export interface Job {
   vehicleDescription?: string;
   registration: string;
   vehicles: number;
-  status: 'In Progress' | 'Completed' | 'Draft';
+  status: 'In Progress' | 'Completed' | 'Draft' | 'Cancelled';
   service: string;
+  invoiceId?: string;
+  version?: number;
+  whatsappConsent?: boolean;
 }
