@@ -1,3 +1,5 @@
+@use '../../../../../../../../libs/shared/styles/src/lib/abstracts/colors' as
+  palette;
 :host {
   display: block;
 }
@@ -6,12 +8,12 @@
 }
 small {
   display: block;
-  color: #737786;
+  color: palette.$color-text-muted;
   font-size: 11px;
 }
 p {
   margin: 0;
-  color: #424654;
+  color: palette.$color-text-secondary;
   font-size: 12px;
   line-height: 1.5;
 }
@@ -27,7 +29,7 @@ h3 {
 }
 .count {
   font-size: 11px;
-  background: #cfe1ff;
+  background: palette.$color-surface-selected;
   border-radius: 20px;
   padding: 2px 8px;
   font-weight: 500;
@@ -46,10 +48,10 @@ h3 {
     }
   }
   .status-filter select {
-    border: 1px solid #dce9ff;
+    border: 1px solid palette.$color-border-brand;
     border-radius: 7px;
-    background: white;
-    color: #52647e;
+    background: palette.$color-white;
+    color: palette.$color-text-subtle;
     padding: 7px;
     font-size: 11px;
   }
@@ -81,9 +83,9 @@ h3 {
   .reminder {
     padding: 16px;
     margin-bottom: 16px;
-    background: white;
+    background: palette.$color-white;
     border-radius: 12px;
-    box-shadow: 0 1px 3px #14263d0a;
+    box-shadow: 0 1px 3px palette.$color-navy-alpha-10;
     .reminder-heading {
       display: flex;
       align-items: center;
@@ -101,7 +103,7 @@ h3 {
         gap: 4px;
         padding: 2px 8px;
         border-radius: 20px;
-        background: #cfe1ff;
+        background: palette.$color-surface-selected;
         font-size: 11px;
         line-height: 14px;
         font-weight: 600;
@@ -110,19 +112,19 @@ h3 {
           height: 6px;
           flex-shrink: 0;
           border-radius: 50%;
-          background: #0054ca;
+          background: palette.$color-brand;
         }
         &.overdue {
-          background: #ffdad6;
-          color: #93000a;
+          background: palette.$color-surface-error;
+          color: palette.$color-text-error;
           .due-dot {
-            background: #ba1a1a;
+            background: palette.$color-error;
           }
         }
         &.future {
           padding: 0;
           background: none;
-          color: #737786;
+          color: palette.$color-text-muted;
           font-family: var(--font-family-mono);
           font-weight: 500;
           .due-dot {
@@ -133,13 +135,13 @@ h3 {
     }
     small {
       font-size: 12px;
-      color: #424654;
+      color: palette.$color-text-secondary;
       font-weight: 500;
       line-height: 16px;
     }
     p {
       font-size: 12px;
-      color: #737786;
+      color: palette.$color-text-muted;
       margin: 4px 0 0;
       line-height: 16px;
     }
@@ -150,24 +152,24 @@ h3 {
       gap: 8px;
       padding-top: 8px;
       margin-top: 8px;
-      border-top: 1px solid #dce9ff66;
+      border-top: 1px solid palette.$color-border-brand-alpha-102;
       .delivery-state {
         display: inline-flex;
         align-items: center;
         gap: 4px;
         font-family: var(--font-family-mono);
         font-size: 11px;
-        color: #424654;
+        color: palette.$color-text-secondary;
         app-dashboard-icon {
           font-size: 16px;
-          color: #006947;
+          color: palette.$color-success;
         }
         &.automatic {
           font-family: var(--font-family-base);
           font-size: 10px;
           text-transform: uppercase;
           letter-spacing: 0.6px;
-          color: #737786;
+          color: palette.$color-text-muted;
         }
       }
     }
@@ -176,9 +178,9 @@ h3 {
 .floor {
   margin-top: 16px;
   padding: 16px;
-  background: white;
+  background: palette.$color-white;
   border-radius: 12px;
-  box-shadow: 0 1px 3px #14263d0a;
+  box-shadow: 0 1px 3px palette.$color-navy-alpha-10;
   .floor-heading {
     display: flex;
     justify-content: space-between;
@@ -192,13 +194,13 @@ h3 {
       font-size: 15px;
       font-weight: 600;
       app-dashboard-icon {
-        color: #0054ca;
+        color: palette.$color-brand;
         font-size: 18px;
       }
     }
     .sample-label {
       font-size: 10px;
-      color: #006947;
+      color: palette.$color-success;
       letter-spacing: 0.6px;
     }
   }
@@ -209,11 +211,11 @@ h3 {
     .floor-stat {
       padding: 8px;
       border-radius: 8px;
-      background: #eff4ff;
+      background: palette.$color-surface-tint;
       > span {
         font-size: 10px;
         text-transform: uppercase;
-        color: #737786;
+        color: palette.$color-text-muted;
       }
       strong {
         display: block;
@@ -224,7 +226,7 @@ h3 {
       }
       .progress {
         height: 6px;
-        background: #dce9ff;
+        background: palette.$color-border-brand;
         border-radius: 20px;
         margin-top: 6px;
         overflow: hidden;
@@ -232,10 +234,10 @@ h3 {
           display: block;
           height: 100%;
           border-radius: inherit;
-          background: #0054ca;
+          background: palette.$color-brand;
         }
         &.completed-progress span {
-          background: #006947;
+          background: palette.$color-success;
         }
       }
     }
@@ -247,13 +249,13 @@ h3 {
     margin-top: 8px;
     padding: 8px;
     border-radius: 8px;
-    background: #eff4ff;
+    background: palette.$color-surface-tint;
     font-size: 11px;
-    color: #424654;
+    color: palette.$color-text-secondary;
     line-height: 16px;
     app-dashboard-icon {
       font-size: 14px;
-      color: #006947;
+      color: palette.$color-success;
       margin-top: 2px;
     }
   }

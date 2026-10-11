@@ -1,3 +1,5 @@
+@use '../../../../../../../../libs/shared/styles/src/lib/abstracts/colors' as
+  palette;
 :host {
   display: contents;
 }
@@ -11,15 +13,15 @@ input {
 button {
   cursor: pointer;
   border: 0;
-  background: transparent;
-  color: #424654;
+  background: palette.$color-transparent;
+  color: palette.$color-text-secondary;
 }
 a {
-  color: #424654;
+  color: palette.$color-text-secondary;
   text-decoration: none;
 }
 :focus-visible {
-  outline: 3px solid #3978f6;
+  outline: 3px solid palette.$color-focus-blue;
   outline-offset: 3px;
 }
 .sr-only {
@@ -34,7 +36,7 @@ a {
   top: -70px;
   left: 16px;
   z-index: 10;
-  background: white;
+  background: palette.$color-white;
   padding: 12px;
   &:focus {
     top: 10px;
@@ -44,12 +46,12 @@ a {
   width: 288px;
   position: fixed;
   inset: 0 auto 0 0;
-  background: white;
+  background: palette.$color-white;
   padding: 16px 8px 8px;
   display: flex;
   flex-direction: column;
   z-index: 4;
-  box-shadow: 0 1px 8px #0000000a;
+  box-shadow: 0 1px 8px palette.$color-black-alpha-10;
   overflow-y: auto;
   .brand {
     display: flex;
@@ -58,21 +60,21 @@ a {
     margin: 0 8px 16px;
     font-size: 16px;
     font-weight: 600;
-    color: #0b1c30;
+    color: palette.$color-text-primary;
     .brand-icon {
       width: 36px;
       height: 36px;
       display: grid;
       place-items: center;
-      color: white;
-      background: #0054ca;
+      color: palette.$color-white;
+      background: palette.$color-brand;
       border-radius: 8px;
     }
     small {
       display: block;
       font-size: 11px;
       letter-spacing: 0.66px;
-      color: #737786;
+      color: palette.$color-text-muted;
       font-weight: 400;
       margin-top: 2px;
     }
@@ -82,18 +84,18 @@ a {
     align-items: center;
     gap: 4px;
     margin: 0 8px 12px;
-    background: #eff4ff;
+    background: palette.$color-surface-tint;
     padding: 4px 8px;
     border-radius: 8px;
     font-size: 12px;
     app-dashboard-icon {
-      color: #0054ca;
+      color: palette.$color-brand;
       font-size: 18px;
     }
     small {
       display: block;
       font-size: 10px;
-      color: #737786;
+      color: palette.$color-text-muted;
     }
   }
   nav {
@@ -109,18 +111,18 @@ a {
       min-height: 28px;
       font-size: 14px;
       .nav-icon {
-        color: #737786;
+        color: palette.$color-text-muted;
         display: flex;
       }
       &:hover {
-        background: #eff4ff;
+        background: palette.$color-surface-tint;
       }
       &.active {
-        background: #cfe1ff;
-        color: #0b1c30;
+        background: palette.$color-surface-selected;
+        color: palette.$color-text-primary;
         font-weight: 600;
         .nav-icon {
-          color: #0054ca;
+          color: palette.$color-brand;
         }
       }
     }
@@ -130,7 +132,7 @@ a {
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    background: #eff4ff;
+    background: palette.$color-surface-tint;
     border-radius: 12px;
     padding: 8px;
     margin-top: auto;
@@ -139,15 +141,15 @@ a {
       width: 36px;
       height: 36px;
       border-radius: 8px;
-      background: #d3e4fe;
-      color: #0054ca;
+      background: palette.$color-surface-avatar;
+      color: palette.$color-brand;
       display: grid;
       place-items: center;
       font-weight: 600;
     }
     small {
       display: block;
-      color: #424654;
+      color: palette.$color-text-secondary;
       font-size: 12px;
     }
     a {
@@ -159,7 +161,7 @@ a {
     display: none;
     top: 64px;
     width: 260px;
-    box-shadow: 8px 0 24px #14263d20;
+    box-shadow: 8px 0 24px palette.$color-navy-alpha-32;
     &.open {
       display: flex;
     }
@@ -171,9 +173,9 @@ a {
   top: 0;
   margin-left: 288px;
   padding: 0 24px;
-  background: #f8f9ffed;
+  background: palette.$color-background-alpha-237;
   backdrop-filter: blur(16px);
-  box-shadow: 0 1px 8px #0000000a;
+  box-shadow: 0 1px 8px palette.$color-black-alpha-10;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -191,13 +193,13 @@ a {
     gap: 4px;
     font-size: 12px;
     white-space: nowrap;
-    color: #737786;
+    color: palette.$color-text-muted;
     app-dashboard-icon {
       font-size: 16px;
     }
     strong {
       font-size: 16px;
-      color: #0b1c30;
+      color: palette.$color-text-primary;
     }
     @media (max-width: 800px) {
       display: none;
@@ -208,22 +210,22 @@ a {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: white;
+    background: palette.$color-white;
     padding: 10px 12px;
     border-radius: 8px;
     width: min(576px, 58%);
-    box-shadow: 0 1px 3px #14263d0a;
+    box-shadow: 0 1px 3px palette.$color-navy-alpha-10;
     app-dashboard-icon {
-      color: #737786;
+      color: palette.$color-text-muted;
       font-size: 18px;
     }
     input {
       min-width: 0;
       width: 100%;
-      background: transparent;
+      background: palette.$color-transparent;
       border: 0;
       font-size: 12px;
-      color: #0b1c30;
+      color: palette.$color-text-primary;
     }
     @media (max-width: 800px) {
       width: auto;
@@ -237,7 +239,7 @@ a {
     display: flex;
     border-radius: 8px;
     &:hover {
-      background: #eff4ff;
+      background: palette.$color-surface-tint;
     }
   }
   .small-avatar {
@@ -245,8 +247,8 @@ a {
     height: 32px;
     flex-shrink: 0;
     border-radius: 50%;
-    background: #0054ca;
-    color: white;
+    background: palette.$color-brand;
+    color: palette.$color-white;
     display: grid;
     place-items: center;
     app-dashboard-icon {

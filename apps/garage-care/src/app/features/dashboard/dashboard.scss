@@ -1,6 +1,7 @@
+@use '../../../../../../libs/shared/styles/src/lib/abstracts/colors' as palette;
 :host {
   display: block;
-  color: #0b1c30;
+  color: palette.$color-text-primary;
   font-family: var(--font-family-base);
 }
 * {
@@ -8,7 +9,7 @@
 }
 .dashboard {
   min-height: 100vh;
-  background: #f8f9ff;
+  background: palette.$color-background;
 }
 button,
 input,
@@ -17,9 +18,9 @@ select {
 }
 button {
   cursor: pointer;
-  border: 1px solid #dce9ff;
-  background: white;
-  color: #0b1c30;
+  border: 1px solid palette.$color-border-brand;
+  background: palette.$color-white;
+  color: palette.$color-text-primary;
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 12px;
@@ -28,11 +29,11 @@ button {
   align-items: center;
   gap: 4px;
   &:hover {
-    background: #eff4ff;
+    background: palette.$color-surface-tint;
   }
 }
 :focus-visible {
-  outline: 3px solid #3978f6;
+  outline: 3px solid palette.$color-focus-blue;
   outline-offset: 3px;
 }
 .sr-only {
@@ -48,12 +49,12 @@ button {
 }
 small {
   display: block;
-  color: #737786;
+  color: palette.$color-text-muted;
   font-size: 11px;
 }
 p {
   margin: 0;
-  color: #424654;
+  color: palette.$color-text-secondary;
   font-size: 12px;
   line-height: 1.5;
 }
@@ -69,7 +70,7 @@ h3 {
 }
 .count {
   font-size: 11px;
-  background: #cfe1ff;
+  background: palette.$color-surface-selected;
   border-radius: 20px;
   padding: 2px 8px;
   font-weight: 500;
@@ -97,7 +98,7 @@ main {
     letter-spacing: -0.48px;
     margin: 0 0 4px;
     app-dashboard-icon {
-      color: #0054ca;
+      color: palette.$color-brand;
       font-size: 22px;
     }
     @media (max-width: 500px) {
@@ -116,16 +117,16 @@ main {
       padding: 10px 16px;
       app-dashboard-icon {
         font-size: 18px;
-        color: #0054ca;
+        color: palette.$color-brand;
       }
       &.primary {
-        background: #0054ca;
-        color: white;
+        background: palette.$color-brand;
+        color: palette.$color-white;
         app-dashboard-icon {
-          color: white;
+          color: palette.$color-white;
         }
         &:hover {
-          background: #2b6eeb;
+          background: palette.$color-brand-hover;
         }
       }
       @media (max-width: 500px) {
@@ -145,11 +146,11 @@ main {
 }
 .snapshot {
   font-size: 11px;
-  color: #52647e;
+  color: palette.$color-text-subtle;
   margin: 8px 0 24px;
   .preview-badge {
-    color: #0b1c30;
-    background: #dce9ff;
+    color: palette.$color-text-primary;
+    background: palette.$color-border-brand;
     border-radius: 20px;
     padding: 4px 8px;
     font-weight: 600;
@@ -160,8 +161,8 @@ main {
   }
 }
 .notice {
-  background: #eff4ff;
-  border-left: 3px solid #0054ca;
+  background: palette.$color-surface-tint;
+  border-left: 3px solid palette.$color-brand;
   padding: 12px;
   margin-bottom: 20px;
   font-size: 13px;
@@ -175,15 +176,15 @@ main {
   gap: 16px;
   .metric {
     padding: 16px;
-    background: white;
+    background: palette.$color-white;
     border-radius: 12px;
-    box-shadow: 0 1px 3px #14263d0a;
+    box-shadow: 0 1px 3px palette.$color-navy-alpha-10;
     .metric-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       .metric-label {
-        color: #737786;
+        color: palette.$color-text-muted;
         text-transform: uppercase;
         font-size: 11px;
         letter-spacing: 0.66px;
@@ -201,8 +202,8 @@ main {
         width: 40px;
         height: 40px;
         flex-shrink: 0;
-        background: #eff4ff;
-        color: #0054ca;
+        background: palette.$color-surface-tint;
+        color: palette.$color-brand;
         border-radius: 8px;
         app-dashboard-icon {
           font-size: 22px;
@@ -217,12 +218,12 @@ main {
       gap: 4px;
       > app-dashboard-icon {
         font-size: 18px;
-        color: #737786;
+        color: palette.$color-text-muted;
       }
       .metric-detail {
         font-family: var(--font-family-mono);
         display: block;
-        color: #0054ca;
+        color: palette.$color-brand;
         font-size: 10px;
         margin-top: 2px;
       }
@@ -230,26 +231,26 @@ main {
     &:nth-child(2) {
       .metric-top {
         .metric-icon {
-          background: #cfe1ff;
-          color: #4e5f79;
+          background: palette.$color-surface-selected;
+          color: palette.$color-text-tertiary;
         }
       }
       .metric-bottom {
         .metric-detail {
-          color: #006947;
+          color: palette.$color-success;
         }
       }
     }
     &:last-child {
       .metric-top {
         .metric-icon {
-          background: #dce9ff;
-          color: #424654;
+          background: palette.$color-border-brand;
+          color: palette.$color-text-secondary;
         }
       }
       .metric-bottom {
         .metric-detail {
-          color: #ba1a1a;
+          color: palette.$color-error;
         }
       }
     }
@@ -269,7 +270,7 @@ main {
   .section-caption {
     display: flex;
     justify-content: space-between;
-    color: #737786;
+    color: palette.$color-text-muted;
     font-size: 11px;
     margin-bottom: 8px;
     span:last-child {
@@ -287,7 +288,7 @@ main {
       gap: 8px;
       border: 0;
       padding: 14px;
-      box-shadow: 0 1px 3px #14263d0a;
+      box-shadow: 0 1px 3px palette.$color-navy-alpha-10;
       .action-icon {
         display: grid;
         place-items: center;
@@ -295,15 +296,15 @@ main {
         height: 36px;
         flex-shrink: 0;
         border-radius: 8px;
-        background: #dce9ff;
+        background: palette.$color-border-brand;
       }
       small {
         margin-top: 3px;
         font-weight: 400;
       }
       &:first-child .action-icon {
-        background: #0054ca;
-        color: white;
+        background: palette.$color-brand;
+        color: palette.$color-white;
       }
       @media (max-width: 500px) {
         padding: 12px;
@@ -342,10 +343,10 @@ main {
     }
   }
   .status-filter select {
-    border: 1px solid #dce9ff;
+    border: 1px solid palette.$color-border-brand;
     border-radius: 7px;
-    background: white;
-    color: #52647e;
+    background: palette.$color-white;
+    color: palette.$color-text-subtle;
     padding: 7px;
     font-size: 11px;
   }
@@ -354,7 +355,7 @@ main {
   }
 }
 .throughput {
-  background: #eff4ff;
+  background: palette.$color-surface-tint;
   padding: 16px;
   margin-top: 16px;
   border-radius: 12px;
@@ -366,21 +367,21 @@ main {
     align-items: center;
     gap: 8px;
     app-dashboard-icon {
-      color: #0054ca;
+      color: palette.$color-brand;
       font-size: 22px;
     }
   }
   svg {
     width: 120px;
     height: 32px;
-    color: #0054ca;
+    color: palette.$color-brand;
     margin-left: auto;
     @media (max-width: 500px) {
       margin-left: 0;
     }
   }
   > strong {
-    color: #006947;
+    color: palette.$color-success;
     font-size: 12px;
     font-family: var(--font-family-mono);
     white-space: nowrap;
@@ -399,7 +400,7 @@ footer {
   display: flex;
   justify-content: space-between;
   font-size: 10px;
-  color: #737786;
+  color: palette.$color-text-muted;
   @media (max-width: 500px) {
     gap: 16px;
   }

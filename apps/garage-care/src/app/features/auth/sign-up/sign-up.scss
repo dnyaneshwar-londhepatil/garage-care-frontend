@@ -1,14 +1,16 @@
+@use '../../../../../../../libs/shared/styles/src/lib/abstracts/colors' as
+  palette;
 @use 'lib/components/auth-shell';
 @include auth-shell.styles;
 :host {
   display: block;
-  color: #0b1c30;
+  color: palette.$color-text-primary;
   font-family: var(--font-family-base);
   font-size: 14px;
 }
 .signup-page {
   min-height: 100dvh;
-  background: #f8f9ff;
+  background: palette.$color-background;
   display: flex;
   flex-direction: column;
 }
@@ -25,9 +27,9 @@ main {
     width: 100%;
     max-width: 672px;
     padding: 32px;
-    background: #fff;
+    background: palette.$color-white;
     border-radius: 12px;
-    box-shadow: 0 1px 3px #14263d14;
+    box-shadow: 0 1px 3px palette.$color-navy-alpha-20;
     @media (max-width: 700px) {
       padding: 24px;
     }
@@ -42,14 +44,14 @@ main {
         font-weight: 700;
         letter-spacing: -0.5px;
         line-height: 32px;
-        color: #0b1c30;
+        color: palette.$color-text-primary;
         @media (max-width: 540px) {
           font-size: 24px;
         }
       }
       p {
         margin: 4px 0 0;
-        color: #424654;
+        color: palette.$color-text-secondary;
       }
     }
     form {
@@ -73,7 +75,7 @@ main {
             font-weight: 600;
             > span {
               font-weight: 400;
-              color: #52647e;
+              color: palette.$color-text-subtle;
               font-size: 12px;
             }
           }
@@ -82,19 +84,19 @@ main {
       .security-rules {
         padding: 10px;
         border-radius: 8px;
-        background: #eff4ff;
+        background: palette.$color-surface-tint;
         display: flex;
         flex-wrap: wrap;
         gap: 6px 14px;
         font-size: 12px;
-        color: #424654;
+        color: palette.$color-text-secondary;
         strong {
           font-size: 11px;
           letter-spacing: 0.6px;
           text-transform: uppercase;
         }
         .met {
-          color: #006947;
+          color: palette.$color-success;
         }
       }
       .agreements {
@@ -105,7 +107,7 @@ main {
           align-items: flex-start;
           gap: 8px;
           font-size: 12px;
-          color: #424654;
+          color: palette.$color-text-secondary;
           cursor: pointer;
           line-height: 20px;
         }
@@ -113,7 +115,7 @@ main {
       .signin {
         margin: 4px 0 0;
         text-align: center;
-        color: #424654;
+        color: palette.$color-text-secondary;
         .text-link {
           margin-left: 4px;
           font-weight: 600;
@@ -123,7 +125,7 @@ main {
         margin: -8px 0 0;
         text-align: center;
         font-size: 12px;
-        color: #52647e;
+        color: palette.$color-text-subtle;
       }
     }
   }
@@ -133,7 +135,7 @@ input[type='checkbox'] {
   height: 16px;
   margin-top: 2px;
   flex-shrink: 0;
-  accent-color: #0054ca;
+  accent-color: palette.$color-brand;
 }
 .sr-only {
   position: absolute;
@@ -179,10 +181,10 @@ footer {
     position: absolute;
     left: 12px;
     top: 12px;
-    border-right: 1px solid #c2c6d7;
+    border-right: 1px solid palette.$color-border-strong;
     padding-right: 8px;
     font-size: 13px;
-    color: #424654;
+    color: palette.$color-text-secondary;
   }
   input {
     font-family: var(--font-family-mono);

@@ -1,3 +1,4 @@
+@use '../abstracts/colors' as palette;
 @use '../abstracts/variables' as tokens;
 
 .gc-button {
@@ -7,7 +8,7 @@
   gap: tokens.$spacing-2;
   min-height: 40px;
   padding: tokens.$spacing-2 tokens.$spacing-4;
-  border: 1px solid transparent;
+  border: 1px solid palette.$color-transparent;
   border-radius: tokens.$border-radius-sm;
   font: inherit;
   font-weight: tokens.$font-weight-medium;
@@ -15,7 +16,10 @@
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
 
   &:disabled,
   &[aria-disabled='true'] {
@@ -25,10 +29,10 @@
 
   &--primary {
     background: var(--color-primary, #{tokens.$color-primary});
-    color: #fff;
+    color: palette.$color-white;
 
     &:hover:not(:disabled, [aria-disabled='true']) {
-      background: #203956;
+      background: palette.$color-navy-hover;
     }
   }
 
@@ -45,11 +49,11 @@
   &--text {
     min-height: 36px;
     padding-inline: tokens.$spacing-2;
-    background: transparent;
+    background: palette.$color-transparent;
     color: var(--color-accent, #{tokens.$color-accent});
 
     &:hover:not(:disabled, [aria-disabled='true']) {
-      background: rgb(57 120 246 / 8%);
+      background: palette.$color-focus-blue-alpha-8pct;
     }
   }
 }

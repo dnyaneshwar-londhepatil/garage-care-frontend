@@ -1,3 +1,4 @@
+@use 'colors' as palette;
 @use 'variables' as tokens;
 
 @mixin container($max-width: tokens.$container-max-width) {
@@ -5,14 +6,18 @@
   margin-inline: auto;
 }
 
-@mixin text-style($size, $line-height: tokens.$line-height-base, $weight: tokens.$font-weight-regular) {
+@mixin text-style(
+  $size,
+  $line-height: tokens.$line-height-base,
+  $weight: tokens.$font-weight-regular
+) {
   font-size: $size;
   font-weight: $weight;
   line-height: $line-height;
 }
 
 @mixin focus-ring {
-  outline: 2px solid transparent;
+  outline: 2px solid palette.$color-transparent;
   outline-offset: 2px;
   box-shadow: tokens.$focus-ring;
 }

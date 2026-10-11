@@ -28,6 +28,7 @@ This repository is an Angular Nx monorepo for the Garage Care frontend applicati
 
 ## Component, styling, and icon conventions
 
+- Define every literal color only in `libs/shared/styles/src/lib/abstracts/_colors.scss`, the shared palette. Reuse its semantic Sass variables through a `palette` namespace in all app, component, and shared styles. Use the generated `--palette-*` CSS custom properties for inline SVG paint. Do not add hardcoded hex, RGB/HSL, or named color values elsewhere; add a named palette token first, including opacity variants. Keep `currentColor` for icons that inherit text color and `none` for absent SVG paint. Test assertions may use literal expected browser color values.
 - Place a page's child components in its `components/<component-name>/` folder (for example, `features/dashboard/components/dashboard-shell/`). Keep the parent page at the feature root.
 - Move UI components reused across sections or features into `libs/shared/ui`; keep feature data and backend actions in the consuming feature. Use its shared native `button[gcButton]` component for consistent compact action variants and hover/focus behavior.
 - Every Angular component has four separate files: `<name>.ts`, `<name>.html`, `<name>.scss`, and `<name>.spec.ts`. Use `templateUrl` and `styleUrl`; do not embed templates or styles in TypeScript. Use SCSS rather than plain CSS in this workspace.

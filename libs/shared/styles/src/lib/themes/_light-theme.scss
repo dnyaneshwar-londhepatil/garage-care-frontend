@@ -1,3 +1,4 @@
+@use '../abstracts/colors' as palette;
 @use '../abstracts/variables' as tokens;
 
 :root {
@@ -36,4 +37,7 @@
   --shadow-md: #{tokens.$shadow-md};
   --shadow-lg: #{tokens.$shadow-lg};
   --focus-ring: #{tokens.$focus-ring};
+  @each $name, $value in palette.$colors {
+    --palette-#{$name}: #{$value};
+  }
 }

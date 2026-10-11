@@ -1,3 +1,4 @@
+@use '../abstracts/colors' as palette;
 @use '../abstracts/variables' as tokens;
 
 .gc-alert {
@@ -11,18 +12,18 @@
   color: var(--color-text-primary, #{tokens.$color-text-primary});
 
   &--success {
-    border-color: rgb(21 128 61 / 24%);
-    background: rgb(21 128 61 / 6%);
+    border-color: palette.$color-success-legacy-alpha-24pct;
+    background: palette.$color-success-legacy-alpha-6pct;
   }
 
   &--warning {
-    border-color: rgb(180 83 9 / 24%);
-    background: rgb(180 83 9 / 6%);
+    border-color: palette.$color-warning-alpha-24pct;
+    background: palette.$color-warning-alpha-6pct;
   }
 
   &--error {
-    border-color: rgb(185 28 28 / 24%);
-    background: rgb(185 28 28 / 6%);
+    border-color: palette.$color-error-legacy-alpha-24pct;
+    background: palette.$color-error-legacy-alpha-6pct;
   }
 
   &__message {

@@ -1,3 +1,4 @@
+@use '../abstracts/colors' as palette;
 @use '../abstracts/variables' as tokens;
 
 .gc-badge {
@@ -14,22 +15,22 @@
   line-height: 1.2;
 
   &--success {
-    background: rgb(21 128 61 / 10%);
+    background: palette.$color-success-legacy-alpha-10pct;
     color: var(--color-success, #{tokens.$color-success});
   }
 
   &--warning {
-    background: rgb(180 83 9 / 10%);
+    background: palette.$color-warning-alpha-10pct;
     color: var(--color-warning, #{tokens.$color-warning});
   }
 
   &--error {
-    background: rgb(185 28 28 / 10%);
+    background: palette.$color-error-legacy-alpha-10pct;
     color: var(--color-error, #{tokens.$color-error});
   }
 
   &--primary {
-    background: rgb(57 120 246 / 10%);
+    background: palette.$color-focus-blue-alpha-10pct;
     color: var(--color-accent, #{tokens.$color-accent});
   }
 }

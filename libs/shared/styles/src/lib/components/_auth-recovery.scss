@@ -1,15 +1,16 @@
+@use '../abstracts/colors' as palette;
 @use 'auth-shell';
 @mixin styles {
   @include auth-shell.styles;
   :host {
     display: block;
     font-family: var(--font-family-base);
-    color: #0b1c30;
+    color: palette.$color-text-primary;
     font-size: 14px;
   }
   .recovery-page {
     min-height: 100dvh;
-    background: #f8f9ff;
+    background: palette.$color-background;
     display: flex;
     flex-direction: column;
   }
@@ -26,9 +27,9 @@
       width: 100%;
       max-width: 448px;
       padding: 32px;
-      background: white;
+      background: palette.$color-white;
       border-radius: 12px;
-      box-shadow: 0 1px 3px #14263d14;
+      box-shadow: 0 1px 3px palette.$color-navy-alpha-20;
       @media (max-width: 540px) {
         padding: 24px;
       }
@@ -40,8 +41,8 @@
           place-items: center;
           width: 48px;
           height: 48px;
-          background: #eff4ff;
-          color: #0054ca;
+          background: palette.$color-surface-tint;
+          color: palette.$color-brand;
           border-radius: 12px;
           margin: 0 auto 16px;
           svg {
@@ -52,7 +53,7 @@
         p {
           margin: 8px 0 0;
           line-height: 24px;
-          color: #424654;
+          color: palette.$color-text-secondary;
         }
       }
       form {
@@ -66,14 +67,14 @@
             font-weight: 500;
           }
           input {
-            background: #eff4ff;
+            background: palette.$color-surface-tint;
           }
         }
         .back-link {
           display: flex;
           justify-content: center;
           gap: 6px;
-          color: #4e5f79;
+          color: palette.$color-text-tertiary;
           text-decoration: none;
           font-weight: 500;
           &:hover {
@@ -82,13 +83,13 @@
         }
         .preview-note {
           margin: -8px 0 0;
-          color: #52647e;
+          color: palette.$color-text-subtle;
           font-size: 12px;
           text-align: center;
         }
       }
       h1 {
-        color: #0b1c30;
+        color: palette.$color-text-primary;
         font-size: 24px;
         line-height: 32px;
         font-weight: 600;
