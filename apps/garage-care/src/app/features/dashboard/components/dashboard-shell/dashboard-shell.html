@@ -12,9 +12,7 @@
   >
   <div class="garage">
     <app-dashboard-icon name="garage" />
-    <div>
-      <strong>Apex Auto Hub</strong><small>Single garage · Preview</small>
-    </div>
+    <div><strong>{{ garageName() }}</strong><small>Single garage</small></div>
   </div>
   <nav aria-label="Main navigation">
     @for (item of navigation; track item; let i = $index) {
@@ -33,12 +31,16 @@
   <div class="account">
     <span class="avatar">AA</span>
     <div>
-      <strong>Apex Auto Garage</strong
-      ><small>Rajesh Sharma · Sample owner</small>
+      <strong>{{ garageName() }}</strong><small>{{ ownerName() }}</small>
     </div>
-    <a routerLink="/sign-in" aria-label="Go to sign in"
-      ><app-dashboard-icon name="logout"
-    /></a>
+    <button
+      type="button"
+      [disabled]="busy()"
+      (click)="logout.emit()"
+      aria-label="Sign out"
+    >
+      <app-dashboard-icon name="logout" />
+    </button>
   </div>
 </aside>
 <header class="topbar">
@@ -61,7 +63,7 @@
       type="search"
       [formControl]="search()"
       placeholder="Search vehicle, customer, job card #..."
-      aria-label="Search sample service jobs"
+      aria-label="Search loaded service jobs"
   /></label>
   <button
     class="icon-button"
@@ -79,7 +81,7 @@
   >
     <app-dashboard-icon name="notifications" />
   </button>
-  <span class="avatar small-avatar" aria-label="Sample owner Rajesh Sharma"
+  <span class="avatar small-avatar" [attr.aria-label]="ownerName()"
     ><app-dashboard-icon name="person"
   /></span>
 </header>

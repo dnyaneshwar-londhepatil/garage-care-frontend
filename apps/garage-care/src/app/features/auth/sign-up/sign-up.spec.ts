@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { vi } from 'vitest';
-import { AuthApi } from '../../../core/api/auth-api';
+import { AuthApi } from '@garage-care/shared/data-access';
 import { SignUp } from './sign-up';
 
 describe('SignUp', () => {

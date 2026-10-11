@@ -12,22 +12,23 @@
         >
       </div>
       <span class="vehicle-count"
-        ><app-dashboard-icon name="garage" /> {{ job.vehicles }} {{ job.vehicles
-        === 1 ? 'vehicle' : 'vehicles' }}</span
+        ><app-dashboard-icon name="garage" /> {{ job.vehicleDescription }}</span
       >
       <div class="contact-actions">
         <button
           gcButton
           variant="outline"
           type="button"
-          (click)="previewAction.emit('WhatsApp to ' + job.name)"
+          [disabled]="busy() || !job.invoiceId || !job.whatsappConsent"
+          (click)="jobAction.emit({kind: 'whatsapp', job})"
+          title="Send the issued invoice through WhatsApp; recorded consent is required"
         >
           <app-dashboard-icon name="chat" /> WhatsApp</button
         ><button
           gcButton
           variant="subtle"
           type="button"
-          (click)="previewAction.emit('Call to ' + job.name)"
+          (click)="call(job.phone)"
         >
           <app-dashboard-icon name="phone" /> Call
         </button>
@@ -73,10 +74,23 @@
       <strong>{{ job.id }} · Service details</strong>
       <p class="mono">{{ job.registration }}</p>
       <p>{{ job.service }}</p>
-      <small
-        >Sample record. Pricing and invoice details require the service jobs
-        module.</small
-      ><button
+      <button
+        type="button"
+        [disabled]="busy()"
+        (click)="jobAction.emit({kind: 'history', job})"
+      >
+        Load service history
+      </button>
+      @if (job.invoiceId) {
+      <button
+        type="button"
+        [disabled]="busy()"
+        (click)="jobAction.emit({kind: 'pdf', job})"
+      >
+        Download invoice PDF
+      </button>
+      }
+      <button
         type="button"
         (click)="selectedJob.set(null)"
         [attr.aria-label]="'Close ' + job.id + ' details'"

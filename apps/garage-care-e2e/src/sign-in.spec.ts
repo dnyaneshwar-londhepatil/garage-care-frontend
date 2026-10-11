@@ -66,6 +66,9 @@ test('sign-in fits mobile, tablet, and desktop and supports keyboard input', asy
         () => document.documentElement.scrollWidth <= window.innerWidth,
       ),
     ).toBe(true);
+    await expect(
+      page.getByRole('button', { name: 'Sign In', exact: true }),
+    ).toBeEnabled();
     await page.getByLabel('Email address', { exact: true }).focus();
     await page.keyboard.press('Tab');
     await expect(page.getByLabel('Password', { exact: true })).toBeFocused();

@@ -28,7 +28,10 @@ describe('DashboardJobs', () => {
       actions.push(action),
     );
     fixture.nativeElement.querySelector('.contact-actions button').click();
-    expect(actions).toEqual(['WhatsApp to Suresh Patil']);
+    expect(actions).toEqual([]);
+    expect(
+      fixture.nativeElement.querySelector('.contact-actions button').disabled,
+    ).toBe(true);
     fixture.componentRef.setInput('jobs', []);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.empty').textContent).toContain(

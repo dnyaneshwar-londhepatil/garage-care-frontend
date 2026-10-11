@@ -1,13 +1,19 @@
 <div class="dashboard">
-  <app-dashboard-shell [search]="search" (previewAction)="preview($event)" />
+  <app-dashboard-shell
+    [search]="search"
+    [garageName]="garageName()"
+    [ownerName]="ownerName()"
+    [busy]="busy()"
+    (logout)="logout()"
+    (previewAction)="preview($event)"
+  />
   <main id="main-content" tabindex="-1">
     <div class="welcome">
       <div>
-        <h1><app-dashboard-icon name="wb_sunny" /> Good morning, Rajesh!</h1>
-        <p>
-          Here’s what's happening at your garage — Apex Auto Garage,
-          Indiranagar.
-        </p>
+        <h1>
+          <app-dashboard-icon name="wb_sunny" /> Welcome, {{ ownerName() }}!
+        </h1>
+        <p>Garage activity for {{ garageName() }}.</p>
       </div>
       <div class="header-actions">
         <button type="button" (click)="preview('Add Customer')">
@@ -22,17 +28,27 @@
       </div>
     </div>
     <div class="snapshot">
-      <span class="preview-badge">Sample data</span> Snapshot: 11 Oct 2026 ·
-      Frontend preview · No live garage connection
+      <span class="preview-badge"
+        >{{ loading() ? 'Loading' : failed() ? 'Unavailable' : 'Live data'
+        }}</span
+      >
+      Your garage workspace
+      <button type="button" [disabled]="loading() || busy()" (click)="load()">
+        Refresh
+      </button>
     </div>
     <div class="notice" role="status" aria-live="polite">{{ notice() }}</div>
-    <section class="metrics" aria-label="Sample garage summary">
-      @for (metric of metrics; track metric.label) {
+    <section class="metrics" aria-label="Garage summary">
+      @for (metric of metrics(); track metric.label) {
       <article class="metric">
         <div class="metric-top">
           <div>
             <span class="metric-label">{{ metric.label }}</span
-            ><strong class="metric-value">{{ metric.value }}</strong>
+            ><strong
+              class="metric-value"
+              [class.currency]="metric.label === 'Invoices'"
+              >{{ metric.value }}</strong
+            >
           </div>
           <span class="metric-icon"
             ><app-dashboard-icon [name]="metric.icon"
@@ -72,7 +88,11 @@
       <section class="job-section" aria-labelledby="jobs-heading">
         <div class="section-heading">
           <h2 id="jobs-heading">
-            Recent Service Jobs <span class="count">5 shown · 24 total</span>
+            Service Jobs
+            <span class="count"
+              >{{ filteredJobs().length }} shown · {{ jobs().length }}
+              loaded</span
+            >
           </h2>
           <label class="status-filter"
             ><span class="sr-only">Filter jobs by status</span
@@ -81,20 +101,35 @@
               <option>In Progress</option>
               <option>Completed</option>
               <option>Draft</option>
+              <option>Cancelled</option>
             </select></label
           >
         </div>
+        @if (loading()) {
+        <p role="status">Loading garage data…</p>
+        } @else if (failed()) {
+        <p role="alert">
+          Garage data could not be loaded. Use Refresh to try again.
+        </p>
+        } @else {
         <app-dashboard-jobs
           [jobs]="filteredJobs()"
+          [busy]="busy()"
+          (jobAction)="jobAction($event)"
           (previewAction)="preview($event)"
           (clearFilters)="findVehicle()"
         />
+        } @if (nextCursor()) {
+        <button type="button" [disabled]="loading()" (click)="load(true)">
+          Load more jobs
+        </button>
+        }
         <div class="throughput">
           <div>
             <h3><app-dashboard-icon name="speed" /> Bay Throughput Rate</h3>
             <p>
-              Sample average turnaround <strong class="mono">3h 12m</strong> per
-              vehicle
+              Turnaround measurement
+              <strong class="mono">unavailable</strong> per vehicle
             </p>
           </div>
           <svg
@@ -108,16 +143,21 @@
               stroke="currentColor"
               stroke-width="3"
             /></svg
-          ><strong>+18%<small>sample weekly change</small></strong>
+          ><strong>—<small>No measured trend</small></strong>
         </div>
       </section>
       <app-dashboard-overview
-        [reminders]="reminders"
+        [reminders]="reminders()"
+        [total]="summary()?.upcomingReminders ?? 0"
+        [completedJobs]="summary()?.serviceCounts?.completed ?? 0"
+        [totalJobs]="totalJobs()"
+        [busy]="busy()"
+        (viewReminder)="viewReminder($event)"
         (previewAction)="preview($event)"
       />
     </div>
     <footer>
-      GarageCare · Owner workspace <span>Sample data for design preview</span>
+      GarageCare · Owner workspace <span>Connected garage data</span>
     </footer>
   </main>
 </div>

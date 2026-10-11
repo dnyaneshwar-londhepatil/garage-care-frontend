@@ -7,11 +7,9 @@ test('reset password validates, toggles and never reports a password change', as
     .getByRole('button', { name: 'Reset Password', exact: true })
     .click();
   await expect(
-    page.getByText(
-      'Use at least 8 characters, a number, and a special character.',
-    ),
+    page.getByText('Use 12–128 characters, a number, and a special character.'),
   ).toBeVisible();
-  await page.getByLabel('New password', { exact: true }).fill('Workshop1!');
+  await page.getByLabel('New password', { exact: true }).fill('WorkshopTest1!');
   await page
     .getByLabel('Confirm new password', { exact: true })
     .fill('Different1!');
@@ -23,7 +21,7 @@ test('reset password validates, toggles and never reports a password change', as
   ).toBeVisible();
   await page
     .getByLabel('Confirm new password', { exact: true })
-    .fill('Workshop1!');
+    .fill('WorkshopTest1!');
   await page
     .getByRole('button', { name: 'Show password', exact: true })
     .click();
@@ -38,9 +36,7 @@ test('reset password validates, toggles and never reports a password change', as
   await page
     .getByRole('button', { name: 'Reset Password', exact: true })
     .click();
-  await expect(page.getByRole('status')).toContainText(
-    'Your password has not been changed',
-  );
+  await expect(page.getByRole('status')).toContainText('Reset link is missing');
   await page.getByRole('link', { name: 'Request a new reset link' }).click();
   await expect(page).toHaveURL(/\/forgot-password$/);
 });
@@ -56,6 +52,9 @@ test('reset password fits desktop, tablet and mobile', async ({ page }) => {
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
+    await expect(
+      page.getByRole('button', { name: 'Reset Password', exact: true }),
+    ).toBeEnabled();
     await page.getByLabel('New password', { exact: true }).focus();
     await page.keyboard.press('Tab');
     await expect(

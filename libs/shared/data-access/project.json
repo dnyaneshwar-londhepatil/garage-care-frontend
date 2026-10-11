@@ -1,0 +1,18 @@
+{
+  "name": "shared-data-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/shared/data-access/src",
+  "tags": ["scope:shared", "type:data-access"],
+  "targets": {
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "buildTarget": "garage-care:build:development",
+        "tsConfig": "libs/shared/data-access/tsconfig.spec.json",
+        "watch": false
+      }
+    },
+    "lint": { "executor": "@nx/eslint:lint" }
+  }
+}

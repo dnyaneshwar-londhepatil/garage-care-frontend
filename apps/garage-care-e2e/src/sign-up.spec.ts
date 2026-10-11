@@ -14,9 +14,8 @@ test('sign-up registers through the local API and establishes a session', async 
   await expect(page.locator('#password')).toHaveAttribute('type', 'text');
   await page.locator('#fullName').fill('Local Test Owner');
   await page.locator('#garageName').fill('Integration Test Garage');
-  await page
-    .locator('#email')
-    .fill('signup-test-' + Date.now() + '@example.invalid');
+  const email = 'signup-test-' + Date.now() + '@example.invalid';
+  await page.locator('#email').fill(email);
   await page.locator('#phone').fill('9876543210');
   const password = 'LocalTest!-' + crypto.randomUUID();
   await page.locator('#password').fill(password);
@@ -32,6 +31,23 @@ test('sign-up registers through the local API and establishes a session', async 
   const me = await page.request.get('/api/v1/auth/me');
   expect(me.status()).toBe(200);
   expect((await me.json()).data.user.fullName).toBe('Local Test Owner');
+  await expect(
+    page.getByRole('heading', { name: 'Welcome, Local Test Owner!' }),
+  ).toBeVisible();
+  await expect(page.locator('.job')).toHaveCount(0);
+  await page.reload();
+  await expect(
+    page.getByRole('heading', { name: 'Welcome, Local Test Owner!' }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await expect(page).toHaveURL(/\/sign-in$/);
+  await page.locator('#signin-email').fill(email);
+  await page.locator('#signin-password').fill(password);
+  await page.getByRole('button', { name: 'Sign In', exact: true }).click();
+  await expect(page).toHaveURL(/\/dashboard$/);
+  await expect(
+    page.getByRole('heading', { name: 'Welcome, Local Test Owner!' }),
+  ).toBeVisible();
   // Registration succeeded in the real local database; no provider delivery is involved.
 });
 

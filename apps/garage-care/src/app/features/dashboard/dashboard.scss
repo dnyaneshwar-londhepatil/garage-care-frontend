@@ -190,6 +190,10 @@ main {
         letter-spacing: 0.66px;
       }
       .metric-value {
+        overflow-wrap: anywhere;
+        &.currency {
+          font-size: clamp(14px, 1.5vw, 22px);
+        }
         font-family: var(--font-family-mono);
         display: block;
         font-size: 32px;

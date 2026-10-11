@@ -1,8 +1,10 @@
 import { Route } from '@angular/router';
+import { sessionGuard } from './core/auth/session.guard';
 
 export const appRoutes: Route[] = [
   {
     path: 'dashboard',
+    canActivate: [sessionGuard],
     title: 'Dashboard | GarageCare',
     loadComponent: () =>
       import('./features/dashboard/dashboard').then((m) => m.Dashboard),

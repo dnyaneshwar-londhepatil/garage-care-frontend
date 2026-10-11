@@ -275,7 +275,9 @@
         <button
           class="submit-button"
           type="submit"
-          [disabled]="pending()"
+          (click)="$event.preventDefault(); submit()"
+          [disabled]="!ready() || pending()"
+          [attr.disabled]="!ready() || pending() ? '' : null"
           [attr.aria-busy]="pending()"
         >
           {{ pending() ? "Creating account…" : "Create Account" }}

@@ -1,28 +1,137 @@
 import { TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import {
+  AuthApi,
+  DashboardApi,
+  ServicesApi,
+  CustomersApi,
+  VehiclesApi,
+  RemindersApi,
+  InvoicesApi,
+  NotificationsApi,
+} from '@garage-care/shared/data-access';
 import { Dashboard } from './dashboard';
 
-describe('Dashboard', () => {
-  beforeEach(() =>
-    TestBed.configureTestingModule({ providers: [provideRouter([])] }),
-  );
-  it('combines case-insensitive search and status filters and clears both', () => {
+describe('Live dashboard', () => {
+  const summary = vi.fn();
+  const list = vi.fn();
+  const reminders = vi.fn();
+  const logout = vi.fn();
+  beforeEach(() => {
+    summary
+      .mockReset()
+      .mockResolvedValue({
+        serviceCounts: { draft: 1, inProgress: 1, completed: 0, cancelled: 0 },
+        customers: 7,
+        upcomingReminders: 0,
+        recentInvoices: [],
+        revenueSummary: {
+          issuedInvoiceTotalPaise: 125050,
+          paidTotalPaise: null,
+        },
+      });
+    list
+      .mockReset()
+      .mockResolvedValue({
+        data: [
+          {
+            _id: 'job',
+            customerId: 'customer',
+            vehicleId: 'vehicle',
+            complaint: 'Oil change',
+            status: 'in_progress',
+            version: 1,
+          },
+        ],
+        page: { limit: 20, nextCursor: null },
+      });
+    reminders
+      .mockReset()
+      .mockResolvedValue({ data: [], page: { limit: 20, nextCursor: null } });
+    logout.mockReset().mockResolvedValue(undefined);
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        {
+          provide: AuthApi,
+          useValue: {
+            user: signal({
+              id: 'owner',
+              email: 'owner@example.com',
+              fullName: 'Test Owner',
+            }),
+            garage: signal({ name: 'Test Garage' }),
+            logout,
+          },
+        },
+        { provide: DashboardApi, useValue: { summary } },
+        { provide: ServicesApi, useValue: { list } },
+        {
+          provide: CustomersApi,
+          useValue: {
+            get: vi
+              .fn()
+              .mockResolvedValue({
+                name: 'Real Customer',
+                phone: '+919876543210',
+              }),
+          },
+        },
+        {
+          provide: VehiclesApi,
+          useValue: {
+            get: vi
+              .fn()
+              .mockResolvedValue({
+                brand: 'Honda',
+                model: 'City',
+                vehicleType: 'car',
+                registrationNumber: 'MH12AB1234',
+              }),
+          },
+        },
+        { provide: RemindersApi, useValue: { list: reminders } },
+        { provide: InvoicesApi, useValue: {} },
+        { provide: NotificationsApi, useValue: {} },
+      ],
+    });
+  });
+  it('joins real customer and vehicle records, formats paise and filters loaded jobs', async () => {
     const component = TestBed.createComponent(Dashboard).componentInstance;
+    expect(component.jobs()).toEqual([]);
+    await component.load();
+    expect(component.jobs()[0].name).toBe('Real Customer');
+    expect(component.garageName()).toBe('Test Garage');
+    expect(component.metrics()[1].value).toContain('1,250.50');
     component.search.setValue('HONDA');
-    expect(component.filteredJobs().map((job) => job.id)).toEqual(['JOB-024']);
-    component.status.setValue('Completed');
+    expect(component.filteredJobs()).toHaveLength(1);
+    component.status.setValue('Draft');
     expect(component.filteredJobs()).toEqual([]);
     component.findVehicle();
-    expect(component.filteredJobs()).toHaveLength(5);
-    component.search.setValue('MH14 EF');
-    expect(component.filteredJobs()[0].name).toBe('Arun Kulkarni');
+    expect(component.filteredJobs()).toHaveLength(1);
   });
-  it('keeps reminders and contact actions explicitly in preview', () => {
-    const component = TestBed.createComponent(Dashboard).componentInstance;
-    component.preview('Reminder for Amit Trivedi');
-    expect(component.notice()).toContain(
-      'No record was created, changed, or message sent',
+  it('shows an error without substituting sample data', async () => {
+    summary.mockRejectedValue(
+      new HttpErrorResponse({
+        status: 503,
+        error: { error: { message: 'Database unavailable' } },
+      }),
     );
-    expect(component.jobs).toHaveLength(5);
+    const component = TestBed.createComponent(Dashboard).componentInstance;
+    await component.load();
+    expect(component.notice()).toBe('Database unavailable');
+    expect(component.failed()).toBe(true);
+    expect(component.jobs()).toEqual([]);
+  });
+  it('passes the cursor when loading another page', async () => {
+    const component = TestBed.createComponent(Dashboard).componentInstance;
+    await component.load();
+    component.nextCursor.set('next-id');
+    list.mockResolvedValue({ data: [], page: { limit: 20, nextCursor: null } });
+    await component.load(true);
+    expect(list).toHaveBeenLastCalledWith({ limit: 20, cursor: 'next-id' });
+    expect(component.jobs()).toHaveLength(1);
   });
 });
