@@ -1,0 +1,138 @@
+<div class="signin-page">
+  <header class="page-header">
+    <a class="brand" routerLink="/" aria-label="GarageCare home">
+      <span class="brand-icon" aria-hidden="true"
+        ><svg viewBox="0 0 24 24">
+          <path
+            d="m14 6 4-4a6 6 0 0 1-8 8L4 20l-3-3 10-6a6 6 0 0 1 8-8l-4 4Z"
+          /></svg
+      ></span>
+      <span>Garage<span class="brand-accent">Care</span></span
+      ><span class="saas">SaaS</span>
+    </a>
+    <span class="preview-badge">Frontend preview</span>
+  </header>
+  <main>
+    <section class="signin-card" aria-labelledby="signin-title">
+      <p class="portal-label">
+        <span aria-hidden="true"></span>Automotive OS · Workshop Portal
+      </p>
+      <h1 id="signin-title">Welcome back</h1>
+      <p class="intro">
+        Sign in to manage your garage operations and job cards.
+      </p>
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="field">
+          <label for="signin-email">Email address</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true"
+              ><svg viewBox="0 0 24 24">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3 6 9 7 9-7" /></svg
+            ></span>
+            <input
+              id="signin-email"
+              type="email"
+              formControlName="email"
+              autocomplete="username"
+              placeholder="rajesh@apexautohub.in"
+              required
+              [attr.aria-invalid]="invalid('email')"
+              [attr.aria-describedby]="invalid('email') ? 'signin-email-error' : null"
+            />
+          </div>
+          @if (invalid('email')) {
+          <p class="field-error" id="signin-email-error">
+            Enter a valid email address.
+          </p>
+          }
+        </div>
+        <div class="field">
+          <label for="signin-password">Password</label>
+          <div class="input-wrap password-wrap">
+            <span class="input-icon" aria-hidden="true"
+              ><svg viewBox="0 0 24 24">
+                <rect x="5" y="10" width="14" height="11" rx="2" />
+                <path d="M8 10V6a4 4 0 0 1 8 0v4 M12 14v3" /></svg
+            ></span>
+            <input
+              id="signin-password"
+              formControlName="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              autocomplete="current-password"
+              placeholder="••••••••••••"
+              required
+              [attr.aria-invalid]="invalid('password')"
+              [attr.aria-describedby]="invalid('password') ? 'signin-password-error' : null"
+            />
+            <button
+              class="visibility-toggle"
+              type="button"
+              (click)="showPassword.set(!showPassword())"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+              [attr.aria-pressed]="showPassword()"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12Z" />
+                <circle cx="12" cy="12" r="3" />
+                @if (showPassword()) {
+                <path d="m3 3 18 18" />
+                }
+              </svg>
+            </button>
+          </div>
+          @if (invalid('password')) {
+          <p class="field-error" id="signin-password-error">
+            Enter your password.
+          </p>
+          }
+        </div>
+        <div class="form-options">
+          <label class="remember-label"
+            ><input
+              type="checkbox"
+              formControlName="rememberMe"
+              aria-describedby="signin-preview-note"
+            />Remember me</label
+          >
+          <button
+            type="button"
+            class="text-link"
+            (click)="unavailable('Password recovery')"
+          >
+            Forgot password?
+          </button>
+        </div>
+        <button type="submit" class="submit-button">
+          Sign In <span aria-hidden="true">→</span>
+        </button>
+        @if (notice()) {
+        <p class="notice" role="status">{{ notice() }}</p>
+        }
+      </form>
+      <div class="divider"><span></span>or<span></span></div>
+      <p class="create-account">
+        Don't have an account?
+        <a class="text-link" routerLink="/sign-up">Create one</a>
+      </p>
+      <p class="preview-note" id="signin-preview-note">
+        Preview only. Sign-in and Remember me are not connected yet.
+      </p>
+    </section>
+  </main>
+  <footer>
+    <div>
+      © 2026 GarageCare
+      <span class="footer-tagline">· Automotive Workshop Operating Engine</span>
+    </div>
+    <nav aria-label="Footer">
+      <button class="text-link" (click)="unavailable('Privacy Policy')">
+        Privacy Policy</button
+      ><button class="text-link" (click)="unavailable('Terms of Service')">
+        Terms of Service</button
+      ><button class="text-link" (click)="unavailable('Help Center')">
+        Help Center
+      </button>
+    </nav>
+  </footer>
+</div>
