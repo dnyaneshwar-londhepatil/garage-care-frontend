@@ -44,7 +44,7 @@ test('dashboard fits desktop, tablet and mobile with keyboard navigation', async
 }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  for (const width of [1440, 768, 390]) {
+  for (const width of [1440, 1280, 768, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/dashboard');
     await expect(

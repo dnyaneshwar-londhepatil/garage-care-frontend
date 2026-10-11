@@ -1,7 +1,7 @@
 import { Component, input, output, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { DashboardIcon } from './dashboard-icon';
+import { DashboardIcon } from '../dashboard-icon/dashboard-icon';
 
 @Component({
   selector: 'app-dashboard-shell',
@@ -25,13 +25,13 @@ export class DashboardShell {
     'Settings',
   ];
   readonly navigationIcons = [
-    'dashboard',
-    'wrench',
-    'customers',
-    'car',
-    'parts',
-    'invoice',
-    'clock',
+    'space_dashboard',
+    'car_repair',
+    'group',
+    'directions_car',
+    'inventory_2',
+    'receipt_long',
+    'notifications_active',
     'settings',
   ];
   preview(action: string): void {

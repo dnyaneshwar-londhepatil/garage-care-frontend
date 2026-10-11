@@ -1,30 +1,20 @@
 import { Component, computed, signal } from '@angular/core';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { DashboardIcon } from './dashboard-icon';
-import { DashboardShell } from './dashboard-shell';
+import { DashboardIcon } from './components/dashboard-icon/dashboard-icon';
+import { DashboardShell } from './components/dashboard-shell/dashboard-shell';
 
-interface Job {
-  id: string;
-  name: string;
-  initials: string;
-  phone: string;
-  vehicle: string;
-  registration: string;
-  vehicles: number;
-  status: 'In Progress' | 'Completed' | 'Draft';
-  service: string;
-}
+import { Job } from './dashboard.models';
+import { DashboardJobs } from './components/dashboard-jobs/dashboard-jobs';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, DashboardIcon, DashboardShell],
+  imports: [ReactiveFormsModule, DashboardIcon, DashboardShell, DashboardJobs],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
 export class Dashboard {
   readonly notice = signal('');
-  readonly selectedJob = signal<Job | null>(null);
   readonly search = new FormControl('', { nonNullable: true });
   readonly status = new FormControl('All statuses', { nonNullable: true });
   private readonly query = toSignal(this.search.valueChanges, {
@@ -39,33 +29,46 @@ export class Dashboard {
       value: '08',
       description: 'Currently in progress',
       detail: '+2 waiting in bay queue',
+      icon: 'car_repair',
     },
     {
       label: 'Invoices',
       value: '12',
       description: 'Created this month',
       detail: '₹1,48,200 billed',
+      icon: 'receipt_long',
     },
     {
       label: 'Customers',
       value: '146',
       description: 'Registered customers',
       detail: '+14 this month',
+      icon: 'group',
     },
     {
       label: 'Upcoming Reminders',
       value: '05',
       description: 'Due soon',
       detail: '2 overdue · 3 this week',
+      icon: 'notification_important',
     },
   ];
   readonly actions = [
-    { title: 'New Service Job', detail: 'Open intake card' },
-    { title: 'Add Customer', detail: 'Phone & GSTIN profile' },
-    { title: 'Create Invoice', detail: 'Tax & job line items' },
+    { title: 'New Service Job', detail: 'Open intake card', icon: 'add_task' },
+    {
+      title: 'Add Customer',
+      detail: 'Phone & GSTIN profile',
+      icon: 'person_add',
+    },
+    {
+      title: 'Create Invoice',
+      detail: 'Tax & job line items',
+      icon: 'post_add',
+    },
     {
       title: 'Find Vehicle',
-      detail: 'Search registration & history',
+      detail: 'Quick RC & history scan',
+      icon: 'search_insights',
     },
   ];
   readonly jobs: Job[] = [
@@ -75,6 +78,7 @@ export class Dashboard {
       initials: 'SP',
       phone: '+91 98230 11234',
       vehicle: 'Honda Activa 6G',
+      vehicleDescription: 'Vehicle 1 of 2',
       registration: 'MH12 AB 4590',
       vehicles: 2,
       status: 'In Progress',
@@ -86,6 +90,7 @@ export class Dashboard {
       initials: 'PD',
       phone: '+91 98221 44556',
       vehicle: 'Maruti Swift VXi',
+      vehicleDescription: 'Hatchback',
       registration: 'MH12 CD 2214',
       vehicles: 2,
       status: 'Completed',
@@ -97,6 +102,7 @@ export class Dashboard {
       initials: 'AK',
       phone: '+91 98900 87654',
       vehicle: 'Royal Enfield Classic 350',
+      vehicleDescription: 'Cruiser 350cc',
       registration: 'MH14 EF 8702',
       vehicles: 1,
       status: 'Draft',
@@ -108,6 +114,7 @@ export class Dashboard {
       initials: 'RK',
       phone: '+91 98450 12384',
       vehicle: 'Hyundai Creta SX',
+      vehicleDescription: 'Vehicle 1 of 2',
       registration: 'KA04 MP 3042',
       vehicles: 2,
       status: 'In Progress',
@@ -119,6 +126,7 @@ export class Dashboard {
       initials: 'VM',
       phone: '+91 98201 33211',
       vehicle: 'Tata Nexon EV',
+      vehicleDescription: 'Electric SUV',
       registration: 'MH01 EX 9102',
       vehicles: 3,
       status: 'Completed',

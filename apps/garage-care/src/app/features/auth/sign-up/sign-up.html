@@ -96,7 +96,14 @@
           <div class="field">
             <label for="phone">Mobile Number <span>India</span></label>
             <div class="input-wrap phone-wrap">
-              <span class="phone-prefix" aria-hidden="true">🇮🇳 +91</span
+              <span class="phone-prefix" aria-hidden="true"
+                ><svg viewBox="0 0 24 16" aria-hidden="true">
+                  <path fill="#ff9933" stroke="none" d="M0 0h24v5H0z" />
+                  <path fill="#fff" stroke="none" d="M0 5h24v6H0z" />
+                  <path fill="#138808" stroke="none" d="M0 11h24v5H0z" />
+                  <circle cx="12" cy="8" r="2" fill="none" stroke="#000080" />
+                </svg>
+                +91</span
               ><input
                 id="phone"
                 formControlName="phone"
@@ -198,8 +205,12 @@
           <strong>Security rules:</strong>@for (rule of rules(); track
           rule.label) {
           <span [class.met]="rule.met"
-            ><span aria-hidden="true">{{ rule.met ? '✓' : '○' }}</span> {{
-            rule.label }}<span class="sr-only"
+            ><svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                [attr.d]="rule.met ? 'M5 12l4 4L19 6' : 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18'"
+              />
+            </svg>
+            {{ rule.label }}<span class="sr-only"
               >{{ rule.met ? ' met' : ' not met' }}</span
             ></span
           >
@@ -244,7 +255,10 @@
           >
         </div>
         <button class="submit-button" type="submit">
-          Create Account <span aria-hidden="true">→</span>
+          Create Account
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 12h16m-6-6 6 6-6 6" />
+          </svg>
         </button>
         <p class="signin">
           Already have an account?

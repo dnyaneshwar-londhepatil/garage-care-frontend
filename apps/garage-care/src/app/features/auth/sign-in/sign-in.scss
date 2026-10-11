@@ -1,6 +1,5 @@
 @use 'lib/components/auth-shell';
 @include auth-shell.styles;
-
 :host {
   display: block;
   color: #0b1c30;
@@ -19,139 +18,145 @@ main {
   align-items: center;
   justify-content: center;
   padding: 48px 24px;
-}
-.signin-card {
-  width: 100%;
-  max-width: 448px;
-  padding: 32px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px #14263d14;
-}
-.portal-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 16px;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.7px;
-  color: #424654;
-}
-.portal-label span {
-  width: 6px;
-  height: 6px;
-  background: #0054ca;
-  border-radius: 50%;
-}
-h1 {
-  color: #0b1c30;
-  font-size: 36px;
-  line-height: 44px;
-  letter-spacing: -1px;
-  font-weight: 700;
-}
-.intro {
-  color: #424654;
-  margin: 4px 0 24px;
-}
-form {
-  display: grid;
-  gap: 16px;
-}
-.field {
-  display: grid;
-  gap: 6px;
-}
-.field > label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.7px;
-  color: #424654;
-}
-.form-options {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 4px;
-}
-.remember-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #424654;
-  cursor: pointer;
-}
-.remember-label input {
-  width: 16px;
-  height: 16px;
-  accent-color: #0054ca;
-}
-.form-options .text-link {
-  font-weight: 600;
+  @media (max-width: 540px) {
+    padding: 24px 16px;
+  }
+  .signin-card {
+    width: 100%;
+    max-width: 448px;
+    padding: 32px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px #14263d14;
+    @media (max-width: 540px) {
+      padding: 24px;
+    }
+    .portal-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 16px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: #424654;
+      span {
+        width: 6px;
+        height: 6px;
+        background: #0054ca;
+        border-radius: 50%;
+      }
+    }
+    h1 {
+      color: #0b1c30;
+      font-size: 36px;
+      line-height: 44px;
+      letter-spacing: -1px;
+      font-weight: 700;
+      @media (max-width: 540px) {
+        font-size: 28px;
+        line-height: 36px;
+      }
+    }
+    .intro {
+      color: #424654;
+      margin: 4px 0 24px;
+    }
+    form {
+      display: grid;
+      gap: 16px;
+      .field {
+        display: grid;
+        gap: 6px;
+        > label {
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.7px;
+          color: #424654;
+        }
+      }
+      .form-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-top: 4px;
+        .remember-label {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #424654;
+          cursor: pointer;
+          input {
+            width: 16px;
+            height: 16px;
+            accent-color: #0054ca;
+          }
+        }
+        .text-link {
+          font-weight: 600;
+        }
+      }
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: #737786;
+      font-size: 11px;
+      text-transform: uppercase;
+      span {
+        flex: 1;
+        height: 1px;
+        background: #dce9ff;
+      }
+    }
+    .create-account {
+      margin: 0;
+      text-align: center;
+      color: #424654;
+      a {
+        margin-left: 4px;
+        font-weight: 600;
+      }
+    }
+    .preview-note {
+      font-size: 12px;
+      color: #52647e;
+      text-align: center;
+      margin: 16px 0 0;
+    }
+  }
 }
 .submit-button {
   margin-top: 8px;
   min-height: 48px;
 }
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 24px 0;
-  color: #737786;
-  font-size: 11px;
-  text-transform: uppercase;
-}
-.divider span {
-  flex: 1;
-  height: 1px;
-  background: #dce9ff;
-}
-.create-account {
-  margin: 0;
-  text-align: center;
-  color: #424654;
-}
-.create-account a {
-  margin-left: 4px;
-  font-weight: 600;
-}
-.preview-note {
-  font-size: 12px;
-  color: #52647e;
-  text-align: center;
-  margin: 16px 0 0;
-}
-@media (max-width: 700px) {
-  .page-header,
-  footer {
+.page-header {
+  @media (max-width: 700px) {
     padding: 20px 16px;
   }
-  footer {
+}
+footer {
+  @media (max-width: 700px) {
+    padding: 20px 16px;
     flex-direction: column;
     text-align: center;
   }
-  .footer-tagline {
+  nav {
+    @media (max-width: 540px) {
+      gap: 16px;
+    }
+  }
+}
+.footer-tagline {
+  @media (max-width: 700px) {
     display: none;
   }
 }
-@media (max-width: 540px) {
-  main {
-    padding: 24px 16px;
-  }
-  .signin-card {
-    padding: 24px;
-  }
-  h1 {
-    font-size: 28px;
-    line-height: 36px;
-  }
-  .brand {
+.brand {
+  @media (max-width: 540px) {
     font-size: 18px;
-  }
-  footer nav {
-    gap: 16px;
   }
 }

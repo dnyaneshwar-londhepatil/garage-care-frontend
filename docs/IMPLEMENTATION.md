@@ -55,6 +55,10 @@ Sample jobs can be searched by customer, phone, vehicle, registration, or job id
 
 The reference's branch selector, staff attendance, live status, and payment integration claims are adapted to the single-owner V1 scope. Billed invoice totals remain distinct from collected payments, which are unavailable. Production integration awaits authenticated services for `/api/v1/dashboard/summary`, jobs, and reminders. The summary cards represent the sample garage, while only five recent jobs and three reminders are shown.
 
+Dashboard child components live under `features/dashboard/components`, with separate HTML, SCSS, TypeScript, and spec files. The shell, SVG icon renderer, and job list have focused responsibilities. Icons use original Material Symbols Outlined SVG paths matching Stitch, including vehicle types, actions, arrows, and navigation. Google's Apache license is retained in `public/licenses/material-symbols-LICENSE.txt`. The unused Nx starter component was removed.
+
+All implemented page components and shared authentication Sass mixins use nested selectors following their template hierarchy, with responsive media rules inside the selectors they modify. Authentication arrows, validation marks, and the country flag are SVGs. These conventions are documented in `agents.md` for future work.
+
 ## Delivery sequence
 
 1. Authentication and garage setup.

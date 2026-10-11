@@ -7,12 +7,14 @@
 >
   <a class="brand" routerLink="/dashboard"
     ><span class="brand-icon" aria-hidden="true"
-      ><app-dashboard-icon name="wrench" /></span
+      ><app-dashboard-icon name="build" /></span
     ><span>GarageCare<small>AUTOMOTIVE OS</small></span></a
   >
   <div class="garage">
-    <strong>Apex Auto Hub</strong
-    ><small>Single garage workspace · Preview</small>
+    <app-dashboard-icon name="garage" />
+    <div>
+      <strong>Apex Auto Hub</strong><small>Single garage · Preview</small>
+    </div>
   </div>
   <nav aria-label="Main navigation">
     @for (item of navigation; track item; let i = $index) {
@@ -34,7 +36,9 @@
       <strong>Apex Auto Garage</strong
       ><small>Rajesh Sharma · Sample owner</small>
     </div>
-    <a routerLink="/sign-in" aria-label="Go to sign in">↗</a>
+    <a routerLink="/sign-in" aria-label="Go to sign in"
+      ><app-dashboard-icon name="logout"
+    /></a>
   </div>
 </aside>
 <header class="topbar">
@@ -49,7 +53,8 @@
     <span class="sr-only">Toggle navigation</span>
   </button>
   <div class="breadcrumb">
-    Workspace <span>/</span> <strong>Dashboard</strong>
+    Workspace <app-dashboard-icon name="chevron_right" />
+    <strong>Dashboard</strong>
   </div>
   <label class="search"
     ><app-dashboard-icon name="search" /><input
@@ -64,7 +69,7 @@
     aria-label="Help"
     (click)="preview('Help')"
   >
-    ?
+    <app-dashboard-icon name="help_outline" />
   </button>
   <button
     class="icon-button"
@@ -72,9 +77,9 @@
     aria-label="View reminder summary"
     (click)="preview('Reminder notifications')"
   >
-    <app-dashboard-icon name="bell" />
+    <app-dashboard-icon name="notifications" />
   </button>
   <span class="avatar small-avatar" aria-label="Sample owner Rajesh Sharma"
-    >RS</span
-  >
+    ><app-dashboard-icon name="person"
+  /></span>
 </header>

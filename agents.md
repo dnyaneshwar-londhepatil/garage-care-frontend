@@ -25,6 +25,15 @@ This repository is an Angular Nx monorepo for the Garage Care frontend applicati
 4. Keep styles in the shared Sass library when the change is global or reusable; keep component-specific styling near the component when it is local.
 5. If a task touches routing, app shell, or shared config, inspect the existing Angular app setup before making changes.
 
+## Component, styling, and icon conventions
+
+- Place a page's child components in its `components/<component-name>/` folder (for example, `features/dashboard/components/dashboard-shell/`). Keep the parent page at the feature root.
+- Every Angular component has four separate files: `<name>.ts`, `<name>.html`, `<name>.scss`, and `<name>.spec.ts`. Use `templateUrl` and `styleUrl`; do not embed templates or styles in TypeScript. Use SCSS rather than plain CSS in this workspace.
+- Organize SCSS selectors according to the component template hierarchy. Nest child selectors under their owning container, and use `&` for states and pseudo-classes. Keep nesting readable and avoid unrelated selectors or unnecessary specificity.
+- Place each responsive `@media` rule inside the selector it changes. Do not collect component breakpoints in standalone media blocks at the end of the file. Apply these conventions to shared component Sass mixins as well.
+- Match the approved Stitch layout, spacing, colors, sizing, and icon variants. Use SVG for all icons, including arrows, status/check icons, and decorative symbols; do not use Unicode glyphs, emoji, substitute icon sets, or runtime icon fonts. Dashboard icons use the original Material Symbols Outlined SVG geometry from Google's Material Design Icons repository, with its license under `public/licenses`.
+- Preserve accessible button/link names when icons are decorative (`aria-hidden="true"` on SVGs), and test behavior when moving code into child components. Verify desktop, tablet, and mobile rendering after styling refactors.
+
 ## Branch workflow
 
 - For every new page or module, create a dedicated feature branch named `JCF-<feature-name>` with the uppercase `JCF` prefix and a descriptive, hyphen-separated feature name (for example, `JCF-forgot-password`). This is the default prefix for all future feature branches.

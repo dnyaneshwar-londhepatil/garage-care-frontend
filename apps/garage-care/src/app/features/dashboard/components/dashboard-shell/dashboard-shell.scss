@@ -1,0 +1,264 @@
+:host {
+  display: contents;
+}
+* {
+  box-sizing: border-box;
+}
+button,
+input {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: #424654;
+}
+a {
+  color: #424654;
+  text-decoration: none;
+}
+:focus-visible {
+  outline: 3px solid #3978f6;
+  outline-offset: 3px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.skip-link {
+  position: fixed;
+  top: -70px;
+  left: 16px;
+  z-index: 10;
+  background: white;
+  padding: 12px;
+  &:focus {
+    top: 10px;
+  }
+}
+.sidebar {
+  width: 288px;
+  position: fixed;
+  inset: 0 auto 0 0;
+  background: white;
+  padding: 16px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 4;
+  box-shadow: 0 1px 8px #0000000a;
+  overflow-y: auto;
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 8px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0b1c30;
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: #0054ca;
+      border-radius: 8px;
+    }
+    small {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.66px;
+      color: #737786;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+  }
+  .garage {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 8px 12px;
+    background: #eff4ff;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    app-dashboard-icon {
+      color: #0054ca;
+      font-size: 18px;
+    }
+    small {
+      display: block;
+      font-size: 10px;
+      color: #737786;
+    }
+  }
+  nav {
+    display: grid;
+    gap: 4px;
+    button {
+      border-radius: 8px;
+      text-align: left;
+      padding: 4px 8px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      min-height: 28px;
+      font-size: 14px;
+      .nav-icon {
+        color: #737786;
+        display: flex;
+      }
+      &:hover {
+        background: #eff4ff;
+      }
+      &.active {
+        background: #cfe1ff;
+        color: #0b1c30;
+        font-weight: 600;
+        .nav-icon {
+          color: #0054ca;
+        }
+      }
+    }
+  }
+  .account {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: #eff4ff;
+    border-radius: 12px;
+    padding: 8px;
+    margin-top: auto;
+    font-size: 14px;
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #d3e4fe;
+      color: #0054ca;
+      display: grid;
+      place-items: center;
+      font-weight: 600;
+    }
+    small {
+      display: block;
+      color: #424654;
+      font-size: 12px;
+    }
+    a {
+      margin-left: auto;
+      display: inline-flex;
+    }
+  }
+  @media (max-width: 800px) {
+    display: none;
+    top: 64px;
+    width: 260px;
+    box-shadow: 8px 0 24px #14263d20;
+    &.open {
+      display: flex;
+    }
+  }
+}
+.topbar {
+  height: 64px;
+  position: sticky;
+  top: 0;
+  margin-left: 288px;
+  padding: 0 24px;
+  background: #f8f9ffed;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 1px 8px #0000000a;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 3;
+  .menu-toggle {
+    display: none;
+    @media (max-width: 800px) {
+      display: flex;
+      padding: 5px 8px;
+    }
+  }
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    color: #737786;
+    app-dashboard-icon {
+      font-size: 16px;
+    }
+    strong {
+      font-size: 16px;
+      color: #0b1c30;
+    }
+    @media (max-width: 800px) {
+      display: none;
+    }
+  }
+  .search {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    padding: 10px 12px;
+    border-radius: 8px;
+    width: min(576px, 58%);
+    box-shadow: 0 1px 3px #14263d0a;
+    app-dashboard-icon {
+      color: #737786;
+      font-size: 18px;
+    }
+    input {
+      min-width: 0;
+      width: 100%;
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      color: #0b1c30;
+    }
+    @media (max-width: 800px) {
+      width: auto;
+      flex: 1;
+    }
+  }
+  .icon-button {
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+    display: flex;
+    border-radius: 8px;
+    &:hover {
+      background: #eff4ff;
+    }
+  }
+  .small-avatar {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #0054ca;
+    color: white;
+    display: grid;
+    place-items: center;
+    app-dashboard-icon {
+      font-size: 18px;
+    }
+    @media (max-width: 500px) {
+      display: none;
+    }
+  }
+  @media (max-width: 800px) {
+    margin-left: 0;
+    padding: 0 16px;
+    gap: 8px;
+  }
+}
