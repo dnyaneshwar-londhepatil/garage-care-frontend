@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface RegistrationInput {
-  owner: { email: string; password: string };
+  owner: { email: string; password: string; fullName?: string };
   garage: {
     name: string;
     phone: string;

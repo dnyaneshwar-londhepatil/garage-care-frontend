@@ -13,7 +13,7 @@ test('sign-up validates input without submitting incomplete garage details', asy
     .getByRole('button', { name: 'Create Account', exact: true })
     .click();
   await expect(page.getByText('Enter a valid email address.')).toBeVisible();
-  await expect(page.getByLabel('Full Name')).toBeDisabled();
+  await page.getByLabel('Full Name').fill('Test Owner');
   await page.getByLabel('Garage Name').fill('Apex Auto Garage');
   await page.getByLabel('Email Address').fill('owner@example.com');
   await page.getByRole('textbox', { name: 'Mobile number' }).fill('9876543210');

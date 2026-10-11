@@ -18,7 +18,14 @@ export class SignUp {
   private readonly fb = inject(FormBuilder);
   readonly form = this.fb.nonNullable.group(
     {
-      fullName: [{ value: '', disabled: true }],
+      fullName: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/\S/),
+          Validators.maxLength(100),
+        ],
+      ],
       garageName: [
         '',
         [
@@ -135,7 +142,11 @@ export class SignUp {
     this.notice.set('');
     try {
       await this.auth.register({
-        owner: { email: value.email.trim(), password: value.password },
+        owner: {
+          email: value.email.trim(),
+          password: value.password,
+          fullName: value.fullName.trim(),
+        },
         garage: {
           name: value.garageName.trim(),
           phone: '+91' + value.phone,

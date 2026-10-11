@@ -8,6 +8,7 @@ import { SignUp } from './sign-up';
 describe('SignUp', () => {
   const register = vi.fn();
   const details = {
+    fullName: 'Test Owner',
     garageName: 'Apex Auto Garage',
     email: 'owner@example.com',
     phone: '9876543210',
@@ -61,7 +62,11 @@ describe('SignUp', () => {
     await component.submit();
     expect(register).toHaveBeenCalledTimes(1);
     expect(register).toHaveBeenCalledWith({
-      owner: { email: details.email, password: details.password },
+      owner: {
+        email: details.email,
+        password: details.password,
+        fullName: details.fullName,
+      },
       garage: {
         name: details.garageName,
         phone: '+919876543210',

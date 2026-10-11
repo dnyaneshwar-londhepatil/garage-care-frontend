@@ -12,6 +12,7 @@ test('sign-up registers through the local API and establishes a session', async 
     .getByRole('button', { name: 'Show password', exact: true })
     .click();
   await expect(page.locator('#password')).toHaveAttribute('type', 'text');
+  await page.locator('#fullName').fill('Local Test Owner');
   await page.locator('#garageName').fill('Integration Test Garage');
   await page
     .locator('#email')
@@ -35,6 +36,7 @@ test('sign-up registers through the local API and establishes a session', async 
   await expect(page).toHaveURL(/\/dashboard$/);
   const me = await page.request.get('/api/v1/auth/me');
   expect(me.status()).toBe(200);
+  expect((await me.json()).data.user.fullName).toBe('Local Test Owner');
   // Registration succeeded in the real local database; no provider delivery is involved.
 });
 
@@ -59,7 +61,8 @@ test('sign-up layout and backend failure stay accessible across sizes', async ({
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    await expect(page.locator('#fullName')).toBeDisabled();
+    await expect(page.locator('#fullName')).toBeEnabled();
+    await page.locator('#fullName').fill('Local Test Owner');
     await page.locator('#garageName').fill('Test Garage');
     await page.locator('#email').fill('test@example.invalid');
     await page.locator('#phone').fill('9876543210');
