@@ -1,0 +1,228 @@
+<div class="dashboard">
+  <app-dashboard-shell [search]="search" (previewAction)="preview($event)" />
+  <main id="main-content" tabindex="-1">
+    <div class="welcome">
+      <div>
+        <h1>
+          Good morning, Rajesh!
+          <span aria-hidden="true" class="sun"
+            ><app-dashboard-icon name="sun"
+          /></span>
+        </h1>
+        <p>
+          Here’s what's happening at your garage — Apex Auto Garage,
+          Indiranagar.
+        </p>
+      </div>
+      <div class="header-actions">
+        <button type="button" (click)="preview('Add Customer')">
+          + Add Customer</button
+        ><button
+          class="primary"
+          type="button"
+          (click)="preview('New Service Job')"
+        >
+          + New Service Job
+        </button>
+      </div>
+    </div>
+    <div class="snapshot">
+      <span class="preview-badge">Sample data</span> Snapshot: 11 Oct 2026 ·
+      Frontend preview · No live garage connection
+    </div>
+    <div class="notice" role="status" aria-live="polite">{{ notice() }}</div>
+    <section class="metrics" aria-label="Sample garage summary">
+      @for (metric of metrics; track metric.label) {
+      <article class="metric">
+        <div class="metric-top">
+          <span>{{ metric.label }}</span
+          ><span class="metric-icon" aria-hidden="true"
+            ><app-dashboard-icon
+              [name]="['car', 'invoice', 'customers', 'clock'][metrics.indexOf(metric)]"
+          /></span>
+        </div>
+        <strong class="metric-value">{{ metric.value }}</strong>
+        <p>{{ metric.description }}</p>
+        <div class="metric-detail">
+          {{ metric.detail }} <span aria-hidden="true">→</span>
+        </div>
+      </article>
+      }
+    </section>
+    <section class="quick-actions" aria-label="Quick actions">
+      <div class="section-caption">
+        <span>QUICK ACTIONS</span><span>Workshop essentials</span>
+      </div>
+      <div class="action-grid">
+        @for (action of actions; track action.title) {
+        <button
+          type="button"
+          (click)="action.title === 'Find Vehicle' ? findVehicle() : preview(action.title)"
+        >
+          <span class="action-icon" aria-hidden="true"
+            ><app-dashboard-icon
+              [name]="action.title === 'Find Vehicle' ? 'search' : action.title === 'Create Invoice' ? 'invoice' : 'plus'" /></span
+          ><span
+            ><strong>{{ action.title }}</strong
+            ><small>{{ action.detail }}</small></span
+          >
+        </button>
+        }
+      </div>
+    </section>
+    <div class="operations">
+      <section class="job-section" aria-labelledby="jobs-heading">
+        <div class="section-heading">
+          <h2 id="jobs-heading">
+            Recent Service Jobs <span class="count">5 shown · 24 total</span>
+          </h2>
+          <label class="status-filter"
+            ><span class="sr-only">Filter jobs by status</span
+            ><select [formControl]="status">
+              <option>All statuses</option>
+              <option>In Progress</option>
+              <option>Completed</option>
+              <option>Draft</option>
+            </select></label
+          >
+        </div>
+        <div class="jobs">
+          @for (job of filteredJobs(); track job.id) {
+          <article class="job">
+            <div class="contact">
+              <span class="avatar customer-avatar">{{ job.initials }}</span>
+              <div class="customer">
+                <h3>{{ job.name }}</h3>
+                <span class="mono phone">{{ job.phone }}</span>
+              </div>
+              <span class="vehicle-count"
+                >{{ job.vehicles }} {{ job.vehicles === 1 ? 'vehicle' :
+                'vehicles' }}</span
+              >
+              <div class="contact-actions">
+                <button
+                  type="button"
+                  (click)="preview('WhatsApp to ' + job.name)"
+                >
+                  WhatsApp</button
+                ><button type="button" (click)="preview('Call to ' + job.name)">
+                  Call
+                </button>
+              </div>
+            </div>
+            <div class="vehicle-row">
+              <span class="car-icon" aria-hidden="true"
+                ><app-dashboard-icon name="car"
+              /></span>
+              <div class="vehicle">
+                <strong>{{ job.vehicle }}</strong
+                ><small class="mono"
+                  >{{ job.registration }} · {{ job.id }}</small
+                >
+              </div>
+              <span
+                class="status"
+                [class.completed]="job.status === 'Completed'"
+                [class.draft]="job.status === 'Draft'"
+                >● {{ job.status }}</span
+              ><button
+                type="button"
+                class="view"
+                [attr.aria-expanded]="selectedJob()?.id === job.id"
+                (click)="selectedJob.set(selectedJob()?.id === job.id ? null : job)"
+              >
+                View<span class="sr-only"> {{ job.id }}</span> →
+              </button>
+            </div>
+            @if (selectedJob()?.id === job.id) {
+            <div class="job-details">
+              <strong>{{ job.id }} · Service details</strong>
+              <p>{{ job.service }}</p>
+              <small
+                >Sample record. Pricing and invoice details require the service
+                jobs module.</small
+              ><button
+                type="button"
+                (click)="selectedJob.set(null)"
+                [attr.aria-label]="'Close ' + job.id + ' details'"
+              >
+                Close details
+              </button>
+            </div>
+            }
+          </article>
+          } @empty {
+          <div class="empty">
+            <h3>No matching service jobs</h3>
+            <p>Try another customer, vehicle, registration, or status.</p>
+            <button type="button" (click)="findVehicle()">Clear filters</button>
+          </div>
+          }
+        </div>
+        <div class="throughput">
+          <div>
+            <h3>Bay Throughput Rate</h3>
+            <p>
+              Sample average turnaround <strong class="mono">3h 12m</strong> per
+              vehicle
+            </p>
+          </div>
+          <svg
+            viewBox="0 0 180 50"
+            aria-label="Illustrative throughput trend"
+            role="img"
+          >
+            <path
+              d="M2 43 L22 33 L42 38 L62 21 L82 27 L102 15 L122 22 L142 7 L162 13 L178 3"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+            /></svg
+          ><strong>+18%<small>sample weekly change</small></strong>
+        </div>
+      </section>
+      <aside
+        class="right-column"
+        aria-label="Sample reminders and workshop overview"
+      >
+        <section class="reminders">
+          <div class="section-heading">
+            <h2>Upcoming Reminders</h2>
+            <span class="count">05</span>
+          </div>
+          @for (reminder of reminders; track reminder.name) {
+          <article class="reminder">
+            <h3>{{ reminder.name }}</h3>
+            <small class="mono">{{ reminder.vehicle }}</small>
+            <p>{{ reminder.service }}</p>
+            <span class="due" [class.overdue]="reminder.overdue"
+              >{{ reminder.due }}</span
+            ><button
+              type="button"
+              (click)="preview('Reminder for ' + reminder.name)"
+            >
+              Send Reminder <span aria-hidden="true">↗</span>
+            </button>
+          </article>
+          }
+          <p class="reminder-note">
+            Showing 3 of 5 sample reminders. Delivery is not connected.
+          </p>
+        </section>
+        <section class="floor">
+          <h2>Workshop Snapshot <span class="count">SAMPLE</span></h2>
+          <div>Bays in use <strong class="mono">4 / 6</strong></div>
+          <div class="progress" aria-hidden="true"><span></span></div>
+          <p>Recent jobs: 2 in progress, 2 completed, 1 draft.</p>
+          <small
+            >Invoice amounts represent billing. Collected payments are
+            unavailable.</small
+          >
+        </section>
+      </aside>
+    </div>
+    <footer>
+      GarageCare · Owner workspace <span>Sample data for design preview</span>
+    </footer>
+  </main>
+</div>

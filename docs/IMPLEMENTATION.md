@@ -47,6 +47,14 @@ The `/reset-password` route follows Stitch project `17101721684738931297`, scree
 
 No token is validated, password changed, or session revoked in this preview. The page does not display fabricated success or expiry states. Production `POST /api/v1/auth/reset-password` requires the backend's token, password-policy, expiry, and CSRF contracts.
 
+## Owner dashboard preview
+
+The `/dashboard` route follows Stitch project `17101721684738931297`, screen `64b0ba93eec9422b8bf0feb19ba776f9` (GarageCare — Owner Dashboard). It provides the responsive sidebar/header, summary cards, quick actions, customer/vehicle job cards, reminders, and throughput illustration. Hanken Grotesk and JetBrains Mono reuse the approved local fonts; icons are local SVGs.
+
+Sample jobs can be searched by customer, phone, vehicle, registration, or job identifier, filtered by status, and expanded for service details. Mobile navigation supports keyboard activation and Escape. This route is publicly accessible for design review, with a fixed sample snapshot rather than authentication or live garage data. Navigation to undeveloped modules and contact/reminder actions announces preview status and sends nothing.
+
+The reference's branch selector, staff attendance, live status, and payment integration claims are adapted to the single-owner V1 scope. Billed invoice totals remain distinct from collected payments, which are unavailable. Production integration awaits authenticated services for `/api/v1/dashboard/summary`, jobs, and reminders. The summary cards represent the sample garage, while only five recent jobs and three reminders are shown.
+
 ## Delivery sequence
 
 1. Authentication and garage setup.

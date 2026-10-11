@@ -32,7 +32,8 @@ This repository is an Angular Nx monorepo for the Garage Care frontend applicati
 - Check the working tree first and preserve any uncommitted work before switching branches. Do not discard changes or force an update if the pull cannot fast-forward; resolve the divergence before starting feature development.
 - Target `development` when opening feature pull requests.
 - Develop pages and modules one at a time. After completing each page or module, run the relevant verification, commit and push its feature branch, and create a pull request to `development`.
-- The user authorizes the agent to merge these feature pull requests after verification passes and required GitHub checks and branch protections are satisfied. Resolve review findings or failures before merging; do not bypass required checks or protections.
+- After creating a pull request, share its link and wait for the user's explicit approval following their review. Do not merge automatically. Approval to develop, push, or create a PR does not authorize merging; each PR requires its own merge approval.
+- After the user approves that PR, merge only when verification passes and required GitHub checks and branch protections are satisfied. Resolve review findings or failures before merging; do not bypass required checks or protections.
 - After merging, switch to `development` and pull its latest changes before creating a fresh feature branch for the next page or module. Repeat this cycle for each requested page or module.
 
 ## Common commands
