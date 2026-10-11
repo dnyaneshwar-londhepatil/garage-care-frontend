@@ -25,10 +25,9 @@ test('sign-in validates fields, toggles password, and links to sign-up', async (
   await expect(page.getByRole('status')).toContainText(
     'No session has been created',
   );
-  await page.getByRole('button', { name: 'Forgot password?' }).click();
-  await expect(page.getByRole('status')).toContainText(
-    'Password recovery is not available',
-  );
+  await page.getByRole('link', { name: 'Forgot password?' }).click();
+  await expect(page).toHaveURL(/\/forgot-password$/);
+  await page.getByRole('link', { name: 'Back to Sign In' }).click();
   await page.getByRole('link', { name: 'Create one' }).click();
   await expect(page).toHaveURL(/\/sign-up$/);
   await page.getByRole('link', { name: 'Sign In', exact: true }).click();

@@ -35,7 +35,11 @@ Implement responsive layout, accessible field labels and errors, password visibi
 
 The `/sign-in` route uses Stitch project `17101721684738931297`, screen `fb326bc38d5f4e8b8d08af12f3c28f75` (GarageCare — Sign In). The standalone component is under `apps/garage-care/src/app/features/auth/sign-in`, with Reactive Forms, required email/password validation, password visibility, and a link back to sign-up. Authentication screens reuse the shared `_auth-shell.scss` mixin and locally hosted typography.
 
-Submission explicitly reports that no session was created. Remember me is an in-memory preview choice only. Password recovery and policy actions announce that they are unavailable. Reference sample credentials, simulated authentication success, system availability, and unverified encryption claims are omitted. Production login will use `POST /api/v1/auth/login` only after the cookie/CSRF contract and backend are available.
+Submission explicitly reports that no session was created. Remember me is an in-memory preview choice only. Password recovery links to `/forgot-password`; policy actions announce that they are unavailable. Reference sample credentials, simulated authentication success, system availability, and unverified encryption claims are omitted. Production login will use `POST /api/v1/auth/login` only after the cookie/CSRF contract and backend are available.
+
+## Forgot password preview
+
+The `/forgot-password` route follows Stitch project `17101721684738931297`, screen `e36b62afa17844ee8e833ae27d3271ef`. The standalone component uses Reactive Forms for email validation, accessible errors, shared authentication styling/fonts, and navigation back to sign-in. Valid preview submission explicitly states that no reset email was sent. `POST /api/v1/auth/forgot-password` integration awaits the backend and finalized CSRF contract; there is no simulated delivery or credential persistence.
 
 ## Delivery sequence
 
