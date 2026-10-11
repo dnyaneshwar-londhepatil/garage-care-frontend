@@ -1,0 +1,96 @@
+<div class="jobs">
+  @for (job of jobs(); track job.id) {
+  <article class="job">
+    <div class="contact">
+      <span class="avatar customer-avatar"
+        ><app-dashboard-icon name="person"
+      /></span>
+      <div class="customer">
+        <h3>{{ job.name }}</h3>
+        <span class="mono phone"
+          ><app-dashboard-icon name="call" /> {{ job.phone }}</span
+        >
+      </div>
+      <span class="vehicle-count"
+        ><app-dashboard-icon name="garage" /> {{ job.vehicles }} {{ job.vehicles
+        === 1 ? 'vehicle' : 'vehicles' }}</span
+      >
+      <div class="contact-actions">
+        <button
+          gcButton
+          variant="outline"
+          type="button"
+          (click)="previewAction.emit('WhatsApp to ' + job.name)"
+        >
+          <app-dashboard-icon name="chat" /> WhatsApp</button
+        ><button
+          gcButton
+          variant="subtle"
+          type="button"
+          (click)="previewAction.emit('Call to ' + job.name)"
+        >
+          <app-dashboard-icon name="phone" /> Call
+        </button>
+      </div>
+    </div>
+    <div class="vehicle-row">
+      <span class="car-icon" aria-hidden="true"
+        ><app-dashboard-icon
+          [name]="job.vehicle.includes('Activa') || job.vehicle.includes('Enfield') ? 'two_wheeler' : job.vehicle.includes('EV') ? 'electric_car' : 'directions_car'"
+      /></span>
+      <div class="vehicle">
+        <strong>{{ job.vehicle }}</strong
+        ><small>· {{ job.vehicleDescription }}</small>
+      </div>
+      <span
+        class="status"
+        [class.completed]="job.status === 'Completed'"
+        [class.draft]="job.status === 'Draft'"
+        ><span class="status-dot" aria-hidden="true"></span> {{ job.status
+        }}</span
+      ><button
+        type="button"
+        gcButton
+        variant="subtle"
+        [square]="true"
+        class="view"
+        [attr.aria-expanded]="selectedJob()?.id === job.id"
+        (click)="selectedJob.set(selectedJob()?.id === job.id ? null : job)"
+      >
+        View<span class="sr-only"> {{ job.id }}</span>
+      </button>
+      <button
+        type="button"
+        class="more"
+        [attr.aria-label]="'More options for ' + job.id"
+        (click)="previewAction.emit('Job options for ' + job.id)"
+      >
+        <app-dashboard-icon name="more_vert" />
+      </button>
+    </div>
+    @if (selectedJob()?.id === job.id) {
+    <div class="job-details">
+      <strong>{{ job.id }} · Service details</strong>
+      <p class="mono">{{ job.registration }}</p>
+      <p>{{ job.service }}</p>
+      <small
+        >Sample record. Pricing and invoice details require the service jobs
+        module.</small
+      ><button
+        type="button"
+        (click)="selectedJob.set(null)"
+        [attr.aria-label]="'Close ' + job.id + ' details'"
+      >
+        Close details
+      </button>
+    </div>
+    }
+  </article>
+  } @empty {
+  <div class="empty">
+    <h3>No matching service jobs</h3>
+    <p>Try another customer, vehicle, registration, or status.</p>
+    <button type="button" (click)="clearFilters.emit()">Clear filters</button>
+  </div>
+  }
+</div>

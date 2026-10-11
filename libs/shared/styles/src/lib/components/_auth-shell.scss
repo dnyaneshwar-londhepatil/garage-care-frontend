@@ -1,6 +1,6 @@
+@use '../abstracts/colors' as palette;
 @mixin styles {
-  .page-header,
-  footer {
+  .page-header {
     width: 100%;
     max-width: 1360px;
     margin: 0 auto;
@@ -10,75 +10,106 @@
     align-items: center;
     gap: 16px;
   }
+  footer {
+    width: 100%;
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    color: palette.$color-text-secondary;
+    font-size: 12px;
+    nav {
+      display: flex;
+      gap: 24px;
+    }
+    .text-link {
+      color: palette.$color-text-secondary;
+    }
+  }
   .brand {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #0b1c30;
+    color: palette.$color-text-primary;
     text-decoration: none;
     font-size: 20px;
     font-weight: 700;
     letter-spacing: -0.5px;
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      color: palette.$color-white;
+      background: palette.$color-brand;
+      font-size: 21px;
+    }
+    .brand-accent {
+      color: palette.$color-brand;
+    }
+    .saas {
+      font-size: 10px;
+      padding: 3px 6px;
+      background: palette.$color-surface-action;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
   }
-  .brand-icon {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    color: white;
-    background: #0054ca;
-    font-size: 21px;
-  }
-  .brand-accent,
   .text-link {
-    color: #0054ca;
-  }
-  .saas {
-    font-size: 10px;
-    padding: 3px 6px;
-    background: #e5eeff;
-    border-radius: 4px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    color: palette.$color-brand;
+    border: 0;
+    background: none;
+    font: inherit;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: none;
     font-weight: 500;
+    &:hover {
+      text-decoration: underline;
+    }
   }
   .preview-badge {
-    color: #52647e;
+    color: palette.$color-text-subtle;
     font-size: 12px;
   }
   .input-wrap {
     position: relative;
-  }
-  .input-icon {
-    position: absolute;
-    left: 12px;
-    top: 9px;
-    color: #737786;
-    font-size: 18px;
-    pointer-events: none;
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      top: 9px;
+      color: palette.$color-text-muted;
+      font-size: 18px;
+      pointer-events: none;
+    }
   }
   input:not([type='checkbox']) {
     width: 100%;
     min-height: 44px;
     padding: 10px 12px 10px 36px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid palette.$color-border-neutral;
     border-radius: 8px;
-    color: #0b1c30;
-    background: #fff;
+    color: palette.$color-text-primary;
+    background: palette.$color-white;
     font-size: 14px;
   }
   input::placeholder {
-    color: #737786;
+    color: palette.$color-text-muted;
     opacity: 1;
   }
   input:focus-visible {
-    border-color: #0054ca;
+    border-color: palette.$color-brand;
     outline: 0;
-    box-shadow: 0 0 0 3px #0054ca24;
+    box-shadow: 0 0 0 3px palette.$color-brand-alpha-36;
   }
   input[aria-invalid='true'] {
-    border-color: #ba1a1a;
+    border-color: palette.$color-error;
   }
   .password-wrap input {
     padding-right: 46px;
@@ -92,8 +123,8 @@
     display: grid;
     place-items: center;
     border: 0;
-    background: transparent;
-    color: #737786;
+    background: palette.$color-transparent;
+    color: palette.$color-text-muted;
     cursor: pointer;
     border-radius: 8px;
   }
@@ -104,24 +135,12 @@
     stroke: currentColor;
     stroke-width: 1.6;
   }
-  .text-link {
-    border: 0;
-    background: none;
-    font: inherit;
-    padding: 0;
-    cursor: pointer;
-    text-decoration: none;
-    font-weight: 500;
-  }
-  .text-link:hover {
-    text-decoration: underline;
-  }
   .submit-button {
     min-height: 44px;
     border: 0;
     border-radius: 8px;
-    background: #0054ca;
-    color: white;
+    background: palette.$color-brand;
+    color: palette.$color-white;
     font: inherit;
     font-size: 16px;
     font-weight: 600;
@@ -130,33 +149,22 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 3px 6px #0054ca20;
-  }
-  .submit-button:hover {
-    background: #2b6eeb;
+    box-shadow: 0 3px 6px palette.$color-brand-alpha-32;
+    &:hover {
+      background: palette.$color-brand-hover;
+    }
   }
   .field-error {
     font-size: 12px;
     line-height: 18px;
-    color: #ba1a1a;
+    color: palette.$color-error;
     margin: 0;
   }
   .notice {
     margin: 0;
     padding: 12px;
     border-radius: 8px;
-    background: #eff4ff;
-    color: #374860;
-  }
-  footer {
-    color: #424654;
-    font-size: 12px;
-  }
-  footer nav {
-    display: flex;
-    gap: 24px;
-  }
-  footer .text-link {
-    color: #424654;
+    background: palette.$color-surface-tint;
+    color: palette.$color-text-notice;
   }
 }

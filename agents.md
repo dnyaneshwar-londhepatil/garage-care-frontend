@@ -7,6 +7,7 @@ This repository is an Angular Nx monorepo for the Garage Care frontend applicati
 - `apps/garage-care`: main Angular application
 - `apps/garage-care-e2e`: Playwright end-to-end tests
 - `libs/shared/styles`: shared Sass styling library used across the app
+- `libs/shared/ui`: reusable standalone Angular UI components, imported through `@garage-care/shared/ui`
 - `docs/`: product and technical documentation
 
 ## Stack and conventions
@@ -25,6 +26,17 @@ This repository is an Angular Nx monorepo for the Garage Care frontend applicati
 4. Keep styles in the shared Sass library when the change is global or reusable; keep component-specific styling near the component when it is local.
 5. If a task touches routing, app shell, or shared config, inspect the existing Angular app setup before making changes.
 
+## Component, styling, and icon conventions
+
+- Define every literal color only in `libs/shared/styles/src/lib/abstracts/_colors.scss`, the shared palette. Reuse its semantic Sass variables through a `palette` namespace in all app, component, and shared styles. Use the generated `--palette-*` CSS custom properties for inline SVG paint. Do not add hardcoded hex, RGB/HSL, or named color values elsewhere; add a named palette token first, including opacity variants. Keep `currentColor` for icons that inherit text color and `none` for absent SVG paint. Test assertions may use literal expected browser color values.
+- Place a page's child components in its `components/<component-name>/` folder (for example, `features/dashboard/components/dashboard-shell/`). Keep the parent page at the feature root.
+- Move UI components reused across sections or features into `libs/shared/ui`; keep feature data and backend actions in the consuming feature. Use its shared native `button[gcButton]` component for consistent compact action variants and hover/focus behavior.
+- Every Angular component has four separate files: `<name>.ts`, `<name>.html`, `<name>.scss`, and `<name>.spec.ts`. Use `templateUrl` and `styleUrl`; do not embed templates or styles in TypeScript. Use SCSS rather than plain CSS in this workspace.
+- Organize SCSS selectors according to the component template hierarchy. Nest child selectors under their owning container, and use `&` for states and pseudo-classes. Keep nesting readable and avoid unrelated selectors or unnecessary specificity.
+- Place each responsive `@media` rule inside the selector it changes. Do not collect component breakpoints in standalone media blocks at the end of the file. Apply these conventions to shared component Sass mixins as well.
+- Match the approved Stitch layout, spacing, colors, sizing, and icon variants. Use SVG for all icons, including arrows, status/check icons, and decorative symbols; do not use Unicode glyphs, emoji, substitute icon sets, or runtime icon fonts. Dashboard icons use the original Material Symbols Outlined SVG geometry from Google's Material Design Icons repository, with its license under `public/licenses`.
+- Preserve accessible button/link names when icons are decorative (`aria-hidden="true"` on SVGs), and test behavior when moving code into child components. Verify desktop, tablet, and mobile rendering after styling refactors.
+
 ## Branch workflow
 
 - For every new page or module, create a dedicated feature branch named `JCF-<feature-name>` with the uppercase `JCF` prefix and a descriptive, hyphen-separated feature name (for example, `JCF-forgot-password`). This is the default prefix for all future feature branches.
@@ -32,7 +44,8 @@ This repository is an Angular Nx monorepo for the Garage Care frontend applicati
 - Check the working tree first and preserve any uncommitted work before switching branches. Do not discard changes or force an update if the pull cannot fast-forward; resolve the divergence before starting feature development.
 - Target `development` when opening feature pull requests.
 - Develop pages and modules one at a time. After completing each page or module, run the relevant verification, commit and push its feature branch, and create a pull request to `development`.
-- The user authorizes the agent to merge these feature pull requests after verification passes and required GitHub checks and branch protections are satisfied. Resolve review findings or failures before merging; do not bypass required checks or protections.
+- After creating a pull request, share its link and wait for the user's explicit approval following their review. Do not merge automatically. Approval to develop, push, or create a PR does not authorize merging; each PR requires its own merge approval.
+- After the user approves that PR, merge only when verification passes and required GitHub checks and branch protections are satisfied. Resolve review findings or failures before merging; do not bypass required checks or protections.
 - After merging, switch to `development` and pull its latest changes before creating a fresh feature branch for the next page or module. Repeat this cycle for each requested page or module.
 
 ## Common commands

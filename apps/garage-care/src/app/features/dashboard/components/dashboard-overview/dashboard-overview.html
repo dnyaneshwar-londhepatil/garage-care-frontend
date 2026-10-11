@@ -1,0 +1,79 @@
+<aside class="right-column" aria-label="Sample reminders and workshop overview">
+  <section class="reminders">
+    <div class="section-heading">
+      <div class="reminders-title">
+        <h2>Upcoming Reminders</h2>
+        <span class="attention-dot" aria-hidden="true"></span>
+      </div>
+      <button
+        class="view-all"
+        type="button"
+        (click)="previewAction.emit('All reminders')"
+      >
+        View All (5)<app-dashboard-icon name="east" />
+      </button>
+    </div>
+    @for (reminder of reminders(); track reminder.name) {
+    <article class="reminder">
+      <div class="reminder-details">
+        <div class="reminder-heading">
+          <h3>{{ reminder.name }}</h3>
+          <span
+            class="due"
+            [class.overdue]="reminder.overdue"
+            [class.future]="reminder.action === 'View'"
+            ><span class="due-dot" aria-hidden="true"></span>{{ reminder.due
+            }}</span
+          >
+        </div>
+        <small>{{ reminder.vehicle }}</small>
+        <p>{{ reminder.service }}</p>
+      </div>
+      <div class="reminder-actions">
+        <span
+          class="delivery-state"
+          [class.automatic]="reminder.action === 'View'"
+          >@if (reminder.icon) {
+          <app-dashboard-icon [name]="reminder.icon" /> }{{ reminder.status
+          }}</span
+        ><button
+          gcButton
+          [variant]="reminder.action === 'View' ? 'subtle' : 'primary'"
+          type="button"
+          (click)="previewAction.emit('Reminder for ' + reminder.name)"
+        >
+          {{ reminder.action }}
+        </button>
+      </div>
+    </article>
+    }
+    <p class="reminder-note">
+      Showing 3 of 5 sample reminders. Dates and delivery states are
+      illustrative; delivery is not connected.
+    </p>
+  </section>
+  <section class="floor">
+    <div class="floor-heading">
+      <h2><app-dashboard-icon name="analytics" /> Workshop Snapshot</h2>
+      <span class="sample-label">SAMPLE</span>
+    </div>
+    <div class="floor-stats">
+      <div class="floor-stat">
+        <span>Bays in use</span><strong>4/6 Active</strong>
+        <div class="progress"><span style="width: 66.67%"></span></div>
+      </div>
+      <div class="floor-stat">
+        <span>Recent jobs</span><strong>2/5 Completed</strong>
+        <div class="progress completed-progress">
+          <span style="width: 40%"></span>
+        </div>
+      </div>
+    </div>
+    <div class="floor-note">
+      <app-dashboard-icon name="check_circle" /><span
+        >Sample snapshot. Invoice billing and collected payments remain
+        separate.</span
+      >
+    </div>
+  </section>
+</aside>

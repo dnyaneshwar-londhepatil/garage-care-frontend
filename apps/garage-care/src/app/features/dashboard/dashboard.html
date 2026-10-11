@@ -1,0 +1,123 @@
+<div class="dashboard">
+  <app-dashboard-shell [search]="search" (previewAction)="preview($event)" />
+  <main id="main-content" tabindex="-1">
+    <div class="welcome">
+      <div>
+        <h1><app-dashboard-icon name="wb_sunny" /> Good morning, Rajesh!</h1>
+        <p>
+          Here’s what's happening at your garage — Apex Auto Garage,
+          Indiranagar.
+        </p>
+      </div>
+      <div class="header-actions">
+        <button type="button" (click)="preview('Add Customer')">
+          <app-dashboard-icon name="person_add" /> + Add Customer</button
+        ><button
+          class="primary"
+          type="button"
+          (click)="preview('New Service Job')"
+        >
+          <app-dashboard-icon name="add_circle" /> + New Service Job
+        </button>
+      </div>
+    </div>
+    <div class="snapshot">
+      <span class="preview-badge">Sample data</span> Snapshot: 11 Oct 2026 ·
+      Frontend preview · No live garage connection
+    </div>
+    <div class="notice" role="status" aria-live="polite">{{ notice() }}</div>
+    <section class="metrics" aria-label="Sample garage summary">
+      @for (metric of metrics; track metric.label) {
+      <article class="metric">
+        <div class="metric-top">
+          <div>
+            <span class="metric-label">{{ metric.label }}</span
+            ><strong class="metric-value">{{ metric.value }}</strong>
+          </div>
+          <span class="metric-icon"
+            ><app-dashboard-icon [name]="metric.icon"
+          /></span>
+        </div>
+        <div class="metric-bottom">
+          <div>
+            <p>{{ metric.description }}</p>
+            <span class="metric-detail">{{ metric.detail }}</span>
+          </div>
+          <app-dashboard-icon name="arrow_forward" />
+        </div>
+      </article>
+      }
+    </section>
+    <section class="quick-actions" aria-label="Quick actions">
+      <div class="section-caption">
+        <span>QUICK ACTIONS</span><span>Workshop essentials</span>
+      </div>
+      <div class="action-grid">
+        @for (action of actions; track action.title) {
+        <button
+          type="button"
+          (click)="action.title === 'Find Vehicle' ? findVehicle() : preview(action.title)"
+        >
+          <span class="action-icon" aria-hidden="true"
+            ><app-dashboard-icon [name]="action.icon" /></span
+          ><span
+            ><strong>{{ action.title }}</strong
+            ><small>{{ action.detail }}</small></span
+          >
+        </button>
+        }
+      </div>
+    </section>
+    <div class="operations">
+      <section class="job-section" aria-labelledby="jobs-heading">
+        <div class="section-heading">
+          <h2 id="jobs-heading">
+            Recent Service Jobs <span class="count">5 shown · 24 total</span>
+          </h2>
+          <label class="status-filter"
+            ><span class="sr-only">Filter jobs by status</span
+            ><select [formControl]="status">
+              <option>All statuses</option>
+              <option>In Progress</option>
+              <option>Completed</option>
+              <option>Draft</option>
+            </select></label
+          >
+        </div>
+        <app-dashboard-jobs
+          [jobs]="filteredJobs()"
+          (previewAction)="preview($event)"
+          (clearFilters)="findVehicle()"
+        />
+        <div class="throughput">
+          <div>
+            <h3><app-dashboard-icon name="speed" /> Bay Throughput Rate</h3>
+            <p>
+              Sample average turnaround <strong class="mono">3h 12m</strong> per
+              vehicle
+            </p>
+          </div>
+          <svg
+            viewBox="0 0 180 50"
+            aria-label="Illustrative throughput trend"
+            role="img"
+          >
+            <path
+              d="M2 43 L22 33 L42 38 L62 21 L82 27 L102 15 L122 22 L142 7 L162 13 L178 3"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+            /></svg
+          ><strong>+18%<small>sample weekly change</small></strong>
+        </div>
+      </section>
+      <app-dashboard-overview
+        [reminders]="reminders"
+        (previewAction)="preview($event)"
+      />
+    </div>
+    <footer>
+      GarageCare · Owner workspace <span>Sample data for design preview</span>
+    </footer>
+  </main>
+</div>

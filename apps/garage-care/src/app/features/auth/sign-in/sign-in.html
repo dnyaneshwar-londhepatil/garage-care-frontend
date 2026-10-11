@@ -100,7 +100,10 @@
           >
         </div>
         <button type="submit" class="submit-button">
-          Sign In <span aria-hidden="true">→</span>
+          Sign In
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 12h16m-6-6 6 6-6 6" />
+          </svg>
         </button>
         @if (notice()) {
         <p class="notice" role="status">{{ notice() }}</p>

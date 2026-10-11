@@ -1,0 +1,126 @@
+// Single source of truth for literal colors, including opacity variants and SVG paint.
+// Alpha suffixes are the original 8-bit opacity values; pct suffixes use percentages.
+// Legacy tokens preserve existing shared-style colors while approved screens use brand tokens.
+$color-text-secondary: #424654 !default;
+$color-surface-action: #e5eeff !default;
+$color-success: #006947 !default;
+$color-surface-success: #ecfdf5 !default;
+$color-surface-tint: #eff4ff !default;
+$color-white: #ffffff !default;
+$color-text-primary: #0b1c30 !default;
+$color-background: #f8f9ff !default;
+$color-navy-alpha-20: #14263d14 !default;
+$color-brand: #0054ca !default;
+$color-text-muted: #737786 !default;
+$color-border-brand: #dce9ff !default;
+$color-text-subtle: #52647e !default;
+$color-border-strong: #c2c6d7 !default;
+$color-focus-blue: #3978f6 !default;
+$color-navy-alpha-10: #14263d0a !default;
+$color-border-brand-alpha-128: #dce9ff80 !default;
+$color-surface-tint-alpha-102: #eff4ff66 !default;
+$color-border-brand-alpha-102: #dce9ff66 !default;
+$color-surface-selected: #cfe1ff !default;
+$color-transparent: transparent !default;
+$color-surface-error: #ffdad6 !default;
+$color-text-error: #93000a !default;
+$color-error: #ba1a1a !default;
+$color-black-alpha-10: #0000000a !default;
+$color-surface-avatar: #d3e4fe !default;
+$color-navy-alpha-32: #14263d20 !default;
+$color-background-alpha-237: #f8f9ffed !default;
+$color-brand-hover: #2b6eeb !default;
+$color-text-tertiary: #4e5f79 !default;
+$color-navy: #14263d !default;
+$color-background-neutral: #f7f9fc !default;
+$color-text-legacy: #172b4d !default;
+$color-text-secondary-legacy: #64748b !default;
+$color-border-neutral: #e2e8f0 !default;
+$color-success-legacy: #15803d !default;
+$color-warning: #b45309 !default;
+$color-error-legacy: #b91c1c !default;
+$color-navy-alpha-6pct: rgb(20 38 61 / 6%) !default;
+$color-navy-alpha-8pct: rgb(20 38 61 / 8%) !default;
+$color-navy-alpha-12pct: rgb(20 38 61 / 12%) !default;
+$color-focus-blue-alpha-24pct: rgb(57 120 246 / 24%) !default;
+$color-success-legacy-alpha-24pct: rgb(21 128 61 / 24%) !default;
+$color-success-legacy-alpha-6pct: rgb(21 128 61 / 6%) !default;
+$color-warning-alpha-24pct: rgb(180 83 9 / 24%) !default;
+$color-warning-alpha-6pct: rgb(180 83 9 / 6%) !default;
+$color-error-legacy-alpha-24pct: rgb(185 28 28 / 24%) !default;
+$color-error-legacy-alpha-6pct: rgb(185 28 28 / 6%) !default;
+$color-brand-alpha-36: #0054ca24 !default;
+$color-brand-alpha-32: #0054ca20 !default;
+$color-text-notice: #374860 !default;
+$color-success-legacy-alpha-10pct: rgb(21 128 61 / 10%) !default;
+$color-warning-alpha-10pct: rgb(180 83 9 / 10%) !default;
+$color-error-legacy-alpha-10pct: rgb(185 28 28 / 10%) !default;
+$color-focus-blue-alpha-10pct: rgb(57 120 246 / 10%) !default;
+$color-navy-hover: #203956 !default;
+$color-focus-blue-alpha-8pct: rgb(57 120 246 / 8%) !default;
+$color-flag-saffron: #ff9933 !default;
+$color-flag-green: #138808 !default;
+$color-flag-navy: #000080 !default;
+
+$colors: (
+  'text-secondary': $color-text-secondary,
+  'surface-action': $color-surface-action,
+  'success': $color-success,
+  'surface-success': $color-surface-success,
+  'surface-tint': $color-surface-tint,
+  'white': $color-white,
+  'text-primary': $color-text-primary,
+  'background': $color-background,
+  'navy-alpha-20': $color-navy-alpha-20,
+  'brand': $color-brand,
+  'text-muted': $color-text-muted,
+  'border-brand': $color-border-brand,
+  'text-subtle': $color-text-subtle,
+  'border-strong': $color-border-strong,
+  'focus-blue': $color-focus-blue,
+  'navy-alpha-10': $color-navy-alpha-10,
+  'border-brand-alpha-128': $color-border-brand-alpha-128,
+  'surface-tint-alpha-102': $color-surface-tint-alpha-102,
+  'border-brand-alpha-102': $color-border-brand-alpha-102,
+  'surface-selected': $color-surface-selected,
+  'transparent': $color-transparent,
+  'surface-error': $color-surface-error,
+  'text-error': $color-text-error,
+  'error': $color-error,
+  'black-alpha-10': $color-black-alpha-10,
+  'surface-avatar': $color-surface-avatar,
+  'navy-alpha-32': $color-navy-alpha-32,
+  'background-alpha-237': $color-background-alpha-237,
+  'brand-hover': $color-brand-hover,
+  'text-tertiary': $color-text-tertiary,
+  'navy': $color-navy,
+  'background-neutral': $color-background-neutral,
+  'text-legacy': $color-text-legacy,
+  'text-secondary-legacy': $color-text-secondary-legacy,
+  'border-neutral': $color-border-neutral,
+  'success-legacy': $color-success-legacy,
+  'warning': $color-warning,
+  'error-legacy': $color-error-legacy,
+  'navy-alpha-6pct': $color-navy-alpha-6pct,
+  'navy-alpha-8pct': $color-navy-alpha-8pct,
+  'navy-alpha-12pct': $color-navy-alpha-12pct,
+  'focus-blue-alpha-24pct': $color-focus-blue-alpha-24pct,
+  'success-legacy-alpha-24pct': $color-success-legacy-alpha-24pct,
+  'success-legacy-alpha-6pct': $color-success-legacy-alpha-6pct,
+  'warning-alpha-24pct': $color-warning-alpha-24pct,
+  'warning-alpha-6pct': $color-warning-alpha-6pct,
+  'error-legacy-alpha-24pct': $color-error-legacy-alpha-24pct,
+  'error-legacy-alpha-6pct': $color-error-legacy-alpha-6pct,
+  'brand-alpha-36': $color-brand-alpha-36,
+  'brand-alpha-32': $color-brand-alpha-32,
+  'text-notice': $color-text-notice,
+  'success-legacy-alpha-10pct': $color-success-legacy-alpha-10pct,
+  'warning-alpha-10pct': $color-warning-alpha-10pct,
+  'error-legacy-alpha-10pct': $color-error-legacy-alpha-10pct,
+  'focus-blue-alpha-10pct': $color-focus-blue-alpha-10pct,
+  'navy-hover': $color-navy-hover,
+  'focus-blue-alpha-8pct': $color-focus-blue-alpha-8pct,
+  'flag-saffron': $color-flag-saffron,
+  'flag-green': $color-flag-green,
+  'flag-navy': $color-flag-navy,
+);

@@ -1,16 +1,17 @@
+@use 'colors' as palette;
 @use 'sass:map';
 
-$color-primary: #14263d !default;
-$color-accent: #3978f6 !default;
-$color-background: #f7f9fc !default;
-$color-surface: #fff !default;
-$color-text-primary: #172b4d !default;
-$color-text-secondary: #64748b !default;
+$color-primary: palette.$color-navy !default;
+$color-accent: palette.$color-focus-blue !default;
+$color-background: palette.$color-background-neutral !default;
+$color-surface: palette.$color-white !default;
+$color-text-primary: palette.$color-text-legacy !default;
+$color-text-secondary: palette.$color-text-secondary-legacy !default;
 $color-secondary: $color-text-secondary !default;
-$color-border: #e2e8f0 !default;
-$color-success: #15803d !default;
-$color-warning: #b45309 !default;
-$color-error: #b91c1c !default;
+$color-border: palette.$color-border-neutral !default;
+$color-success: palette.$color-success-legacy !default;
+$color-warning: palette.$color-warning !default;
+$color-error: palette.$color-error-legacy !default;
 
 $font-family-base: 'Hanken Grotesk', 'Segoe UI', sans-serif !default;
 $font-family-mono: 'JetBrains Mono', Consolas, monospace !default;
@@ -39,10 +40,10 @@ $border-width: 1px !default;
 $border-style: solid !default;
 $border-default: $border-width $border-style $color-border !default;
 
-$shadow-sm: 0 1px 2px rgb(20 38 61 / 6%) !default;
-$shadow-md: 0 4px 12px rgb(20 38 61 / 8%) !default;
-$shadow-lg: 0 12px 28px rgb(20 38 61 / 12%) !default;
-$focus-ring: 0 0 0 3px rgb(57 120 246 / 24%) !default;
+$shadow-sm: 0 1px 2px palette.$color-navy-alpha-6pct !default;
+$shadow-md: 0 4px 12px palette.$color-navy-alpha-8pct !default;
+$shadow-lg: 0 12px 28px palette.$color-navy-alpha-12pct !default;
+$focus-ring: 0 0 0 3px palette.$color-focus-blue-alpha-24pct !default;
 
 $spacing-1: 4px !default;
 $spacing-2: 8px !default;

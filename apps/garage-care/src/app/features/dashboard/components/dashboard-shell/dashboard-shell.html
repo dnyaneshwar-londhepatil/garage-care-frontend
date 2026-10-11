@@ -1,0 +1,85 @@
+<a class="skip-link" href="#main-content">Skip to dashboard</a>
+<aside
+  class="sidebar"
+  [class.open]="menuOpen()"
+  aria-label="Workspace navigation"
+  id="workspace-navigation"
+>
+  <a class="brand" routerLink="/dashboard"
+    ><span class="brand-icon" aria-hidden="true"
+      ><app-dashboard-icon name="build" /></span
+    ><span>GarageCare<small>AUTOMOTIVE OS</small></span></a
+  >
+  <div class="garage">
+    <app-dashboard-icon name="garage" />
+    <div>
+      <strong>Apex Auto Hub</strong><small>Single garage · Preview</small>
+    </div>
+  </div>
+  <nav aria-label="Main navigation">
+    @for (item of navigation; track item; let i = $index) {
+    <button
+      type="button"
+      [class.active]="i === 0"
+      [attr.aria-current]="i === 0 ? 'page' : null"
+      (click)="i === 0 ? menuOpen.set(false) : preview(item)"
+    >
+      <span class="nav-icon" aria-hidden="true"
+        ><app-dashboard-icon [name]="navigationIcons[i]" /></span
+      >{{ item }}
+    </button>
+    }
+  </nav>
+  <div class="account">
+    <span class="avatar">AA</span>
+    <div>
+      <strong>Apex Auto Garage</strong
+      ><small>Rajesh Sharma · Sample owner</small>
+    </div>
+    <a routerLink="/sign-in" aria-label="Go to sign in"
+      ><app-dashboard-icon name="logout"
+    /></a>
+  </div>
+</aside>
+<header class="topbar">
+  <button
+    class="menu-toggle"
+    type="button"
+    aria-controls="workspace-navigation"
+    [attr.aria-expanded]="menuOpen()"
+    (click)="menuOpen.set(!menuOpen())"
+  >
+    <app-dashboard-icon name="menu" />
+    <span class="sr-only">Toggle navigation</span>
+  </button>
+  <div class="breadcrumb">
+    Workspace <app-dashboard-icon name="chevron_right" />
+    <strong>Dashboard</strong>
+  </div>
+  <label class="search"
+    ><app-dashboard-icon name="search" /><input
+      type="search"
+      [formControl]="search()"
+      placeholder="Search vehicle, customer, job card #..."
+      aria-label="Search sample service jobs"
+  /></label>
+  <button
+    class="icon-button"
+    type="button"
+    aria-label="Help"
+    (click)="preview('Help')"
+  >
+    <app-dashboard-icon name="help_outline" />
+  </button>
+  <button
+    class="icon-button"
+    type="button"
+    aria-label="View reminder summary"
+    (click)="preview('Reminder notifications')"
+  >
+    <app-dashboard-icon name="notifications" />
+  </button>
+  <span class="avatar small-avatar" aria-label="Sample owner Rajesh Sharma"
+    ><app-dashboard-icon name="person"
+  /></span>
+</header>

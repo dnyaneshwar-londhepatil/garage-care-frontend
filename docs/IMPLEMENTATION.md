@@ -47,6 +47,20 @@ The `/reset-password` route follows Stitch project `17101721684738931297`, scree
 
 No token is validated, password changed, or session revoked in this preview. The page does not display fabricated success or expiry states. Production `POST /api/v1/auth/reset-password` requires the backend's token, password-policy, expiry, and CSRF contracts.
 
+## Owner dashboard preview
+
+The `/dashboard` route follows Stitch project `17101721684738931297`, screen `64b0ba93eec9422b8bf0feb19ba776f9` (GarageCare — Owner Dashboard). It provides the responsive sidebar/header, summary cards, quick actions, customer/vehicle job cards, reminders, and throughput illustration. Hanken Grotesk and JetBrains Mono reuse the approved local fonts; icons are local SVGs.
+
+Sample jobs can be searched by customer, phone, vehicle, registration, or job identifier, filtered by status, and expanded for service details. Mobile navigation supports keyboard activation and Escape. This route is publicly accessible for design review, with a fixed sample snapshot rather than authentication or live garage data. Navigation to undeveloped modules and contact/reminder actions announces preview status and sends nothing.
+
+The reference's branch selector, staff attendance, live status, and payment integration claims are adapted to the single-owner V1 scope. Billed invoice totals remain distinct from collected payments, which are unavailable. Production integration awaits authenticated services for `/api/v1/dashboard/summary`, jobs, and reminders. The summary cards represent the sample garage, while only five recent jobs and three reminders are shown.
+
+Dashboard child components live under `features/dashboard/components`, with separate HTML, SCSS, TypeScript, and spec files. The shell, SVG icon renderer, and job list have focused responsibilities. Icons use original Material Symbols Outlined SVG paths matching Stitch, including vehicle types, actions, arrows, and navigation. Google's Apache license is retained in `public/licenses/material-symbols-LICENSE.txt`. The unused Nx starter component was removed.
+
+All implemented page components and shared authentication Sass mixins use nested selectors following their template hierarchy, with responsive media rules inside the selectors they modify. Authentication arrows, validation marks, and the country flag are SVGs. These conventions are documented in `agents.md` for future work.
+
+The shared `button[gcButton]` component in `libs/shared/ui` provides compact outline, subtle, and primary variants while preserving native button events and disabled behavior. Job Call/View actions share pale resting styles and blue hover states for every customer. Reminder cards follow Stitch's title/due row and compact status/action footer; their delivery states are explicitly illustrative. The workshop card preserves the two inset metric tiles and note panel, with recent completed jobs replacing out-of-scope staff attendance. The overview remains a feature child component.
+
 ## Delivery sequence
 
 1. Authentication and garage setup.
@@ -67,3 +81,7 @@ npx nx e2e garage-care-e2e
 ```
 
 For documentation-only changes, run Prettier checks on the changed Markdown. For feature changes, build and run focused behavior tests; verify the rendered page at desktop and mobile sizes, including keyboard navigation and validation. Do not describe planned integrations as working features.
+
+All application and shared UI colors now come from libs/shared/styles/src/lib/abstracts/\_colors.scss. Component styles import its semantic Sass palette; the light theme exposes --palette-\* custom properties for SVG paint. Existing legacy shared-style aliases resolve to this same palette. Opacity variants and shadows retain their original values. Literal color values are allowed only in the palette and test expectations.
+
+Upcoming Reminders follows the approved Stitch four-column grid, heading indicator and View All action, 4px small spacing, typography, and compact card footers. Browser checks at 1280px verify 218px-wide reminder cards with heights of 153/133/133px. View All remains a clearly announced preview action until the reminders module is implemented.
