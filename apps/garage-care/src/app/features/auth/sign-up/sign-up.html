@@ -219,128 +219,6 @@
             }
           </div>
         </div>
-        <div class="field-grid">
-          <div class="field">
-            <label for="line1">Garage street address</label>
-            <div class="input-wrap">
-              <input
-                id="line1"
-                formControlName="line1"
-                autocomplete="street-address"
-                [attr.aria-invalid]="invalid('line1')"
-                aria-describedby="line1-error"
-                required
-              />
-            </div>
-            @if (invalid('line1')) {
-            <p class="field-error" id="line1-error">
-              Enter a valid Garage street address.
-            </p>
-            }
-          </div>
-          <div class="field">
-            <label for="city">City</label>
-            <div class="input-wrap">
-              <input
-                id="city"
-                formControlName="city"
-                autocomplete="address-level2"
-                [attr.aria-invalid]="invalid('city')"
-                aria-describedby="city-error"
-                required
-              />
-            </div>
-            @if (invalid('city')) {
-            <p class="field-error" id="city-error">Enter a valid City.</p>
-            }
-          </div>
-          <div class="field">
-            <label for="state">State or union territory</label>
-            <div class="input-wrap">
-              <input
-                id="state"
-                formControlName="state"
-                autocomplete="address-level1"
-                [attr.aria-invalid]="invalid('state')"
-                aria-describedby="state-error"
-                required
-              />
-            </div>
-            @if (invalid('state')) {
-            <p class="field-error" id="state-error">
-              Enter a valid State or union territory.
-            </p>
-            }
-          </div>
-          <div class="field">
-            <label for="stateCode">State code (two digits)</label>
-            <div class="input-wrap">
-              <input
-                id="stateCode"
-                formControlName="stateCode"
-                autocomplete="off"
-                [attr.aria-invalid]="invalid('stateCode')"
-                aria-describedby="stateCode-error"
-                required
-              />
-            </div>
-            @if (invalid('stateCode')) {
-            <p class="field-error" id="stateCode-error">
-              Enter a valid State code (two digits).
-            </p>
-            }
-          </div>
-          <div class="field">
-            <label for="postalCode">PIN code</label>
-            <div class="input-wrap">
-              <input
-                id="postalCode"
-                formControlName="postalCode"
-                autocomplete="postal-code"
-                [attr.aria-invalid]="invalid('postalCode')"
-                aria-describedby="postalCode-error"
-                required
-              />
-            </div>
-            @if (invalid('postalCode')) {
-            <p class="field-error" id="postalCode-error">
-              Enter a valid PIN code.
-            </p>
-            }
-          </div>
-          <div class="field">
-            <label for="registrationMode">GST registration mode</label>
-            <select id="registrationMode" formControlName="registrationMode">
-              <option value="unregistered">Unregistered (non-GST)</option>
-              <option value="regular">Regular</option>
-              <option value="composition">Composition</option>
-            </select>
-          </div>
-          @if (form.controls.registrationMode.value !== 'unregistered') {
-          <div class="field">
-            <label for="gstin">GSTIN</label>
-            <div class="input-wrap">
-              <input
-                id="gstin"
-                formControlName="gstin"
-                maxlength="15"
-                [attr.aria-invalid]="invalid('gstin')"
-                aria-describedby="gstin-error"
-                required
-              />
-            </div>
-            @if (invalid('gstin')) {
-            <p class="field-error" id="gstin-error">
-              Enter a valid uppercase GSTIN.
-            </p>
-            }
-          </div>
-          }
-          <p class="preview-note">
-            Registered GST details remain pending verification. GST invoice
-            issuance is unavailable until tax configuration is completed.
-          </p>
-        </div>
         <div class="security-rules" id="security-rules">
           <strong>Security rules:</strong>@for (rule of rules(); track
           rule.label) {
@@ -389,7 +267,8 @@
           }
           <label class="checkbox-label"
             ><input type="checkbox" formControlName="updates" /><span
-              >WhatsApp &amp; SMS updates are unavailable (optional).</span
+              >Send me job tracking updates via WhatsApp &amp; SMS
+              (optional).</span
             ></label
           >
         </div>
@@ -409,8 +288,8 @@
           <a class="text-link" routerLink="/sign-in">Sign In</a>
         </p>
         <p class="preview-note">
-          Creates an account in the local backend. Owner name and messaging
-          preferences are unavailable. Dashboard data remains a preview.
+          Account creation is connected. Garage address and GST setup come
+          later. Messaging preferences are unavailable.
         </p>
         @if (notice()) {
         <p class="notice" role="status">{{ notice() }}</p>

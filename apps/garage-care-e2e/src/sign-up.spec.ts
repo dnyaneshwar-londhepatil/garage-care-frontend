@@ -21,11 +21,6 @@ test('sign-up registers through the local API and establishes a session', async 
   const password = 'LocalTest!-' + crypto.randomUUID();
   await page.locator('#password').fill(password);
   await page.locator('#confirmPassword').fill(password);
-  await page.locator('#line1').fill('Local test address');
-  await page.locator('#city').fill('Pune');
-  await page.locator('#state').fill('Maharashtra');
-  await page.locator('#stateCode').fill('27');
-  await page.locator('#postalCode').fill('411001');
   await page.locator('input[formControlName="terms"]').check();
   const responsePromise = page.waitForResponse('**/api/v1/auth/register');
   await page
@@ -68,14 +63,6 @@ test('sign-up layout and backend failure stay accessible across sizes', async ({
     await page.locator('#phone').fill('9876543210');
     await page.locator('#password').fill('TestPassword123!');
     await page.locator('#confirmPassword').fill('TestPassword123!');
-    for (const [id, value] of Object.entries({
-      line1: 'Test Road',
-      city: 'Pune',
-      state: 'Maharashtra',
-      stateCode: '27',
-      postalCode: '411001',
-    }))
-      await page.locator('#' + id).fill(value);
     await page.locator('input[formControlName="terms"]').check();
     await page
       .getByRole('button', { name: 'Create Account', exact: true })

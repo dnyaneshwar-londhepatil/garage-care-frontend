@@ -8,9 +8,9 @@ export interface RegistrationInput {
   garage: {
     name: string;
     phone: string;
-    registrationMode: 'unregistered' | 'regular' | 'composition';
+    registrationMode?: 'unregistered' | 'regular' | 'composition';
     gstin?: string;
-    address: {
+    address?: {
       line1: string;
       city: string;
       state: string;
