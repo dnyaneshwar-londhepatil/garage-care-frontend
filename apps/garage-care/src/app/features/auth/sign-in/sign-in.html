@@ -95,13 +95,9 @@
               aria-describedby="signin-preview-note"
             />Remember me</label
           >
-          <button
-            type="button"
-            class="text-link"
-            (click)="unavailable('Password recovery')"
+          <a class="text-link" routerLink="/forgot-password"
+            >Forgot password?</a
           >
-            Forgot password?
-          </button>
         </div>
         <button type="submit" class="submit-button">
           Sign In <span aria-hidden="true">→</span>

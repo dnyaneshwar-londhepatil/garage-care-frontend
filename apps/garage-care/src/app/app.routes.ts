@@ -1,6 +1,14 @@
 import { Route } from '@angular/router';
 
 export const appRoutes: Route[] = [
+  {
+    path: 'forgot-password',
+    title: 'Forgot password | GarageCare',
+    loadComponent: () =>
+      import('./features/auth/forgot-password/forgot-password').then(
+        (m) => m.ForgotPassword,
+      ),
+  },
   { path: '', pathMatch: 'full', redirectTo: 'sign-up' },
   {
     path: 'sign-in',
