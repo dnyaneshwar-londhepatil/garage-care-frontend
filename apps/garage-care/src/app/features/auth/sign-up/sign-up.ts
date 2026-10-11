@@ -1,7 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthApi } from '../../../core/api/auth-api';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -10,17 +12,13 @@ import { RouterLink } from '@angular/router';
   styleUrl: './sign-up.scss',
 })
 export class SignUp {
+  private readonly auth = inject(AuthApi);
+  private readonly router = inject(Router);
+  readonly pending = signal(false);
   private readonly fb = inject(FormBuilder);
   readonly form = this.fb.nonNullable.group(
     {
-      fullName: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/\S/),
-          Validators.maxLength(100),
-        ],
-      ],
+      fullName: [{ value: '', disabled: true }],
       garageName: [
         '',
         [
@@ -35,19 +33,62 @@ export class SignUp {
         '',
         [
           Validators.required,
-          Validators.minLength(8),
+          Validators.minLength(12),
+          Validators.maxLength(128),
           Validators.pattern(/^(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).*$/),
         ],
       ],
       confirmPassword: ['', Validators.required],
       terms: [false, Validators.requiredTrue],
-      updates: [false],
+      updates: [{ value: false, disabled: true }],
+      line1: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/\S/),
+          Validators.maxLength(200),
+        ],
+      ],
+      city: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/\S/),
+          Validators.maxLength(200),
+        ],
+      ],
+      state: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/\S/),
+          Validators.maxLength(200),
+        ],
+      ],
+      stateCode: ['', [Validators.required, Validators.pattern(/^\d{2}$/)]],
+      postalCode: [
+        '',
+        [Validators.required, Validators.pattern(/^[1-9]\d{5}$/)],
+      ],
+      registrationMode: ['unregistered', Validators.required],
+      gstin: [''],
     },
     {
-      validators: (group) =>
-        group.get('password')?.value === group.get('confirmPassword')?.value
-          ? null
-          : { passwordMismatch: true },
+      validators: (group) => {
+        const errors: Record<string, boolean> = {};
+        if (
+          group.get('password')?.value !== group.get('confirmPassword')?.value
+        )
+          errors['passwordMismatch'] = true;
+        if (
+          group.get('registrationMode')?.value !== 'unregistered' &&
+          !/^\d{2}[A-Z]{5}\d{4}[A-Z][A-Z\d]Z[A-Z\d]$/.test(
+            group.get('gstin')?.value ?? '',
+          )
+        )
+          errors['gstinInvalid'] = true;
+        return Object.keys(errors).length ? errors : null;
+      },
     },
   );
   readonly submitted = signal(false);
@@ -59,7 +100,10 @@ export class SignUp {
     { initialValue: '' },
   );
   readonly rules = computed(() => [
-    { label: '8+ characters', met: this.password().length >= 8 },
+    {
+      label: '12–128 characters',
+      met: this.password().length >= 12 && this.password().length <= 128,
+    },
     { label: '1 number', met: /\d/.test(this.password()) },
     {
       label: '1 special character',
@@ -72,22 +116,67 @@ export class SignUp {
     return (
       (control.touched || this.submitted()) &&
       (control.invalid ||
-        (name === 'confirmPassword' && this.form.hasError('passwordMismatch')))
+        (name === 'confirmPassword' &&
+          this.form.hasError('passwordMismatch')) ||
+        (name === 'gstin' && this.form.hasError('gstinInvalid')))
     );
   }
 
-  submit(): void {
+  async submit(): Promise<void> {
+    if (this.pending()) return;
     this.submitted.set(true);
     this.form.markAllAsTouched();
     if (this.form.invalid) {
       this.notice.set('Please correct the highlighted fields.');
       return;
     }
-    this.notice.set(
-      'Your details pass the preview checks. No account has been created. Registration will be available when the secure sign-up service and garage setup are connected.',
-    );
+    const value = this.form.getRawValue();
+    this.pending.set(true);
+    this.notice.set('');
+    try {
+      await this.auth.register({
+        owner: { email: value.email.trim(), password: value.password },
+        garage: {
+          name: value.garageName.trim(),
+          phone: '+91' + value.phone,
+          registrationMode: value.registrationMode as
+            | 'unregistered'
+            | 'regular'
+            | 'composition',
+          ...(value.registrationMode !== 'unregistered'
+            ? { gstin: value.gstin }
+            : {}),
+          address: {
+            line1: value.line1.trim(),
+            city: value.city.trim(),
+            state: value.state.trim(),
+            stateCode: value.stateCode,
+            postalCode: value.postalCode,
+            country: 'IN',
+          },
+        },
+      });
+      this.form.controls.password.reset();
+      this.form.controls.confirmPassword.reset();
+      this.notice.set('Account created. Opening your dashboard.');
+      await this.router.navigateByUrl('/dashboard');
+    } catch (error) {
+      const status = error instanceof HttpErrorResponse ? error.status : 0;
+      this.notice.set(
+        status === 409
+          ? 'An account with this email already exists. Please sign in.'
+          : status === 400
+            ? 'Registration details were rejected. Check your garage details.'
+            : status === 403
+              ? 'Your security session expired. Please try again.'
+              : status === 429
+                ? 'Too many attempts. Please try again later.'
+                : 'Account creation could not be confirmed. Check the local backend, or sign in before trying again.',
+      );
+    } finally {
+      this.pending.set(false);
+    }
   }
-
   unavailable(item: string): void {
     this.notice.set(`${item} is not available in this frontend preview yet.`);
   }
