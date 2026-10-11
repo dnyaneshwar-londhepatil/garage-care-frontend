@@ -12,8 +12,8 @@ $color-success: #15803d !default;
 $color-warning: #b45309 !default;
 $color-error: #b91c1c !default;
 
-$font-family-base: 'Inter', 'Segoe UI', sans-serif !default;
-$font-family-mono: 'Cascadia Code', Consolas, monospace !default;
+$font-family-base: 'Hanken Grotesk', 'Segoe UI', sans-serif !default;
+$font-family-mono: 'JetBrains Mono', Consolas, monospace !default;
 
 $font-size-xs: 0.75rem !default;
 $font-size-sm: 0.875rem !default;
@@ -63,7 +63,7 @@ $breakpoints: (
   sm: 640px,
   md: 768px,
   lg: 1024px,
-  xl: 1280px
+  xl: 1280px,
 ) !default;
 
 $font-sizes: (
@@ -74,5 +74,5 @@ $font-sizes: (
   'xl': $font-size-xl,
   '2xl': $font-size-2xl,
   '3xl': $font-size-3xl,
-  '4xl': $font-size-4xl
+  '4xl': $font-size-4xl,
 ) !default;

@@ -76,3 +76,27 @@ Before considering work complete:
 ## Repository intent
 
 The frontend should remain a clean, maintainable Angular application focused on Garage Care operations, with shared styling organized in reusable Sass modules and a lightweight Nx-based project structure.
+
+## Product and architecture baseline
+
+- Read `docs/PRD.md`, `docs/SYSTEM_DESIGN.md`, `docs/API_SPECIFICATION.md`, and `docs/DB_DESIGN.md` before implementing the relevant domain. See `docs/IMPLEMENTATION.md` for the current frontend baseline.
+- V1 serves one owner account per garage in India, with INR amounts and responsive desktop, tablet, and mobile workflows. Employee accounts, multiple branches, inventory stock, and payment gateways are out of scope.
+- This checkout contains the frontend. The API, worker, database, and integrations described in the system design are planned product architecture, not existing applications here. Retain `apps/garage-care`; the proposed `apps/web` path in the system design is not a rename instruction.
+- Use standalone Angular components, Reactive Forms for forms, Signals for local state, and RxJS where asynchronous streams are useful. Group feature code under `apps/garage-care/src/app` and keep the root component focused on the app shell.
+- Preserve SSR and hydration compatibility. Guard browser-only APIs and do not access browser storage during server rendering.
+- Use the approved Stitch screen as the visual reference. Record its project and screen identifiers when available; do not silently substitute an invented design if access is unavailable.
+
+## Approved typography
+
+- Verified all nine screens in Stitch project `17101721684738931297` on 2026-10-11, including Create Account screen `d2eb4ce89fa2457584e9a3c268a7632d`. They share two text font families: **Hanken Grotesk** for headings, body text, labels, and controls; **JetBrains Mono** for numeric/currency text, phone numbers, vehicle registration numbers, and job identifiers. Material Symbols Outlined is an icon font, not a text family.
+- Reuse the shared Sass tokens `$font-family-base` and `$font-family-mono`, or CSS variables `--font-family-base` and `--font-family-mono`. Do not introduce another text font or re-audit every screen for routine feature work unless the approved design changes.
+- Fonts are hosted locally under `apps/garage-care/public/fonts`, with their OFL licenses. Shared `@font-face` declarations are in `libs/shared/styles/src/lib/base/_fonts.scss`, loaded by the application's global stylesheet. No Google Fonts network request is needed at runtime.
+
+## API, security, and user experience
+
+- REST endpoints use `/api/v1`. Keep HTTP access in services and align typed payloads and error handling with the API specification. Finalize unresolved DTO and CSRF contracts before wiring production authentication.
+- Authentication uses Secure, HttpOnly cookies with CSRF protection. Never persist passwords or session/refresh tokens in browser storage, logs, or source code. The server determines garage context and authorization.
+- Clearly distinguish a frontend preview from a completed server action. Never report account creation, invoice finalization, or message delivery without a successful backend response.
+- Provide accessible labels, keyboard interaction, visible focus, field validation, and loading/error states. Prevent duplicate submissions while a request is pending.
+- Server calculations are authoritative for prices, discounts, and taxes. Preserve the distinction between regular, composition, and unregistered GST modes, and between issued invoices and collected payments.
+- Cache static app-shell assets only by default when PWA support is implemented; do not cache authenticated API responses or private invoices.
