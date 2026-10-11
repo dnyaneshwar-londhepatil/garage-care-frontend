@@ -48,37 +48,6 @@ export class SignUp {
       confirmPassword: ['', Validators.required],
       terms: [false, Validators.requiredTrue],
       updates: [{ value: false, disabled: true }],
-      line1: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/\S/),
-          Validators.maxLength(200),
-        ],
-      ],
-      city: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/\S/),
-          Validators.maxLength(200),
-        ],
-      ],
-      state: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/\S/),
-          Validators.maxLength(200),
-        ],
-      ],
-      stateCode: ['', [Validators.required, Validators.pattern(/^\d{2}$/)]],
-      postalCode: [
-        '',
-        [Validators.required, Validators.pattern(/^[1-9]\d{5}$/)],
-      ],
-      registrationMode: ['unregistered', Validators.required],
-      gstin: [''],
     },
     {
       validators: (group) => {
@@ -87,13 +56,7 @@ export class SignUp {
           group.get('password')?.value !== group.get('confirmPassword')?.value
         )
           errors['passwordMismatch'] = true;
-        if (
-          group.get('registrationMode')?.value !== 'unregistered' &&
-          !/^\d{2}[A-Z]{5}\d{4}[A-Z][A-Z\d]Z[A-Z\d]$/.test(
-            group.get('gstin')?.value ?? '',
-          )
-        )
-          errors['gstinInvalid'] = true;
+
         return Object.keys(errors).length ? errors : null;
       },
     },
@@ -123,9 +86,7 @@ export class SignUp {
     return (
       (control.touched || this.submitted()) &&
       (control.invalid ||
-        (name === 'confirmPassword' &&
-          this.form.hasError('passwordMismatch')) ||
-        (name === 'gstin' && this.form.hasError('gstinInvalid')))
+        (name === 'confirmPassword' && this.form.hasError('passwordMismatch')))
     );
   }
 
@@ -150,21 +111,6 @@ export class SignUp {
         garage: {
           name: value.garageName.trim(),
           phone: '+91' + value.phone,
-          registrationMode: value.registrationMode as
-            | 'unregistered'
-            | 'regular'
-            | 'composition',
-          ...(value.registrationMode !== 'unregistered'
-            ? { gstin: value.gstin }
-            : {}),
-          address: {
-            line1: value.line1.trim(),
-            city: value.city.trim(),
-            state: value.state.trim(),
-            stateCode: value.stateCode,
-            postalCode: value.postalCode,
-            country: 'IN',
-          },
         },
       });
       this.form.controls.password.reset();

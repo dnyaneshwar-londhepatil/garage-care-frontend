@@ -15,11 +15,6 @@ describe('SignUp', () => {
     password: 'WorkshopTest1!',
     confirmPassword: 'WorkshopTest1!',
     terms: true,
-    line1: 'Test Road',
-    city: 'Pune',
-    state: 'Maharashtra',
-    stateCode: '27',
-    postalCode: '411001',
   };
   beforeEach(() => {
     register.mockReset();
@@ -30,7 +25,7 @@ describe('SignUp', () => {
       ],
     });
   });
-  it('rejects missing address, short passwords, and missing registered GSTIN', async () => {
+  it('rejects missing owner details and short passwords', async () => {
     const component = TestBed.createComponent(SignUp).componentInstance;
     await component.submit();
     expect(register).not.toHaveBeenCalled();
@@ -40,9 +35,7 @@ describe('SignUp', () => {
       confirmPassword: 'Short1!',
     });
     expect(component.form.invalid).toBe(true);
-    component.form.patchValue({ ...details, registrationMode: 'regular' });
-    expect(component.form.hasError('gstinInvalid')).toBe(true);
-    component.form.patchValue({ gstin: '27ABCDE1234F1Z5' });
+    component.form.patchValue(details);
     expect(component.form.valid).toBe(true);
   });
   it('maps strict registration data, prevents duplicate requests and clears secrets after success', async () => {
@@ -70,15 +63,6 @@ describe('SignUp', () => {
       garage: {
         name: details.garageName,
         phone: '+919876543210',
-        registrationMode: 'unregistered',
-        address: {
-          line1: 'Test Road',
-          city: 'Pune',
-          state: 'Maharashtra',
-          stateCode: '27',
-          postalCode: '411001',
-          country: 'IN',
-        },
       },
     });
     finish();

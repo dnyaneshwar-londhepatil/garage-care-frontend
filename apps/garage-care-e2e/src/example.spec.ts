@@ -1,8 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('sign-up validates input without submitting incomplete garage details', async ({
-  page,
-}) => {
+test('sign-up validates input and password requirements', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveURL(/\/sign-up$/);
   await expect(page.locator('#garageName')).toHaveClass(/ng-pristine/);
