@@ -2,6 +2,14 @@ import { Route } from '@angular/router';
 
 export const appRoutes: Route[] = [
   {
+    path: 'reset-password',
+    title: 'Reset password | GarageCare',
+    loadComponent: () =>
+      import('./features/auth/reset-password/reset-password').then(
+        (m) => m.ResetPassword,
+      ),
+  },
+  {
     path: 'forgot-password',
     title: 'Forgot password | GarageCare',
     loadComponent: () =>

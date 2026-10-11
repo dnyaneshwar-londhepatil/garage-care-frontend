@@ -41,6 +41,12 @@ Submission explicitly reports that no session was created. Remember me is an in-
 
 The `/forgot-password` route follows Stitch project `17101721684738931297`, screen `e36b62afa17844ee8e833ae27d3271ef`. The standalone component uses Reactive Forms for email validation, accessible errors, shared authentication styling/fonts, and navigation back to sign-in. Valid preview submission explicitly states that no reset email was sent. `POST /api/v1/auth/forgot-password` integration awaits the backend and finalized CSRF contract; there is no simulated delivery or credential persistence.
 
+## Reset password preview
+
+The `/reset-password` route follows Stitch project `17101721684738931297`, screen `7c546a86461949c9b28f2b0690d27ea9`. The standalone component provides new-password and confirmation fields, visibility controls, matching validation, and a live checklist/strength badge following the reference's preview rules. Recovery pages share `_auth-recovery.scss` and the existing fonts. Links return to sign-in or request a new link through Forgot Password.
+
+No token is validated, password changed, or session revoked in this preview. The page does not display fabricated success or expiry states. Production `POST /api/v1/auth/reset-password` requires the backend's token, password-policy, expiry, and CSRF contracts.
+
 ## Delivery sequence
 
 1. Authentication and garage setup.
