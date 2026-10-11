@@ -1,33 +1,43 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { SignIn } from './sign-in';
+import { AuthApi } from '../../../core/api/auth-api';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('SignIn', () => {
-  beforeEach(() =>
-    TestBed.configureTestingModule({ providers: [provideRouter([])] }),
-  );
-
-  it('rejects empty fields and malformed email', () => {
-    const component = TestBed.createComponent(SignIn).componentInstance;
-    component.submit();
-    expect(component.invalid('email')).toBe(true);
-    expect(component.invalid('password')).toBe(true);
-    component.form.patchValue({
-      email: 'invalid',
-      password: 'existing-password',
+  const login = vi.fn();
+  beforeEach(() => {
+    login.mockReset();
+    TestBed.configureTestingModule({
+      providers: [provideRouter([]), { provide: AuthApi, useValue: { login } }],
     });
-    expect(component.form.invalid).toBe(true);
   });
-
-  it('accepts existing passwords without applying registration rules and creates no session', () => {
+  it('rejects invalid input without sending credentials', async () => {
     const component = TestBed.createComponent(SignIn).componentInstance;
-    component.form.patchValue({
-      email: 'owner@example.com',
-      password: 'abc',
-      rememberMe: true,
-    });
-    component.submit();
-    expect(component.form.valid).toBe(true);
-    expect(component.notice()).toContain('No session has been created');
+    await component.submit();
+    expect(component.invalid('email')).toBe(true);
+    expect(login).not.toHaveBeenCalled();
+  });
+  it('navigates only after backend login succeeds and clears the password', async () => {
+    const navigate = vi
+      .spyOn(TestBed.inject(Router), 'navigateByUrl')
+      .mockResolvedValue(true);
+    login.mockResolvedValue(undefined);
+    const component = TestBed.createComponent(SignIn).componentInstance;
+    component.form.patchValue({ email: 'owner@example.com', password: 'abc' });
+    await component.submit();
+    expect(login).toHaveBeenCalledWith('owner@example.com', 'abc');
+    expect(navigate).toHaveBeenCalledWith('/dashboard');
+    expect(component.form.controls.password.value).toBe('');
+  });
+  it('reports rejected credentials without navigating', async () => {
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl');
+    login.mockRejectedValue(new HttpErrorResponse({ status: 401 }));
+    const component = TestBed.createComponent(SignIn).componentInstance;
+    component.form.patchValue({ email: 'owner@example.com', password: 'abc' });
+    await component.submit();
+    expect(component.notice()).toContain('incorrect');
+    expect(navigate).not.toHaveBeenCalled();
+    expect(component.pending()).toBe(false);
   });
 });

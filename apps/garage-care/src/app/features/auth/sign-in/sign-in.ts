@@ -1,6 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthApi } from '../../../core/api/auth-api';
 
 @Component({
   selector: 'app-sign-in',
@@ -10,6 +12,9 @@ import { RouterLink } from '@angular/router';
 })
 export class SignIn {
   private readonly fb = inject(FormBuilder);
+  private readonly api = inject(AuthApi);
+  private readonly router = inject(Router);
+  readonly pending = signal(false);
   readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
@@ -24,16 +29,32 @@ export class SignIn {
     return control.invalid && (control.touched || this.submitted());
   }
 
-  submit(): void {
+  async submit(): Promise<void> {
+    if (this.pending()) return;
     this.submitted.set(true);
     this.form.markAllAsTouched();
-    this.notice.set(
-      this.form.invalid
-        ? 'Please correct the highlighted fields.'
-        : 'Sign-in is not connected in this frontend preview. No session has been created.',
-    );
+    if (this.form.invalid) {
+      this.notice.set('Please correct the highlighted fields.');
+      return;
+    }
+    this.pending.set(true);
+    this.notice.set('');
+    try {
+      const { email, password } = this.form.getRawValue();
+      await this.api.login(email, password);
+      this.form.controls.password.reset();
+      this.notice.set('Signed in successfully.');
+      await this.router.navigateByUrl('/dashboard');
+    } catch (error) {
+      this.notice.set(
+        error instanceof HttpErrorResponse && error.status === 401
+          ? 'Email or password is incorrect.'
+          : 'Unable to sign in. Check that the local backend is running and try again.',
+      );
+    } finally {
+      this.pending.set(false);
+    }
   }
-
   unavailable(item: string): void {
     this.notice.set(`${item} is not available in this frontend preview yet.`);
   }

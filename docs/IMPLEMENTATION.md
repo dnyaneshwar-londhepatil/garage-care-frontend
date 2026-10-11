@@ -85,3 +85,17 @@ For documentation-only changes, run Prettier checks on the changed Markdown. For
 All application and shared UI colors now come from libs/shared/styles/src/lib/abstracts/\_colors.scss. Component styles import its semantic Sass palette; the light theme exposes --palette-\* custom properties for SVG paint. Existing legacy shared-style aliases resolve to this same palette. Opacity variants and shadows retain their original values. Literal color values are allowed only in the palette and test expectations.
 
 Upcoming Reminders follows the approved Stitch four-column grid, heading indicator and View All action, 4px small spacing, typography, and compact card footers. Browser checks at 1280px verify 218px-wide reminder cards with heights of 153/133/133px. View All remains a clearly announced preview action until the reminders module is implemented.
+
+## Local sign-in integration
+
+Sign-in and sign-up read the API base URL from the environment configuration. Development currently calls http://localhost:3000/api/v1 directly; the Angular proxy remains available for relative API URLs. Start the backend with `npm run dev:local` in its repository, then run `npx nx serve garage-care --port=4200` here. The backend must allow `http://localhost:4200` in FRONTEND_ORIGINS. The proxy targets localhost:3000 and preserves the browser Origin. Production hosting must route `/api` to the backend on a compatible same-site deployment.
+
+Sign-in fetches anonymous CSRF before login and uses cookie credentials. Session credentials are never stored in browser storage. Remember me is disabled because the backend does not expose that option. Dashboard content and recovery remain previews. Sign-in requires an existing owner; sign-up now creates one through the backend.
+
+## Local sign-up integration
+
+Sign-up now collects the backend-required garage address and GST mode, maps Indian phone numbers to +91, and registers the owner through cookie/CSRF authentication. Passwords require 12–128 characters plus the existing number/special-character form rules. Registered modes require a GSTIN format match; this is not GST verification, and registered invoice issuance remains blocked pending tax configuration. Owner name is required in the form and stored by the backend. Messaging preferences remain disabled because the registration API has no corresponding field. Terms acceptance is a client-side check, not a stored consent record; policy content remains unavailable.
+
+A successful backend response creates the account and session, clears password fields and opens the preview dashboard. Requests cannot be double-submitted while pending. No passwords or session credentials are persisted in browser storage. Recovery and dashboard data remain previews. This branch includes the sign-in API/proxy dependency from PR #6, which is still unmerged.
+
+Verification includes an opt-in real local signup test: set RUN_LOCAL_BACKEND=1 and run Playwright with apps/garage-care-e2e/playwright.config.mts. This creates a test garage/owner with a unique example.invalid email and random password in the development database. Default browser runs skip this database-dependent case.

@@ -1,64 +1,101 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { vi } from 'vitest';
+import { AuthApi } from '../../../core/api/auth-api';
 import { SignUp } from './sign-up';
 
 describe('SignUp', () => {
-  beforeEach(() =>
-    TestBed.configureTestingModule({ providers: [provideRouter([])] }),
-  );
-  const validDetails = {
-    fullName: 'Rajesh Sharma',
+  const register = vi.fn();
+  const details = {
+    fullName: 'Test Owner',
     garageName: 'Apex Auto Garage',
     email: 'owner@example.com',
     phone: '9876543210',
-    password: 'Workshop1!',
-    confirmPassword: 'Workshop1!',
+    password: 'WorkshopTest1!',
+    confirmPassword: 'WorkshopTest1!',
     terms: true,
-    updates: false,
+    line1: 'Test Road',
+    city: 'Pune',
+    state: 'Maharashtra',
+    stateCode: '27',
+    postalCode: '411001',
   };
-
-  it('rejects invalid input and password mismatches', () => {
-    const component = TestBed.createComponent(SignUp).componentInstance;
-    component.submit();
-    expect(component.form.invalid).toBe(true);
-    expect(component.invalid('email')).toBe(true);
-    component.form.setValue({
-      ...validDetails,
-      confirmPassword: 'Different1!',
+  beforeEach(() => {
+    register.mockReset();
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: AuthApi, useValue: { register } },
+      ],
     });
-    expect(component.form.hasError('passwordMismatch')).toBe(true);
+  });
+  it('rejects missing address, short passwords, and missing registered GSTIN', async () => {
+    const component = TestBed.createComponent(SignUp).componentInstance;
+    await component.submit();
+    expect(register).not.toHaveBeenCalled();
     component.form.patchValue({
-      confirmPassword: validDetails.password,
-      phone: '1234567890',
+      ...details,
+      password: 'Short1!',
+      confirmPassword: 'Short1!',
     });
-    expect(component.form.controls.phone.invalid).toBe(true);
-    component.form.patchValue({ fullName: '   ' });
-    expect(component.form.controls.fullName.invalid).toBe(true);
-  });
-
-  it('validates details without claiming account creation or requiring marketing consent', () => {
-    const component = TestBed.createComponent(SignUp).componentInstance;
-    component.form.setValue(validDetails);
-    component.submit();
-    expect(component.form.valid).toBe(true);
-    expect(component.notice()).toContain('No account has been created');
-    component.form.patchValue({ terms: false });
     expect(component.form.invalid).toBe(true);
+    component.form.patchValue({ ...details, registrationMode: 'regular' });
+    expect(component.form.hasError('gstinInvalid')).toBe(true);
+    component.form.patchValue({ gstin: '27ABCDE1234F1Z5' });
+    expect(component.form.valid).toBe(true);
   });
-
-  it('toggles password visibility using accessible controls', async () => {
-    const fixture = TestBed.createComponent(SignUp);
-    await fixture.whenStable();
-    const element = fixture.nativeElement as HTMLElement;
-    const input = element.querySelector<HTMLInputElement>('#password');
-    expect(input?.type).toBe('password');
-    element
-      .querySelector<HTMLButtonElement>('button[aria-label="Show password"]')
-      ?.click();
-    await fixture.whenStable();
-    expect(input?.type).toBe('text');
-    expect(
-      element.querySelector('button[aria-label="Hide password"]'),
-    ).not.toBeNull();
+  it('maps strict registration data, prevents duplicate requests and clears secrets after success', async () => {
+    const component = TestBed.createComponent(SignUp).componentInstance;
+    component.form.patchValue(details);
+    const navigate = vi
+      .spyOn(TestBed.inject(Router), 'navigateByUrl')
+      .mockResolvedValue(true);
+    let finish!: () => void;
+    register.mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const submission = component.submit();
+    await component.submit();
+    expect(register).toHaveBeenCalledTimes(1);
+    expect(register).toHaveBeenCalledWith({
+      owner: {
+        email: details.email,
+        password: details.password,
+        fullName: details.fullName,
+      },
+      garage: {
+        name: details.garageName,
+        phone: '+919876543210',
+        registrationMode: 'unregistered',
+        address: {
+          line1: 'Test Road',
+          city: 'Pune',
+          state: 'Maharashtra',
+          stateCode: '27',
+          postalCode: '411001',
+          country: 'IN',
+        },
+      },
+    });
+    finish();
+    await submission;
+    expect(component.form.controls.password.value).toBe('');
+    expect(component.form.controls.confirmPassword.value).toBe('');
+    expect(navigate).toHaveBeenCalledWith('/dashboard');
+    expect(component.pending()).toBe(false);
+  });
+  it('reports duplicate-email failure without claiming success or navigating', async () => {
+    const component = TestBed.createComponent(SignUp).componentInstance;
+    component.form.patchValue(details);
+    register.mockRejectedValue(new HttpErrorResponse({ status: 409 }));
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl');
+    await component.submit();
+    expect(component.notice()).toContain('already exists');
+    expect(navigate).not.toHaveBeenCalled();
+    expect(component.pending()).toBe(false);
   });
 });

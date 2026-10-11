@@ -3,6 +3,15 @@ import { test, expect } from '@playwright/test';
 test('sign-in validates fields, toggles password, and links to sign-up', async ({
   page,
 }) => {
+  await page.route('**/api/v1/auth/csrf', (route) =>
+    route.fulfill({ json: { data: { csrfToken: 'test-csrf' } } }),
+  );
+  await page.route('**/api/v1/auth/login', (route) =>
+    route.fulfill({
+      status: 401,
+      json: { error: { code: 'INVALID_CREDENTIALS' } },
+    }),
+  );
   await page.goto('/sign-in');
   await expect(page).toHaveTitle('Sign in | GarageCare');
   await page.getByRole('button', { name: 'Sign In', exact: true }).click();
@@ -23,7 +32,7 @@ test('sign-in validates fields, toggles password, and links to sign-up', async (
   );
   await page.getByRole('button', { name: 'Sign In', exact: true }).click();
   await expect(page.getByRole('status')).toContainText(
-    'No session has been created',
+    'Email or password is incorrect.',
   );
   await page.getByRole('link', { name: 'Forgot password?' }).click();
   await expect(page).toHaveURL(/\/forgot-password$/);
@@ -39,6 +48,15 @@ test('sign-in fits mobile, tablet, and desktop and supports keyboard input', asy
 }) => {
   for (const width of [1440, 768, 390]) {
     await page.setViewportSize({ width, height: 900 });
+    await page.route('**/api/v1/auth/csrf', (route) =>
+      route.fulfill({ json: { data: { csrfToken: 'test-csrf' } } }),
+    );
+    await page.route('**/api/v1/auth/login', (route) =>
+      route.fulfill({
+        status: 401,
+        json: { error: { code: 'INVALID_CREDENTIALS' } },
+      }),
+    );
     await page.goto('/sign-in');
     await expect(
       page.getByRole('heading', { name: 'Welcome back' }),
