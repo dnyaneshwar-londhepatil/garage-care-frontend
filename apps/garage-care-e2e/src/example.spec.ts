@@ -1,10 +1,11 @@
 import { test, expect } from '@playwright/test';
 
-test('sign-up validates input and keeps submission a preview', async ({
+test('sign-up validates input without submitting incomplete garage details', async ({
   page,
 }) => {
   await page.goto('/');
   await expect(page).toHaveURL(/\/sign-up$/);
+  await expect(page.locator('#garageName')).toHaveClass(/ng-pristine/);
   await expect(
     page.getByRole('heading', { name: 'Create your account' }),
   ).toBeVisible();
@@ -12,7 +13,7 @@ test('sign-up validates input and keeps submission a preview', async ({
     .getByRole('button', { name: 'Create Account', exact: true })
     .click();
   await expect(page.getByText('Enter a valid email address.')).toBeVisible();
-  await page.getByLabel('Full Name').fill('Rajesh Sharma');
+  await page.getByLabel('Full Name').fill('Test Owner');
   await page.getByLabel('Garage Name').fill('Apex Auto Garage');
   await page.getByLabel('Email Address').fill('owner@example.com');
   await page.getByRole('textbox', { name: 'Mobile number' }).fill('9876543210');
@@ -27,7 +28,7 @@ test('sign-up validates input and keeps submission a preview', async ({
     .getByRole('button', { name: 'Create Account', exact: true })
     .click();
   await expect(page.getByRole('status')).toContainText(
-    'No account has been created',
+    'Please correct the highlighted fields.',
   );
 });
 

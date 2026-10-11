@@ -14,11 +14,11 @@ describe('AuthApi', () => {
     const api = TestBed.inject(AuthApi);
     const http = TestBed.inject(HttpTestingController);
     const result = api.login('owner@example.com', 'test-password');
-    const csrf = http.expectOne('/api/v1/auth/csrf');
+    const csrf = http.expectOne('http://localhost:3000/api/v1/auth/csrf');
     expect(csrf.request.withCredentials).toBe(true);
     csrf.flush({ data: { csrfToken: 'anonymous-csrf' } });
     await Promise.resolve();
-    const login = http.expectOne('/api/v1/auth/login');
+    const login = http.expectOne('http://localhost:3000/api/v1/auth/login');
     expect(login.request.withCredentials).toBe(true);
     expect(login.request.headers.get('X-CSRF-Token')).toBe('anonymous-csrf');
     expect(login.request.body).toEqual({
@@ -33,6 +33,53 @@ describe('AuthApi', () => {
     });
     await result;
     expect(api.user()?.id).toBe('owner-id');
+    http.verify();
+  });
+  it('registers with anonymous CSRF and retains the returned user only after success', async () => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    const api = TestBed.inject(AuthApi);
+    const http = TestBed.inject(HttpTestingController);
+    const input = {
+      owner: { email: 'new@example.invalid', password: 'TestPassword123!' },
+      garage: {
+        name: 'Test',
+        phone: '+919876543210',
+        registrationMode: 'unregistered' as const,
+        address: {
+          line1: 'Road',
+          city: 'Pune',
+          state: 'Maharashtra',
+          stateCode: '27',
+          postalCode: '411001',
+          country: 'IN' as const,
+        },
+      },
+    };
+    const result = api.register(input);
+    http
+      .expectOne('http://localhost:3000/api/v1/auth/csrf')
+      .flush({ data: { csrfToken: 'anonymous' } });
+    await Promise.resolve();
+    const request = http.expectOne(
+      'http://localhost:3000/api/v1/auth/register',
+    );
+    expect(request.request.body).toEqual(input);
+    expect(request.request.withCredentials).toBe(true);
+    expect(request.request.headers.get('X-CSRF-Token')).toBe('anonymous');
+    expect(api.user()).toBeNull();
+    request.flush(
+      {
+        data: {
+          user: { id: 'new-user', email: input.owner.email },
+          csrfToken: 'session',
+        },
+      },
+      { status: 201, statusText: 'Created' },
+    );
+    await result;
+    expect(api.user()?.id).toBe('new-user');
     http.verify();
   });
 });

@@ -117,6 +117,7 @@ The frontend should remain a clean, maintainable Angular application focused on 
 
 ## API, security, and user experience
 
+- Read the API base URL from `apps/garage-care/src/environments/environment.ts` in HTTP services; do not hardcode API hosts in components or services. Nx selects development, qa, staging, or production via file replacements. See `docs/ENVIRONMENTS.md`. These browser configuration files must never contain secrets.
 - REST endpoints use `/api/v1`. Keep HTTP access in services and align typed payloads and error handling with the API specification. Finalize unresolved DTO and CSRF contracts before wiring production authentication.
 - Authentication uses Secure, HttpOnly cookies with CSRF protection. Never persist passwords or session/refresh tokens in browser storage, logs, or source code. The server determines garage context and authorization.
 - Clearly distinguish a frontend preview from a completed server action. Never report account creation, invoice finalization, or message delivery without a successful backend response.

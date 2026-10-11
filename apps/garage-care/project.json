@@ -53,12 +53,46 @@
               "maximumError": "8kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "fileReplacements": [
+            {
+              "replace": "apps/garage-care/src/environments/environment.ts",
+              "with": "apps/garage-care/src/environments/environment.production.ts"
+            }
+          ]
         },
         "development": {
           "optimization": false,
           "extractLicenses": false,
-          "sourceMap": true
+          "sourceMap": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/garage-care/src/environments/environment.ts",
+              "with": "apps/garage-care/src/environments/environment.development.ts"
+            }
+          ]
+        },
+        "qa": {
+          "optimization": true,
+          "sourceMap": false,
+          "outputHashing": "all",
+          "fileReplacements": [
+            {
+              "replace": "apps/garage-care/src/environments/environment.ts",
+              "with": "apps/garage-care/src/environments/environment.qa.ts"
+            }
+          ]
+        },
+        "staging": {
+          "optimization": true,
+          "sourceMap": false,
+          "outputHashing": "all",
+          "fileReplacements": [
+            {
+              "replace": "apps/garage-care/src/environments/environment.ts",
+              "with": "apps/garage-care/src/environments/environment.staging.ts"
+            }
+          ]
         }
       }
     },
@@ -72,6 +106,12 @@
         },
         "development": {
           "buildTarget": "garage-care:build:development"
+        },
+        "qa": {
+          "buildTarget": "garage-care:build:qa"
+        },
+        "staging": {
+          "buildTarget": "garage-care:build:staging"
         }
       },
       "options": {
