@@ -155,7 +155,7 @@ export class Dashboard {
     {
       name: 'Amit Trivedi',
       vehicle: 'Honda City · MH01 EX 9102',
-      service: '6-month periodic service',
+      service: '6-Month Periodic Service',
       due: 'Due 2 days ago',
       status: 'Queued',
       icon: 'chat',
@@ -165,8 +165,8 @@ export class Dashboard {
     {
       name: 'Priya Sharma',
       vehicle: 'Kia Seltos · KA04 MP 3042',
-      service: 'Annual brake fluid inspection',
-      due: 'Due today',
+      service: 'Annual Brake Fluid Inspection',
+      due: 'Due Today',
       status: 'Ready',
       icon: 'check_circle',
       action: 'Send Reminder',
@@ -175,7 +175,7 @@ export class Dashboard {
     {
       name: 'Kiran Joshi',
       vehicle: 'Maruti Baleno · MH12 AB 4590',
-      service: 'Wheel alignment & balancing',
+      service: 'Wheel Alignment & Balancing',
       due: 'In 3 days',
       status: 'Auto-dispatch',
       icon: '',

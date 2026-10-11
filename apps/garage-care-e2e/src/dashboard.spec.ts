@@ -86,6 +86,24 @@ test('dashboard fits desktop, tablet and mobile with keyboard navigation', async
         .first()
         .evaluate((element) => getComputedStyle(element).fontFamily),
     ).toContain('JetBrains Mono');
+    if (width === 1280) {
+      // Geometry from the approved Stitch screen at this viewport.
+      const cards = await page.locator('.reminder').evaluateAll((elements) =>
+        elements.map((element) => ({
+          width: element.getBoundingClientRect().width,
+          height: element.getBoundingClientRect().height,
+        })),
+      );
+      expect(cards.map((card) => Math.round(card.width))).toEqual([
+        218, 218, 218,
+      ]);
+      expect(cards.map((card) => Math.round(card.height))).toEqual([
+        153, 133, 133,
+      ]);
+      await expect(
+        page.getByRole('button', { name: 'View All (5)' }),
+      ).toBeVisible();
+    }
     if (width < 800) {
       const toggle = page.getByRole('button', { name: 'Toggle navigation' });
       await toggle.focus();

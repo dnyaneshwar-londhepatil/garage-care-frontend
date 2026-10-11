@@ -23,6 +23,8 @@ describe('DashboardOverview', () => {
     );
     fixture.nativeElement.querySelector('.reminder-actions button').click();
     expect(actions).toEqual(['Reminder for Amit Trivedi']);
+    fixture.nativeElement.querySelector('.view-all').click();
+    expect(actions).toEqual(['Reminder for Amit Trivedi', 'All reminders']);
     expect(fixture.nativeElement.querySelectorAll('.floor-stat')).toHaveLength(
       2,
     );

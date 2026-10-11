@@ -83,3 +83,5 @@ npx nx e2e garage-care-e2e
 For documentation-only changes, run Prettier checks on the changed Markdown. For feature changes, build and run focused behavior tests; verify the rendered page at desktop and mobile sizes, including keyboard navigation and validation. Do not describe planned integrations as working features.
 
 All application and shared UI colors now come from libs/shared/styles/src/lib/abstracts/\_colors.scss. Component styles import its semantic Sass palette; the light theme exposes --palette-\* custom properties for SVG paint. Existing legacy shared-style aliases resolve to this same palette. Opacity variants and shadows retain their original values. Literal color values are allowed only in the palette and test expectations.
+
+Upcoming Reminders follows the approved Stitch four-column grid, heading indicator and View All action, 4px small spacing, typography, and compact card footers. Browser checks at 1280px verify 218px-wide reminder cards with heights of 153/133/133px. View All remains a clearly announced preview action until the reminders module is implemented.

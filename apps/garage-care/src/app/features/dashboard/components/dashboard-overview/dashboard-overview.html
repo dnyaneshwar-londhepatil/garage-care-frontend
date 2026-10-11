@@ -1,23 +1,34 @@
 <aside class="right-column" aria-label="Sample reminders and workshop overview">
   <section class="reminders">
     <div class="section-heading">
-      <h2>Upcoming Reminders</h2>
-      <span class="count">05</span>
+      <div class="reminders-title">
+        <h2>Upcoming Reminders</h2>
+        <span class="attention-dot" aria-hidden="true"></span>
+      </div>
+      <button
+        class="view-all"
+        type="button"
+        (click)="previewAction.emit('All reminders')"
+      >
+        View All (5)<app-dashboard-icon name="east" />
+      </button>
     </div>
     @for (reminder of reminders(); track reminder.name) {
     <article class="reminder">
-      <div class="reminder-heading">
-        <h3>{{ reminder.name }}</h3>
-        <span
-          class="due"
-          [class.overdue]="reminder.overdue"
-          [class.future]="reminder.action === 'View'"
-          ><span class="due-dot" aria-hidden="true"></span>{{ reminder.due
-          }}</span
-        >
+      <div class="reminder-details">
+        <div class="reminder-heading">
+          <h3>{{ reminder.name }}</h3>
+          <span
+            class="due"
+            [class.overdue]="reminder.overdue"
+            [class.future]="reminder.action === 'View'"
+            ><span class="due-dot" aria-hidden="true"></span>{{ reminder.due
+            }}</span
+          >
+        </div>
+        <small>{{ reminder.vehicle }}</small>
+        <p>{{ reminder.service }}</p>
       </div>
-      <small>{{ reminder.vehicle }}</small>
-      <p>{{ reminder.service }}</p>
       <div class="reminder-actions">
         <span
           class="delivery-state"

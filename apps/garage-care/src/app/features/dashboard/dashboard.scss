@@ -324,8 +324,18 @@ main {
 }
 .operations {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(210px, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
+  .job-section {
+    grid-column: span 3;
+    min-width: 0;
+    @media (max-width: 1000px) {
+      grid-column: auto;
+    }
+  }
+  app-dashboard-overview {
+    min-width: 0;
+  }
   @media (max-width: 1000px) {
     grid-template-columns: minmax(0, 1fr);
   }
