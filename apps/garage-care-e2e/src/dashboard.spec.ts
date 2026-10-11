@@ -10,6 +10,25 @@ test('dashboard searches, filters, expands jobs and keeps actions in preview', a
   const search = page.getByRole('searchbox', {
     name: 'Search sample service jobs',
   });
+  for (const index of [0, 1]) {
+    for (const button of [
+      page.getByRole('button', { name: 'Call', exact: true }).nth(index),
+      page.locator('.job .view').nth(index),
+    ]) {
+      await expect(button).toHaveCSS('background-color', 'rgb(229, 238, 255)');
+      await button.hover();
+      await expect(button).toHaveCSS('background-color', 'rgb(0, 84, 202)');
+      await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)');
+      await page.locator('h1').hover();
+    }
+  }
+  const reminderButton = page
+    .getByRole('button', { name: 'Send Reminder', exact: true })
+    .first();
+  const buttonBox = await reminderButton.boundingBox();
+  const cardBox = await page.locator('.reminder').first().boundingBox();
+  expect(buttonBox!.width).toBeLessThan(cardBox!.width - 48);
+  await expect(page.locator('.floor-stat')).toHaveCount(2);
   await search.fill('HONDA');
   await expect(page.locator('.job')).toHaveCount(1);
   await page

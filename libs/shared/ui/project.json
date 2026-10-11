@@ -1,0 +1,17 @@
+{
+  "name": "shared-ui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/shared/ui/src",
+  "tags": ["scope:shared", "type:ui"],
+  "targets": {
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "buildTarget": "garage-care:build:development",
+        "tsConfig": "libs/shared/ui/tsconfig.spec.json",
+        "watch": false
+      }
+    }
+  }
+}

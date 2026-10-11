@@ -17,11 +17,15 @@
       >
       <div class="contact-actions">
         <button
+          gcButton
+          variant="outline"
           type="button"
           (click)="previewAction.emit('WhatsApp to ' + job.name)"
         >
           <app-dashboard-icon name="chat" /> WhatsApp</button
         ><button
+          gcButton
+          variant="subtle"
           type="button"
           (click)="previewAction.emit('Call to ' + job.name)"
         >
@@ -46,6 +50,9 @@
         }}</span
       ><button
         type="button"
+        gcButton
+        variant="subtle"
+        [square]="true"
         class="view"
         [attr.aria-expanded]="selectedJob()?.id === job.id"
         (click)="selectedJob.set(selectedJob()?.id === job.id ? null : job)"

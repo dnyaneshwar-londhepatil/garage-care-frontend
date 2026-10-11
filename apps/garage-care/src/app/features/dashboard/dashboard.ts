@@ -3,13 +3,20 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DashboardIcon } from './components/dashboard-icon/dashboard-icon';
 import { DashboardShell } from './components/dashboard-shell/dashboard-shell';
+import { DashboardOverview } from './components/dashboard-overview/dashboard-overview';
 
 import { Job } from './dashboard.models';
 import { DashboardJobs } from './components/dashboard-jobs/dashboard-jobs';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, DashboardIcon, DashboardShell, DashboardJobs],
+  imports: [
+    ReactiveFormsModule,
+    DashboardIcon,
+    DashboardShell,
+    DashboardJobs,
+    DashboardOverview,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -149,21 +156,30 @@ export class Dashboard {
       name: 'Amit Trivedi',
       vehicle: 'Honda City · MH01 EX 9102',
       service: '6-month periodic service',
-      due: 'Overdue by 2 days',
+      due: 'Due 2 days ago',
+      status: 'Queued',
+      icon: 'chat',
+      action: 'Send Reminder',
       overdue: true,
     },
     {
       name: 'Priya Sharma',
       vehicle: 'Kia Seltos · KA04 MP 3042',
       service: 'Annual brake fluid inspection',
-      due: 'Due on snapshot date',
+      due: 'Due today',
+      status: 'Ready',
+      icon: 'check_circle',
+      action: 'Send Reminder',
       overdue: false,
     },
     {
       name: 'Kiran Joshi',
       vehicle: 'Maruti Baleno · MH12 AB 4590',
       service: 'Wheel alignment & balancing',
-      due: 'Due in 3 days',
+      due: 'In 3 days',
+      status: 'Auto-dispatch',
+      icon: '',
+      action: 'View',
       overdue: false,
     },
   ];

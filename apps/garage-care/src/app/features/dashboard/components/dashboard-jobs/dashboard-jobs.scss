@@ -63,22 +63,6 @@ p {
     &:last-child {
       border-bottom: 0;
     }
-    &:first-child {
-      .contact {
-        .contact-actions {
-          button:last-child {
-            background: #0054ca;
-            color: white;
-          }
-        }
-      }
-      .vehicle-row {
-        .view {
-          background: #0054ca;
-          color: white;
-        }
-      }
-    }
     &:not(:first-child) {
       .contact {
         .customer-avatar {
@@ -144,15 +128,8 @@ p {
         display: flex;
         gap: 8px;
         button {
-          font-size: 12px;
-          padding: 4px 10px;
-          color: #0054ca;
           app-dashboard-icon {
             font-size: 15px;
-          }
-          &:last-child {
-            background: #e5eeff;
-            color: #0b1c30;
           }
         }
         @media (max-width: 500px) {
@@ -196,7 +173,7 @@ p {
           font-size: 10px;
         }
         @media (max-width: 500px) {
-          flex: 1;
+          flex: 1 1 calc(100% - 40px);
         }
       }
       .status {
@@ -233,12 +210,6 @@ p {
         }
       }
       .view {
-        color: #0054ca;
-        background: #e5eeff;
-        border: 0;
-        border-radius: 4px;
-        font-size: 12px;
-        padding: 4px 10px;
         @media (max-width: 500px) {
           margin-left: auto;
         }

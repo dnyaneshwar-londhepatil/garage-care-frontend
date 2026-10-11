@@ -59,6 +59,8 @@ Dashboard child components live under `features/dashboard/components`, with sepa
 
 All implemented page components and shared authentication Sass mixins use nested selectors following their template hierarchy, with responsive media rules inside the selectors they modify. Authentication arrows, validation marks, and the country flag are SVGs. These conventions are documented in `agents.md` for future work.
 
+The shared `button[gcButton]` component in `libs/shared/ui` provides compact outline, subtle, and primary variants while preserving native button events and disabled behavior. Job Call/View actions share pale resting styles and blue hover states for every customer. Reminder cards follow Stitch's title/due row and compact status/action footer; their delivery states are explicitly illustrative. The workshop card preserves the two inset metric tiles and note panel, with recent completed jobs replacing out-of-scope staff attendance. The overview remains a feature child component.
+
 ## Delivery sequence
 
 1. Authentication and garage setup.

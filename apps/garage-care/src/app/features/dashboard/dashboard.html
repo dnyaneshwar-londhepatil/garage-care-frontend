@@ -111,48 +111,10 @@
           ><strong>+18%<small>sample weekly change</small></strong>
         </div>
       </section>
-      <aside
-        class="right-column"
-        aria-label="Sample reminders and workshop overview"
-      >
-        <section class="reminders">
-          <div class="section-heading">
-            <h2>Upcoming Reminders</h2>
-            <span class="count">05</span>
-          </div>
-          @for (reminder of reminders; track reminder.name) {
-          <article class="reminder">
-            <h3>{{ reminder.name }}</h3>
-            <small class="mono">{{ reminder.vehicle }}</small>
-            <p>{{ reminder.service }}</p>
-            <span class="due" [class.overdue]="reminder.overdue"
-              >{{ reminder.due }}</span
-            ><button
-              type="button"
-              (click)="preview('Reminder for ' + reminder.name)"
-            >
-              Send Reminder <app-dashboard-icon name="east" />
-            </button>
-          </article>
-          }
-          <p class="reminder-note">
-            Showing 3 of 5 sample reminders. Delivery is not connected.
-          </p>
-        </section>
-        <section class="floor">
-          <h2>
-            <app-dashboard-icon name="analytics" /> Workshop Snapshot
-            <span class="count">SAMPLE</span>
-          </h2>
-          <div>Bays in use <strong class="mono">4 / 6</strong></div>
-          <div class="progress" aria-hidden="true"><span></span></div>
-          <p>Recent jobs: 2 in progress, 2 completed, 1 draft.</p>
-          <small
-            >Invoice amounts represent billing. Collected payments are
-            unavailable.</small
-          >
-        </section>
-      </aside>
+      <app-dashboard-overview
+        [reminders]="reminders"
+        (previewAction)="preview($event)"
+      />
     </div>
     <footer>
       GarageCare · Owner workspace <span>Sample data for design preview</span>

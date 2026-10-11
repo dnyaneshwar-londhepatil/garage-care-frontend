@@ -7,6 +7,7 @@ This repository is an Angular Nx monorepo for the Garage Care frontend applicati
 - `apps/garage-care`: main Angular application
 - `apps/garage-care-e2e`: Playwright end-to-end tests
 - `libs/shared/styles`: shared Sass styling library used across the app
+- `libs/shared/ui`: reusable standalone Angular UI components, imported through `@garage-care/shared/ui`
 - `docs/`: product and technical documentation
 
 ## Stack and conventions
@@ -28,6 +29,7 @@ This repository is an Angular Nx monorepo for the Garage Care frontend applicati
 ## Component, styling, and icon conventions
 
 - Place a page's child components in its `components/<component-name>/` folder (for example, `features/dashboard/components/dashboard-shell/`). Keep the parent page at the feature root.
+- Move UI components reused across sections or features into `libs/shared/ui`; keep feature data and backend actions in the consuming feature. Use its shared native `button[gcButton]` component for consistent compact action variants and hover/focus behavior.
 - Every Angular component has four separate files: `<name>.ts`, `<name>.html`, `<name>.scss`, and `<name>.spec.ts`. Use `templateUrl` and `styleUrl`; do not embed templates or styles in TypeScript. Use SCSS rather than plain CSS in this workspace.
 - Organize SCSS selectors according to the component template hierarchy. Nest child selectors under their owning container, and use `&` for states and pseudo-classes. Keep nesting readable and avoid unrelated selectors or unnecessary specificity.
 - Place each responsive `@media` rule inside the selector it changes. Do not collect component breakpoints in standalone media blocks at the end of the file. Apply these conventions to shared component Sass mixins as well.
