@@ -25,6 +25,16 @@ This repository is an Angular Nx monorepo for the Garage Care frontend applicati
 4. Keep styles in the shared Sass library when the change is global or reusable; keep component-specific styling near the component when it is local.
 5. If a task touches routing, app shell, or shared config, inspect the existing Angular app setup before making changes.
 
+## Branch workflow
+
+- For every new page or module, create a dedicated feature branch named `JCF-<feature-name>` with the uppercase `JCF` prefix and a descriptive, hyphen-separated feature name (for example, `JCF-forgot-password`). This is the default prefix for all future feature branches.
+- Before creating each feature branch, update the local `development` branch from `origin/development` with `git pull --ff-only origin development`, then create the feature branch from that updated `development` branch.
+- Check the working tree first and preserve any uncommitted work before switching branches. Do not discard changes or force an update if the pull cannot fast-forward; resolve the divergence before starting feature development.
+- Target `development` when opening feature pull requests.
+- Develop pages and modules one at a time. After completing each page or module, run the relevant verification, commit and push its feature branch, and create a pull request to `development`.
+- The user authorizes the agent to merge these feature pull requests after verification passes and required GitHub checks and branch protections are satisfied. Resolve review findings or failures before merging; do not bypass required checks or protections.
+- After merging, switch to `development` and pull its latest changes before creating a fresh feature branch for the next page or module. Repeat this cycle for each requested page or module.
+
 ## Common commands
 
 Run the app:
