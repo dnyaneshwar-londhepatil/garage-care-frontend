@@ -10,7 +10,7 @@
       <span>Garage<span class="brand-accent">Care</span></span
       ><span class="saas">SaaS</span>
     </a>
-    <span class="preview-badge">Frontend preview</span>
+    <span class="preview-badge">Local testing</span>
   </header>
   <main>
     <section class="signin-card" aria-labelledby="signin-title">
@@ -92,6 +92,7 @@
             ><input
               type="checkbox"
               formControlName="rememberMe"
+              [attr.disabled]="true"
               aria-describedby="signin-preview-note"
             />Remember me</label
           >
@@ -99,8 +100,13 @@
             >Forgot password?</a
           >
         </div>
-        <button type="submit" class="submit-button">
-          Sign In
+        <button
+          type="submit"
+          class="submit-button"
+          [disabled]="pending()"
+          [attr.aria-busy]="pending()"
+        >
+          {{ pending() ? 'Signing in…' : 'Sign In' }}
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M4 12h16m-6-6 6 6-6 6" />
           </svg>
@@ -115,7 +121,8 @@
         <a class="text-link" routerLink="/sign-up">Create one</a>
       </p>
       <p class="preview-note" id="signin-preview-note">
-        Preview only. Sign-in and Remember me are not connected yet.
+        Sign-in uses the local backend. Remember me is unavailable. Dashboard
+        data remains a preview.
       </p>
     </section>
   </main>

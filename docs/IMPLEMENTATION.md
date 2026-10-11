@@ -85,3 +85,9 @@ For documentation-only changes, run Prettier checks on the changed Markdown. For
 All application and shared UI colors now come from libs/shared/styles/src/lib/abstracts/\_colors.scss. Component styles import its semantic Sass palette; the light theme exposes --palette-\* custom properties for SVG paint. Existing legacy shared-style aliases resolve to this same palette. Opacity variants and shadows retain their original values. Literal color values are allowed only in the palette and test expectations.
 
 Upcoming Reminders follows the approved Stitch four-column grid, heading indicator and View All action, 4px small spacing, typography, and compact card footers. Browser checks at 1280px verify 218px-wide reminder cards with heights of 153/133/133px. View All remains a clearly announced preview action until the reminders module is implemented.
+
+## Local sign-in integration
+
+Sign-in calls the sibling backend through the Angular development proxy at `/api/v1`. Start the backend with `npm run dev:local` in its repository, then run `npx nx serve garage-care --port=4200` here. The backend must allow `http://localhost:4200` in FRONTEND_ORIGINS. The proxy targets localhost:3000 and preserves the browser Origin. Production hosting must route `/api` to the backend on a compatible same-site deployment.
+
+Sign-in fetches anonymous CSRF before login and uses cookie credentials. Session credentials are never stored in browser storage. Remember me is disabled because the backend does not expose that option. Dashboard content, registration, and recovery remain previews. Existing backend owner credentials are required; this module does not create an account.
