@@ -73,6 +73,9 @@
         "development": {
           "buildTarget": "garage-care:build:development"
         }
+      },
+      "options": {
+        "proxyConfig": "apps/garage-care/proxy.conf.json"
       }
     },
     "lint": {
