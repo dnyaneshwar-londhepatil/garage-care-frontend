@@ -1,5 +1,4 @@
-@use '../../../../../../../../libs/shared/styles/src/lib/abstracts/colors' as
-  palette;
+@use '../../../../styles/src/lib/abstracts/colors' as palette;
 :host {
   display: contents;
 }

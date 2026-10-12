@@ -1,0 +1,352 @@
+<div class="workspace">
+  <app-dashboard-shell
+    page="Service Jobs"
+    [previewMode]="previewMode"
+    [search]="search"
+    [garageName]="previewMode ? 'Apex Auto Garage · Sample' : auth.garage()?.name || 'Your garage'"
+    [ownerName]="previewMode ? 'Preview account' : auth.user()?.fullName || 'Owner'"
+    [busy]="busy()"
+    (logout)="logout()"
+    (previewAction)="preview($event)"
+  />
+  <main id="main-content" tabindex="-1">
+    @if (previewMode) {
+    <div class="preview-banner">
+      <strong>Design preview</strong> Fictional sample records. No jobs,
+      invoices, or messages are created.
+    </div>
+    }
+    <section class="overview" aria-labelledby="page-heading">
+      <div class="heading-row">
+        <div>
+          <div class="eyebrow">
+            WORKSHOP OPERATIONS
+            <span
+              >{{ previewMode ? 'SAMPLE WORKSPACE' : 'SERVICE REGISTER' }}</span
+            >
+          </div>
+          <h1 id="page-heading">Service Jobs</h1>
+          <p>
+            Manage job cards, track service progress, and keep every vehicle’s
+            work in view.
+          </p>
+        </div>
+        <div class="actions">
+          <button
+            gcButton
+            (click)="exportCsv()"
+            [disabled]="!filtered().length || loading()"
+          >
+            <app-dashboard-icon name="file_download" />Export CSV
+          </button>
+          <button
+            gcButton
+            (click)="settingsOpen.set(!settingsOpen())"
+            [attr.aria-expanded]="settingsOpen()"
+            aria-controls="view-settings"
+          >
+            <app-dashboard-icon name="tune" />View Settings
+          </button>
+          <button
+            gcButton
+            variant="primary"
+            (click)="preview('New Service Job')"
+          >
+            <app-dashboard-icon name="add" />New Service Job
+          </button>
+        </div>
+      </div>
+      <div class="metrics">
+        @for (metric of metrics(); track metric.label) {
+        <div class="metric">
+          <span class="metric-icon"
+            ><app-dashboard-icon [name]="metric.icon"
+          /></span>
+          <div>
+            <small>{{ metric.label }}</small><strong>{{ metric.value }}</strong>
+          </div>
+        </div>
+        }
+      </div>
+    </section>
+    @if (settingsOpen()) {
+    <section class="settings" id="view-settings" aria-label="View settings">
+      <label
+        ><input
+          type="checkbox"
+          [checked]="compact()"
+          (change)="compact.set(!compact())"
+        />
+        Compact table rows</label
+      >
+      <p>View preferences apply to this visit.</p>
+    </section>
+    } @if (notice()) {
+    <p class="notice" role="status">{{ notice() }}</p>
+    } @if (error()) {
+    <div class="error" role="alert">
+      {{ error() }}
+      <button gcButton (click)="load()" [disabled]="loading()">Retry</button>
+    </div>
+    }
+    <div class="tabs" role="group" aria-label="Filter by job status">
+      @for (tab of tabs; track tab.key) {
+      <button
+        type="button"
+        [class.active]="status() === tab.key"
+        [attr.aria-pressed]="status() === tab.key"
+        (click)="setStatus(tab.key)"
+      >
+        {{ tab.label }} <span>{{ count(tab.key) }}</span>
+      </button>
+      }
+    </div>
+    <section class="filters" aria-label="Filter service jobs">
+      <label class="search"
+        ><app-dashboard-icon name="search" /><input
+          type="search"
+          [formControl]="search"
+          (input)="page.set(0)"
+          placeholder="Search customer, registration, or job ID…"
+          aria-label="Search service jobs"
+      /></label>
+      <label class="filter"
+        ><app-dashboard-icon name="calendar_today" /><span class="sr-only"
+          >Service date</span
+        ><select
+          aria-label="Service date"
+          [value]="dateFilter()"
+          (change)="dateFilter.set($any($event.target).value); page.set(0)"
+        >
+          <option value="all">Date: All time</option>
+          <option value="today">Date: Today</option>
+          <option value="week">Date: Last 7 days</option>
+        </select></label
+      >
+      <label class="filter"
+        ><app-dashboard-icon name="directions_car" /><span class="sr-only"
+          >Vehicle type</span
+        ><select
+          aria-label="Vehicle type"
+          [value]="category()"
+          (change)="category.set($any($event.target).value); page.set(0)"
+        >
+          <option value="all">Category: All types</option>
+          <option value="car">Car</option>
+          <option value="bike">Bike</option>
+          <option value="scooter">Scooter</option>
+          <option value="other">Other</option>
+        </select></label
+      >
+      <button
+        gcButton
+        [square]="true"
+        aria-label="Refresh list"
+        [disabled]="loading()"
+        (click)="load()"
+      >
+        <app-dashboard-icon name="restart_alt" />
+      </button>
+    </section>
+    <div class="list-info">
+      <span
+        >{{ rows().length }} records loaded. Search, date, category, and export
+        apply to loaded records.</span
+      >@if (selected().size) {
+      <button gcButton (click)="clearSelection()">
+        Clear selection ({{ selected().size }})
+      </button>
+      }
+    </div>
+    <section
+      class="register"
+      aria-label="Service jobs register"
+      [attr.aria-busy]="loading()"
+      [class.compact]="compact()"
+    >
+      @if (loading()) {
+      <p class="state" role="status">Loading service jobs…</p>
+      } @if (visible().length) {
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Service jobs table, scroll horizontally for more columns"
+        tabindex="0"
+      >
+        <table>
+          <thead>
+            <tr>
+              <th class="selection">
+                <input
+                  type="checkbox"
+                  aria-label="Select current page"
+                  [checked]="allSelected()"
+                  [indeterminate]="someSelected()"
+                  (change)="togglePage()"
+                />
+              </th>
+              <th>JOB ID</th>
+              <th>CUSTOMER DETAILS</th>
+              <th>VEHICLE &amp; REG. PLATE</th>
+              <th>COMPLAINT &amp; SERVICE SCOPE</th>
+              <th>STATUS</th>
+              <th>SERVICE DATE</th>
+              <th>QUICK ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of visible(); track row.job._id) {
+            <tr [class.selected]="selected().has(row.job._id)">
+              <td class="selection">
+                <input
+                  type="checkbox"
+                  [attr.aria-label]="'Select job ' + row.job._id"
+                  [checked]="selected().has(row.job._id)"
+                  (change)="toggle(row.job._id)"
+                />
+              </td>
+              <td>
+                <span class="job-id" [title]="row.job._id"
+                  >{{ row.job.serviceNumber || row.job._id }}</span
+                ><small>Service job</small>
+              </td>
+              <td>
+                <strong>{{ row.customer.name }}</strong
+                ><small class="mono">{{ row.customer.phone }}</small>
+              </td>
+              <td>
+                <span class="plate"
+                  ><small>IND</small>{{ row.vehicle.registrationNumber }}</span
+                ><small
+                  >{{ row.vehicle.brand }} {{ row.vehicle.model }} · {{
+                  row.vehicle.vehicleType }}</small
+                >
+              </td>
+              <td class="scope">
+                <strong
+                  >{{ row.job.complaint || 'No complaint recorded' }}</strong
+                ><small
+                  >{{ row.job.workPerformed || 'Work details not recorded'
+                  }}</small
+                >
+              </td>
+              <td>
+                <span class="status" [class]="'status ' + row.job.status"
+                  ><span></span>{{ labels[row.job.status] }}</span
+                >
+              </td>
+              <td class="date">
+                <strong
+                  >{{ row.job.serviceDate | date:'dd MMM yyyy':'+0530'
+                  }}</strong
+                ><small>Service date · IST</small>
+              </td>
+              <td>
+                <button
+                  gcButton
+                  [square]="true"
+                  [attr.aria-label]="'View job ' + row.job._id"
+                  [attr.aria-expanded]="expanded() === row.job._id"
+                  [attr.aria-controls]="'details-' + row.job._id"
+                  (click)="expanded.set(expanded() === row.job._id ? null : row.job._id)"
+                >
+                  <app-dashboard-icon name="receipt_long" />
+                </button>
+              </td>
+            </tr>
+            @if (expanded() === row.job._id) {
+            <tr class="details" [id]="'details-' + row.job._id">
+              <td colspan="8">
+                <div>
+                  <strong>Job summary · {{ row.job._id }}</strong>
+                  <p>{{ row.job.complaint || 'No complaint recorded.' }}</p>
+                  <p>
+                    Work performed: {{ row.job.workPerformed || 'Not recorded'
+                    }}
+                  </p>
+                  <p>
+                    Odometer:
+                    <span class="mono"
+                      >{{ row.job.odometerKm ?? 'Not recorded' }}</span
+                    >
+                    @if (row.job.odometerKm !== undefined) { km }
+                  </p>
+                  <p>
+                    Next service: {{ row.job.nextServiceDueDate ?
+                    (row.job.nextServiceDueDate | date:'dd MMM yyyy':'+0530') :
+                    'Not scheduled' }}
+                  </p>
+                  <p>
+                    {{ row.job.items?.length || 0 }} billable line items. Final
+                    amounts and tax are determined by the server when invoicing.
+                  </p>
+                </div>
+              </td>
+            </tr>
+            } }
+          </tbody>
+        </table>
+      </div>
+      } @else if (!loading() && !error()) {
+      <div class="state">
+        <app-dashboard-icon name="car_repair" />
+        <h2>
+          {{ rows().length ? 'No matching service jobs' : 'No service jobs yet'
+          }}
+        </h2>
+        <p>
+          {{ rows().length ? 'Try another customer, registration, date, or
+          status.' : 'Your garage’s service jobs will appear here.' }}
+        </p>
+        <button gcButton (click)="resetFilters()">Clear filters</button>
+      </div>
+      }
+      <footer class="pagination">
+        <div>
+          Showing <strong>{{ start() }}–{{ end() }}</strong> of
+          <strong>{{ filtered().length }}</strong> matching jobs
+          <label
+            >Rows:
+            <select
+              aria-label="Rows per page"
+              [value]="pageSize()"
+              (change)="pageSize.set(+$any($event.target).value); page.set(0)"
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select></label
+          >
+        </div>
+        <div class="paging">
+          <button
+            gcButton
+            [disabled]="currentPage() === 0"
+            (click)="page.set(currentPage()-1)"
+          >
+            <app-dashboard-icon name="chevron_left" />Previous</button
+          ><span class="page-number">{{ currentPage()+1 }}</span
+          ><button
+            gcButton
+            [disabled]="end() >= filtered().length"
+            (click)="page.set(currentPage()+1)"
+          >
+            Next<app-dashboard-icon name="chevron_right" />
+          </button>
+        </div>
+      </footer>
+    </section>
+    @if (nextCursor()) {
+    <div class="load-more">
+      <p>
+        More jobs are available on the server. Load them to include them in
+        search and export.
+      </p>
+      <button gcButton (click)="load(true)" [disabled]="loading()">
+        Load more jobs
+      </button>
+    </div>
+    }
+  </main>
+</div>

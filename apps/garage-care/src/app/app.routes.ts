@@ -3,6 +3,20 @@ import { sessionGuard } from './core/auth/session.guard';
 
 export const appRoutes: Route[] = [
   {
+    path: 'service-jobs',
+    canActivate: [sessionGuard],
+    title: 'Service Jobs | GarageCare',
+    loadComponent: () =>
+      import('./features/service-jobs/service-jobs').then((m) => m.ServiceJobs),
+  },
+  {
+    path: 'preview/service-jobs',
+    data: { preview: true },
+    title: 'Service Jobs Preview | GarageCare',
+    loadComponent: () =>
+      import('./features/service-jobs/service-jobs').then((m) => m.ServiceJobs),
+  },
+  {
     path: 'dashboard',
     canActivate: [sessionGuard],
     title: 'Dashboard | GarageCare',

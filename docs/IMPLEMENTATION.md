@@ -68,6 +68,16 @@ All implemented page components and shared authentication Sass mixins use nested
 
 The shared `button[gcButton]` component in `libs/shared/ui` provides compact outline, subtle, and primary variants while preserving native button events and disabled behavior. Job Call/View actions share pale resting styles and blue hover states for every customer. Reminder cards follow Stitch's title/due row and compact status/action footer; their delivery states are explicitly illustrative. The workshop card preserves the two inset metric tiles and note panel, with recent completed jobs replacing out-of-scope staff attendance. The overview remains a feature child component.
 
+## Service Jobs list
+
+The Service Jobs list uses Stitch project `17101721684738931297`, screen `1b7e824a32b64c8b9da6e7d83e77c8be`, inspected on 2026-10-12. `/service-jobs` is session-guarded and loads service records, related customers and vehicles, and garage-wide status counts through the shared API services. `/preview/service-jobs` shows five explicitly fictional records without authentication or API requests.
+
+The screen retains the reference's workspace shell, banner, four summary tiles, status tabs, filter bar, service register, and pagination. Bays, employee assignments, payment collection, unsupported estimates and delivery ETAs are adapted to V1 service statuses and service dates. Search, vehicle/date/status filters, row selection, compact view, CSV export, and expandable job summaries are implemented. CSV text is escaped and formula-prefixed values are neutralized. Filtering and export cover loaded records; cursor-based Load More expands that set. The summary counts cover the garage, independently of local filters.
+
+The workspace shell and original Material Symbols SVG renderer now live in `libs/shared/ui` and remain shared with Dashboard. Fonts and colors reuse the established local assets and palette. Search stays disabled until browser hydration completes. Loading, retry, empty states and session expiry are handled without falling back to sample data. New Service Job announces that the intake page is pending; Create Service Job and the full detail page remain subsequent pages in the review/merge sequence.
+
+Verification: production build including prerendering, app and shared UI unit tests, lint, and focused Playwright checks for Service Jobs and Dashboard. Responsive checks cover 1440px desktop, 768px tablet and 390px mobile; the wide table scrolls within its own region.
+
 ## Delivery sequence
 
 1. Authentication and garage setup.

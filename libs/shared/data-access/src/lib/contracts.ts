@@ -111,6 +111,7 @@ export interface ServiceInput {
 }
 export type ServiceStatus = 'draft' | 'in_progress' | 'completed' | 'cancelled';
 export interface ServiceJob extends Resource, ServiceInput {
+  serviceNumber?: string;
   status: ServiceStatus;
   version: number;
 }

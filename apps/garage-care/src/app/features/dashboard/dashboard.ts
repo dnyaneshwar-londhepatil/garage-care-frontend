@@ -25,8 +25,7 @@ import {
   Reminder,
   apiErrorMessage,
 } from '@garage-care/shared/data-access';
-import { DashboardIcon } from './components/dashboard-icon/dashboard-icon';
-import { DashboardShell } from './components/dashboard-shell/dashboard-shell';
+import { DashboardIcon, DashboardShell } from '@garage-care/shared/ui';
 import {
   DashboardOverview,
   DashboardReminder,

@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { ActionButton } from '@garage-care/shared/ui';
-import { DashboardIcon } from '../dashboard-icon/dashboard-icon';
+import { DashboardIcon } from '@garage-care/shared/ui';
 export interface DashboardReminder {
   id?: string;
   name: string;
