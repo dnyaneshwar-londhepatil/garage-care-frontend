@@ -1,4 +1,4 @@
-<a class="skip-link" href="#main-content">Skip to dashboard</a>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <aside
   class="sidebar"
   [class.open]="menuOpen()"
@@ -18,9 +18,10 @@
     @for (item of navigation; track item; let i = $index) {
     <button
       type="button"
-      [class.active]="i === 0"
-      [attr.aria-current]="i === 0 ? 'page' : null"
-      (click)="i === 0 ? menuOpen.set(false) : preview(item)"
+      [class.active]="item === page()"
+      [attr.aria-current]="item === page() ? 'page' : null"
+      [routerLink]="!previewMode() && i < 2 ? (i === 0 ? '/dashboard' : '/service-jobs') : null"
+      (click)="item === page() || (!previewMode() && i < 2) ? menuOpen.set(false) : preview(item)"
     >
       <span class="nav-icon" aria-hidden="true"
         ><app-dashboard-icon [name]="navigationIcons[i]" /></span
@@ -56,7 +57,7 @@
   </button>
   <div class="breadcrumb">
     Workspace <app-dashboard-icon name="chevron_right" />
-    <strong>Dashboard</strong>
+    <strong>{{ page() }}</strong>
   </div>
   <label class="search"
     ><app-dashboard-icon name="search" /><input

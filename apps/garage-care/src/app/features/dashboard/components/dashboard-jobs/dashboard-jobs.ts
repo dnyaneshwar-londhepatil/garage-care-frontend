@@ -1,6 +1,6 @@
 import { Component, input, output, signal } from '@angular/core';
 import { Job } from '../../dashboard.models';
-import { DashboardIcon } from '../dashboard-icon/dashboard-icon';
+import { DashboardIcon } from '@garage-care/shared/ui';
 import { ActionButton } from '@garage-care/shared/ui';
 @Component({
   selector: 'app-dashboard-jobs',
