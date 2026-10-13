@@ -1,5 +1,5 @@
 export const environment = {
   name: 'production',
   production: true,
-  apiBaseUrl: '/api/v1',
+  apiBaseUrl: 'https://garage-care-api.onrender.com/api/v1',
 } as const;
