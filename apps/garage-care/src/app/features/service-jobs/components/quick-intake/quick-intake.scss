@@ -1,0 +1,265 @@
+@use 'lib/abstracts/colors' as palette;
+:host {
+  font-family: var(--font-family-base);
+  color: palette.$color-text-primary;
+}
+dialog {
+  width: calc(100% - 32px);
+  max-width: 672px;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 24px;
+  border: 1px solid palette.$color-border-strong;
+  border-radius: 16px;
+  box-shadow: 0 24px 48px palette.$color-navy-alpha-32;
+  background: palette.$color-white;
+  color: palette.$color-text-primary;
+  overflow-y: auto;
+  &::backdrop {
+    background: palette.$color-modal-backdrop;
+    backdrop-filter: blur(4px);
+  }
+  @media (max-width: 540px) {
+    padding: 20px 16px;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  :focus-visible {
+    outline: 3px solid palette.$color-focus-blue;
+    outline-offset: 2px;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    border-bottom: 1px solid palette.$color-surface-action;
+    padding-bottom: 16px;
+    .title {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      h2 {
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.16px;
+        line-height: 24px;
+        margin: 0;
+      }
+      .badge {
+        font-family: var(--font-family-mono);
+        font-size: 11px;
+        background: palette.$color-surface-selected;
+        color: palette.$color-text-subtle;
+        border-radius: 20px;
+        padding: 2px 8px;
+        overflow-wrap: anywhere;
+      }
+    }
+    p {
+      font-size: 12px;
+      line-height: 16px;
+      color: palette.$color-text-secondary;
+      margin: 2px 0 0;
+    }
+    button {
+      border-radius: 50%;
+      background: palette.$color-transparent;
+    }
+  }
+  form {
+    fieldset {
+      border: 0;
+      padding: 16px 0;
+      margin: 0;
+      min-width: 0;
+      display: grid;
+      gap: 16px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      @media (max-width: 540px) {
+        grid-template-columns: 1fr;
+      }
+      &.vehicle-row {
+        border-top: 1px solid palette.$color-surface-action;
+        padding-top: 12px;
+      }
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+      > label,
+      .label {
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 14px;
+        letter-spacing: 0.66px;
+        text-transform: uppercase;
+        color: palette.$color-text-muted;
+      }
+      input,
+      select,
+      textarea {
+        font: inherit;
+        font-family: var(--font-family-base);
+        font-size: 12px;
+        line-height: 16px;
+        width: 100%;
+        min-width: 0;
+        border: 1px solid palette.$color-surface-action;
+        border-radius: 8px;
+        background: palette.$color-background;
+        color: palette.$color-text-primary;
+        padding: 10px 12px;
+        min-height: 40px;
+        &:focus {
+          background: palette.$color-white;
+          border-color: palette.$color-brand;
+        }
+        &[aria-invalid='true'] {
+          border-color: palette.$color-error;
+        }
+        &:disabled {
+          color: palette.$color-text-secondary;
+          opacity: 1;
+        }
+      }
+      textarea {
+        resize: vertical;
+        min-height: 64px;
+      }
+      .phone,
+      .plate {
+        display: flex;
+        align-items: center;
+        position: relative;
+        span {
+          font-family: var(--font-family-mono);
+          font-size: 12px;
+          color: palette.$color-text-secondary;
+        }
+      }
+      .phone {
+        span {
+          padding: 12px;
+          background: palette.$color-surface-action;
+          border-radius: 8px 0 0 8px;
+        }
+        input {
+          border-radius: 0 8px 8px 0;
+          font-family: var(--font-family-mono);
+        }
+      }
+      .plate {
+        span {
+          position: absolute;
+          left: 12px;
+          font-size: 10px;
+          color: palette.$color-text-muted;
+        }
+        input {
+          padding-left: 44px;
+          font-family: var(--font-family-mono);
+          text-transform: uppercase;
+        }
+      }
+      .make-model {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      .categories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        button {
+          font-size: 12px;
+          min-height: 32px;
+          padding: 6px 10px;
+        }
+      }
+      .field-error {
+        color: palette.$color-error;
+        font-size: 12px;
+        line-height: 16px;
+      }
+    }
+    .messaging {
+      label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        line-height: 16px;
+        input {
+          margin: 0;
+          width: 16px;
+          height: 16px;
+        }
+        app-dashboard-icon {
+          width: 16px;
+          height: 16px;
+          color: palette.$color-success;
+        }
+      }
+      small {
+        display: block;
+        font-size: 11px;
+        color: palette.$color-text-muted;
+        margin: 4px 0 0 22px;
+      }
+    }
+    .preview-note,
+    .notice,
+    .error {
+      font-size: 12px;
+      line-height: 18px;
+      margin: 0 0 12px;
+      padding: 8px;
+      border-radius: 6px;
+      background: palette.$color-surface-tint;
+    }
+    .error {
+      background: palette.$color-surface-error;
+      color: palette.$color-text-error;
+    }
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid palette.$color-surface-action;
+      @media (max-width: 540px) {
+        flex-wrap: wrap;
+        > div {
+          margin-left: auto;
+        }
+      }
+      > div {
+        display: flex;
+        gap: 8px;
+      }
+      button {
+        font-size: 12px;
+        min-height: 36px;
+        padding: 8px 12px;
+      }
+    }
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}

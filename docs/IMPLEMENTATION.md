@@ -74,9 +74,19 @@ The Service Jobs list uses Stitch project `17101721684738931297`, screen `1b7e82
 
 The screen retains the reference's workspace shell, banner, four summary tiles, status tabs, filter bar, service register, and pagination. Bays, employee assignments, payment collection, unsupported estimates and delivery ETAs are adapted to V1 service statuses and service dates. Search, vehicle/date/status filters, row selection, compact view, CSV export, and expandable job summaries are implemented. CSV text is escaped and formula-prefixed values are neutralized. Filtering and export cover loaded records; cursor-based Load More expands that set. The summary counts cover the garage, independently of local filters.
 
-The workspace shell and original Material Symbols SVG renderer now live in `libs/shared/ui` and remain shared with Dashboard. Fonts and colors reuse the established local assets and palette. Search stays disabled until browser hydration completes. Loading, retry, empty states and session expiry are handled without falling back to sample data. New Service Job announces that the intake page is pending; Create Service Job and the full detail page remain subsequent pages in the review/merge sequence.
+The workspace shell and original Material Symbols SVG renderer now live in `libs/shared/ui` and remain shared with Dashboard. Fonts and colors reuse the established local assets and palette. Search stays disabled until browser hydration completes. Loading, retry, empty states and session expiry are handled without falling back to sample data. New Service Job opens the quick intake modal; the full detail page remains a subsequent page in the review/merge sequence.
 
 Verification: production build including prerendering, app and shared UI unit tests, lint, and focused Playwright checks for Service Jobs and Dashboard. Responsive checks cover 1440px desktop, 768px tablet and 390px mobile; the wide table scrolls within its own region.
+
+## New Service Job quick intake modal — 2026-10-14
+
+The user selected the minimal Quick Intake Modal in Stitch project `17101721684738931297`, screen `a3b10e0d52dc438c88a455965e4b9773`. New Service Job opens the native modal dialog above the existing register at `/service-jobs`; `/preview/service-jobs` provides the same modal without API writes. The dialog is under the feature's `components/quick-intake` folder.
+
+Intake collects customer name, Indian mobile number, normalized registration number, make/model, quick category, complaint, vehicle type, and service date. It searches paginated API results for exact phone/registration matches, reuses matching records, rejects vehicle ownership mismatches, and creates new customer/vehicle records when needed. Category is preserved as a prefix in the complaint because the current API has no category field. Dates preserve the Asia/Kolkata calendar day. Billable items remain empty during quick intake.
+
+Save as Draft persists the job in draft status. Create Service Job creates the draft and then sends a versioned transition to in-progress. Successful writes close the modal and refresh the register with a confirmation. Completed customer, vehicle, and job creation steps are retained if a later step fails, so retry resumes without repeating confirmed writes. Native dialog behavior traps focus and makes the register inert; Escape, Cancel, and close restore focus, while pending saves cannot be dismissed. The background scroll lock is restored when the modal is destroyed.
+
+Bay and technician assignments are outside V1. Their row is adapted to vehicle type and service date, which the backend needs. WhatsApp updates are disabled and unchecked with an availability note; no consent or delivery is inferred. No invented job identifier, allocation, invoice, or message success is shown. Validation covers exact record reuse, relationship checks, partial failure retry, draft/start payloads, preview isolation, modal focus/keyboard behavior, and desktop/tablet/mobile layouts.
 
 ## Delivery sequence
 

@@ -50,7 +50,8 @@
           <button
             gcButton
             variant="primary"
-            (click)="preview('New Service Job')"
+            (click)="intakeOpen.set(true)"
+            [disabled]="search.disabled"
           >
             <app-dashboard-icon name="add" />New Service Job
           </button>
@@ -350,3 +351,10 @@
     }
   </main>
 </div>
+@if (intakeOpen()) {
+<app-quick-intake
+  [previewMode]="previewMode"
+  (closed)="intakeOpen.set(false)"
+  (created)="intakeCreated($event)"
+/>
+}
