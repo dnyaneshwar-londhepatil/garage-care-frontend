@@ -1,0 +1,211 @@
+<dialog
+  tabindex="-1"
+  #modal
+  aria-labelledby="intake-title"
+  aria-describedby="intake-description"
+  (cancel)="cancel($event)"
+  (click)="backdrop($event)"
+  (keydown.escape)="cancel($event)"
+>
+  <header>
+    <div>
+      <div class="title">
+        <h2 id="intake-title">New Service Job</h2>
+        <span class="badge">{{job()?.serviceNumber || 'QUICK INTAKE'}}</span>
+      </div>
+      <p id="intake-description">
+        Quick intake to get the vehicle onto the workshop floor.
+      </p>
+    </div>
+    <button
+      type="button"
+      gcButton
+      [square]="true"
+      aria-label="Close modal"
+      [disabled]="busy()"
+      (click)="close()"
+    >
+      <app-dashboard-icon name="close" />
+    </button>
+  </header>
+  <form [formGroup]="form" (ngSubmit)="save(true)">
+    <fieldset [disabled]="busy()">
+      <div class="row">
+        <div class="field">
+          <label for="intake-name">Customer name</label
+          ><input
+            id="intake-name"
+            formControlName="name"
+            autocomplete="name"
+            placeholder="e.g. Ramesh Kumar"
+            maxlength="200"
+            [attr.aria-invalid]="invalid('name')"
+            aria-describedby="name-error"
+            autofocus
+          />@if(invalid('name')){<small id="name-error" class="field-error"
+            >Enter the customer’s name.</small
+          >}
+        </div>
+        <div class="field">
+          <label for="intake-phone">Mobile number</label>
+          <div class="phone">
+            <span aria-hidden="true">+91</span
+            ><input
+              id="intake-phone"
+              formControlName="phone"
+              autocomplete="tel-national"
+              inputmode="tel"
+              type="tel"
+              placeholder="9845012384"
+              maxlength="10"
+              [attr.aria-invalid]="invalid('phone')"
+              aria-describedby="phone-error"
+            />
+          </div>
+          @if(invalid('phone')){<small id="phone-error" class="field-error"
+            >Enter a valid 10-digit Indian mobile number.</small
+          >}
+        </div>
+      </div>
+      <div class="messaging">
+        <label
+          ><input type="checkbox" disabled /><app-dashboard-icon
+            name="chat"
+          />Send real-time status & job card via WhatsApp</label
+        ><small>Not available yet. No message will be sent.</small>
+      </div>
+      <div class="row vehicle-row">
+        <div class="field">
+          <label for="intake-plate">Reg. plate number</label>
+          <div class="plate">
+            <span aria-hidden="true">IND</span
+            ><input
+              id="intake-plate"
+              formControlName="registrationNumber"
+              placeholder="MH 02 EE 4920"
+              maxlength="20"
+              [attr.aria-invalid]="invalid('registrationNumber')"
+              aria-describedby="plate-error"
+            />
+          </div>
+          @if(invalid('registrationNumber')){<small
+            id="plate-error"
+            class="field-error"
+            >Enter a registration number with 4–20 characters.</small
+          >}
+        </div>
+        <div class="field">
+          <span class="label">Vehicle make & model</span>
+          <div class="make-model">
+            <label class="sr-only" for="intake-make">Vehicle make</label
+            ><input
+              id="intake-make"
+              formControlName="brand"
+              placeholder="Make, e.g. Hyundai"
+              maxlength="200"
+              [attr.aria-invalid]="invalid('brand')"
+              aria-describedby="model-error"
+            /><label class="sr-only" for="intake-model">Vehicle model</label
+            ><input
+              id="intake-model"
+              formControlName="model"
+              placeholder="Model, e.g. Creta SX"
+              maxlength="200"
+              [attr.aria-invalid]="invalid('model')"
+              aria-describedby="model-error"
+            />
+          </div>
+          @if(invalid('brand')||invalid('model')){<small
+            id="model-error"
+            class="field-error"
+            >Enter the make and model.</small
+          >}
+        </div>
+      </div>
+      <div class="field">
+        <span class="label" id="category-title">Quick category</span>
+        <div class="categories" role="group" aria-labelledby="category-title">
+          @for(item of categories;track item){<button
+            type="button"
+            gcButton
+            [variant]="category()===item ? 'primary' : 'subtle'"
+            [attr.aria-pressed]="category()===item"
+            [disabled]="!!job()"
+            (click)="category.set(item)"
+          >
+            {{item}}</button
+          >}
+        </div>
+      </div>
+      <div class="field">
+        <label for="intake-complaint">Primary complaint / scope</label
+        ><textarea
+          id="intake-complaint"
+          formControlName="complaint"
+          rows="2"
+          maxlength="1950"
+          placeholder="Describe service requirement or customer concerns…"
+          [attr.aria-invalid]="invalid('complaint')"
+          aria-describedby="complaint-error"
+        ></textarea
+        >@if(invalid('complaint')){<small
+          id="complaint-error"
+          class="field-error"
+          >Describe the service requirement.</small
+        >}
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="intake-type">Vehicle type</label
+          ><select id="intake-type" formControlName="vehicleType">
+            <option value="car">Car</option>
+            <option value="bike">Bike</option>
+            <option value="scooter">Scooter</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="intake-date">Service date</label
+          ><input
+            id="intake-date"
+            type="date"
+            formControlName="serviceDate"
+            [attr.aria-invalid]="invalid('serviceDate')"
+            aria-describedby="date-error"
+          />@if(invalid('serviceDate')){<small
+            id="date-error"
+            class="field-error"
+            >Choose a service date.</small
+          >}
+        </div>
+      </div>
+    </fieldset>
+    @if(previewMode()){
+    <p class="preview-note">
+      Design preview. Sample input only; no records are created.
+    </p>
+    } @if(error()){
+    <p class="error" role="alert">{{error()}}</p>
+    } @if(notice()){
+    <p class="notice" role="status">{{notice()}}</p>
+    }
+    <footer>
+      <button
+        type="button"
+        gcButton
+        [disabled]="busy() || !!job()"
+        (click)="save(false)"
+      >
+        Save as Draft
+      </button>
+      <div>
+        <button type="button" gcButton [disabled]="busy()" (click)="close()">
+          Cancel</button
+        ><button type="submit" gcButton variant="primary" [disabled]="busy()">
+          <app-dashboard-icon name="check_circle" />{{busy() ? 'Saving…' : job()
+          ? 'Retry Start Work' : 'Create Service Job'}}
+        </button>
+      </div>
+    </footer>
+  </form>
+</dialog>

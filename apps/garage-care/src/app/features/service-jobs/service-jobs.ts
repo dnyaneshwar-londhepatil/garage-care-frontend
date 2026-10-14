@@ -10,7 +10,7 @@ import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   ActionButton,
   DashboardIcon,
@@ -27,14 +27,16 @@ import {
   Vehicle,
   ServiceStatus,
   apiErrorMessage,
+  ServiceJob,
 } from '@garage-care/shared/data-access';
 import { csvCell, ServiceRow, STATUS_LABELS } from './service-jobs.models';
 import { PREVIEW_JOBS } from './service-jobs.preview';
+import { QuickIntake } from './components/quick-intake/quick-intake';
 
 @Component({
   selector: 'app-service-jobs',
   imports: [
-    RouterLink,
+    QuickIntake,
     ReactiveFormsModule,
     DatePipe,
     ActionButton,
@@ -67,6 +69,7 @@ export class ServiceJobs {
   readonly busy = signal(false);
   readonly error = signal('');
   readonly notice = signal('');
+  readonly intakeOpen = signal(false);
   readonly nextCursor = signal<string | null>(null);
   readonly status = signal<'all' | ServiceStatus>('all');
   readonly category = signal('all');
@@ -275,6 +278,13 @@ export class ServiceJobs {
     this.category.set('all');
     this.dateFilter.set('all');
     this.page.set(0);
+  }
+  async intakeCreated(job: ServiceJob): Promise<void> {
+    this.intakeOpen.set(false);
+    this.notice.set(
+      `Service job ${job.serviceNumber || job._id} saved${job.status === 'in_progress' ? ' and started' : ' as draft'}.`,
+    );
+    await this.load();
   }
   preview(action: string): void {
     this.notice.set(

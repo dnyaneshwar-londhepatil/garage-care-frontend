@@ -2,6 +2,7 @@
 // Alpha suffixes are the original 8-bit opacity values; pct suffixes use percentages.
 // Legacy tokens preserve existing shared-style colors while approved screens use brand tokens.
 $color-text-secondary: #424654 !default;
+$color-modal-backdrop: #0b1c3080 !default;
 $color-surface-action: #e5eeff !default;
 $color-success: #006947 !default;
 $color-surface-success: #ecfdf5 !default;
@@ -63,6 +64,7 @@ $color-flag-green: #138808 !default;
 $color-flag-navy: #000080 !default;
 
 $colors: (
+  'modal-backdrop': $color-modal-backdrop,
   'text-secondary': $color-text-secondary,
   'surface-action': $color-surface-action,
   'success': $color-success,
