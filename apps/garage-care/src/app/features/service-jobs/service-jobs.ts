@@ -10,7 +10,7 @@ import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   ActionButton,
   DashboardIcon,
@@ -34,6 +34,7 @@ import { PREVIEW_JOBS } from './service-jobs.preview';
 @Component({
   selector: 'app-service-jobs',
   imports: [
+    RouterLink,
     ReactiveFormsModule,
     DatePipe,
     ActionButton,

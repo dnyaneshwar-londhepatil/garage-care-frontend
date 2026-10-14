@@ -74,9 +74,19 @@ The Service Jobs list uses Stitch project `17101721684738931297`, screen `1b7e82
 
 The screen retains the reference's workspace shell, banner, four summary tiles, status tabs, filter bar, service register, and pagination. Bays, employee assignments, payment collection, unsupported estimates and delivery ETAs are adapted to V1 service statuses and service dates. Search, vehicle/date/status filters, row selection, compact view, CSV export, and expandable job summaries are implemented. CSV text is escaped and formula-prefixed values are neutralized. Filtering and export cover loaded records; cursor-based Load More expands that set. The summary counts cover the garage, independently of local filters.
 
-The workspace shell and original Material Symbols SVG renderer now live in `libs/shared/ui` and remain shared with Dashboard. Fonts and colors reuse the established local assets and palette. Search stays disabled until browser hydration completes. Loading, retry, empty states and session expiry are handled without falling back to sample data. New Service Job announces that the intake page is pending; Create Service Job and the full detail page remain subsequent pages in the review/merge sequence.
+The workspace shell and original Material Symbols SVG renderer now live in `libs/shared/ui` and remain shared with Dashboard. Fonts and colors reuse the established local assets and palette. Search stays disabled until browser hydration completes. Loading, retry, empty states and session expiry are handled without falling back to sample data. New Service Job opens the intake page; the full detail page remains a subsequent page in the review/merge sequence.
 
 Verification: production build including prerendering, app and shared UI unit tests, lint, and focused Playwright checks for Service Jobs and Dashboard. Responsive checks cover 1440px desktop, 768px tablet and 390px mobile; the wide table scrolls within its own region.
+
+## New Service Job intake — 2026-10-14
+
+The user selected the New Service Job Card design with client/vehicle, billable items, and estimate panel in Stitch project `17101721684738931297`, screen `0f7b9dbd0a4c4359b9cd13fdfa5615fb`. The guarded `/service-jobs/new` page uses existing shared customer, vehicle, parts, and service APIs. `/preview/service-jobs/new` uses fictional records and submits no API requests. The register links to the corresponding intake route.
+
+Owners can search/paginate customers, select a linked vehicle, create customer/vehicle records inline, add catalog parts and labour, set whole quantities and per-unit discounts, and record service date, odometer, complaint, work notes, and next due date. INR input is converted to integer paise; dates preserve the Asia/Kolkata calendar day. Parts prices/descriptions are resolved again by the server. The displayed items subtotal is indicative before applicable taxes, not an invoice calculation.
+
+Save as Draft creates a server draft. Create Job Card & Start Work creates the draft and then sends a versioned status update. If starting fails after saving, the retained job is retried without submitting a second create request. A saved draft is read-only on this intake screen. Create & Print saves a draft before opening the browser print dialog; printing an existing saved job does not create another record. Printing does not finalize an invoice or prove that a physical print completed.
+
+The selected design includes features outside the implemented V1 contract. Fuel-level recording and WhatsApp estimate delivery are disabled with explanations; bay assignment is replaced with Start Work. GST taxes remain uncalculated. No fabricated job number, assignment, message delivery, or invoice success is shown. Unit and mocked API browser tests cover payloads, relationships, validation, partial failure retry, inline creation, preview isolation, print invocation, and desktop/tablet/mobile layouts.
 
 ## Delivery sequence
 

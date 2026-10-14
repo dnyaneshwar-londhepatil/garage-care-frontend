@@ -50,7 +50,7 @@
           <button
             gcButton
             variant="primary"
-            (click)="preview('New Service Job')"
+            [routerLink]="previewMode ? '/preview/service-jobs/new' : '/service-jobs/new'"
           >
             <app-dashboard-icon name="add" />New Service Job
           </button>
