@@ -19,17 +19,8 @@
     <section class="overview" aria-labelledby="page-heading">
       <div class="heading-row">
         <div>
-          <div class="eyebrow">
-            WORKSHOP OPERATIONS
-            <span
-              >{{ previewMode ? 'SAMPLE WORKSPACE' : 'SERVICE REGISTER' }}</span
-            >
-          </div>
           <h1 id="page-heading">Service Jobs</h1>
-          <p>
-            Manage job cards, track service progress, and keep every vehicle’s
-            work in view.
-          </p>
+          <p>Track work requested and service progress.</p>
         </div>
         <div class="actions">
           <button
@@ -45,7 +36,7 @@
             [attr.aria-expanded]="settingsOpen()"
             aria-controls="view-settings"
           >
-            <app-dashboard-icon name="tune" />View Settings
+            <app-dashboard-icon name="tune" />Table options
           </button>
           <button
             gcButton
@@ -132,7 +123,7 @@
           [value]="category()"
           (change)="category.set($any($event.target).value); page.set(0)"
         >
-          <option value="all">Category: All types</option>
+          <option value="all">Vehicle: All types</option>
           <option value="car">Car</option>
           <option value="bike">Bike</option>
           <option value="scooter">Scooter</option>
@@ -151,8 +142,8 @@
     </section>
     <div class="list-info">
       <span
-        >{{ rows().length }} records loaded. Search, date, category, and export
-        apply to loaded records.</span
+        >{{ rows().length }} jobs loaded. Filters and export use these
+        jobs.</span
       >@if (selected().size) {
       <button gcButton (click)="clearSelection()">
         Clear selection ({{ selected().size }})
@@ -187,12 +178,12 @@
                 />
               </th>
               <th>JOB ID</th>
-              <th>CUSTOMER DETAILS</th>
-              <th>VEHICLE &amp; REG. PLATE</th>
-              <th>COMPLAINT &amp; SERVICE SCOPE</th>
+              <th>CUSTOMER</th>
+              <th>VEHICLE</th>
+              <th>WORK REQUESTED</th>
               <th>STATUS</th>
               <th>SERVICE DATE</th>
-              <th>QUICK ACTIONS</th>
+              <th>DETAILS</th>
             </tr>
           </thead>
           <tbody>

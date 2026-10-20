@@ -1,0 +1,254 @@
+<div class="workspace">
+  <app-dashboard-shell
+    page="Reminders"
+    [previewMode]="previewMode"
+    [search]="search"
+    [garageName]="previewMode ? 'Apex Auto Garage · Sample' : auth.garage()?.name || 'Your garage'"
+    [ownerName]="previewMode ? 'Preview account' : auth.user()?.fullName || 'Owner'"
+    [busy]="busy()"
+    (logout)="logout()"
+  />
+  <main id="main-content" tabindex="-1">
+    @if(previewMode){
+    <p class="preview" role="note">
+      <strong>Design preview</strong> · Sample data. No backend records are
+      changed and no messages are sent.
+    </p>
+    }
+    <header class="heading">
+      <div>
+        <h1>Reminders</h1>
+        <p>Schedule service follow-ups and check delivery status.</p>
+      </div>
+      <button
+        gcButton
+        variant="primary"
+        [disabled]="!ready() || busy() || loading() || editorOpen()"
+        (click)="open()"
+      >
+        <app-dashboard-icon name="add" /> Schedule Reminder
+      </button>
+    </header>
+    @if(notice()){
+    <p class="notice" role="status">{{notice()}}</p>
+    }@if(error()){
+    <div class="error" role="alert">
+      {{error()}}
+      <button gcButton (click)="load()" [disabled]="loading() || busy()">
+        Retry
+      </button>
+    </div>
+    }
+    <p class="notice">
+      Reminders are scheduled seven days before the service due date. Delivery
+      depends on customer consent and messaging setup.
+    </p>
+    @if(cancelTarget();as target){
+    <section class="editor" aria-label="Confirm cancellation">
+      <h2>Cancel this reminder?</h2>
+      <p>
+        {{vehicleMap().get(target.vehicleId)?.registrationNumber}} · Due
+        {{target.dueDate|date:'dd MMM yyyy':'+0530'}}
+      </p>
+      <div class="actions">
+        <button gcButton [disabled]="busy()" (click)="cancelTarget.set(null)">
+          Keep reminder</button
+        ><button
+          gcButton
+          variant="primary"
+          [disabled]="busy()"
+          (click)="cancel()"
+        >
+          Confirm cancellation
+        </button>
+      </div>
+    </section>
+    } @if(editorOpen()){
+    <section class="editor" aria-labelledby="editor-heading">
+      <h2 id="editor-heading">Schedule reminder</h2>
+      <form
+        class="vehicle-search"
+        (submit)="$event.preventDefault(); findVehicles()"
+      >
+        <label for="reminder-search"
+          >Find a vehicle<input
+            id="reminder-search"
+            [formControl]="vehicleSearch"
+            maxlength="100"
+            placeholder="Registration, make, or model" /></label
+        ><button gcButton type="submit" [disabled]="busy() || choosing()">
+          Find vehicles
+        </button>
+      </form>
+      @if(choosing()){
+      <p role="status">Loading vehicles…</p>
+      }@if(choiceError()){
+      <p role="alert" class="field-error">{{choiceError()}}</p>
+      <button
+        gcButton
+        [disabled]="busy() || choosing()"
+        (click)="findVehicles()"
+      >
+        Retry vehicle search</button
+      >}
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <fieldset [disabled]="busy() || choosing()">
+          <div class="fields">
+            <label for="reminder-vehicle"
+              ><span id="reminder-vehicle-label">Vehicle</span
+              ><select
+                id="reminder-vehicle"
+                aria-labelledby="reminder-vehicle-label"
+                formControlName="vehicleId"
+                (change)="choose($any($event.target).value)"
+                [attr.aria-invalid]="invalid('vehicleId')"
+              >
+                <option value="">Select a vehicle</option>
+                @for(vehicle of choices();track vehicle._id){
+                <option [value]="vehicle._id">
+                  {{vehicle.registrationNumber}} ·
+                  {{customerMap().get(vehicle.customerId)?.name}}
+                </option>
+                }
+              </select></label
+            ><label for="reminder-due"
+              >Service due date<input
+                id="reminder-due"
+                type="date"
+                formControlName="dueDate"
+                [attr.aria-invalid]="invalid('dueDate')"
+            /></label>
+          </div>
+        </fieldset>
+        @if(choiceCursor()){<button
+          gcButton
+          type="button"
+          [disabled]="busy() || choosing()"
+          (click)="findVehicles(true)"
+        >
+          Load more vehicles</button
+        >}@if(!choosing()&&!choices().length&&!choiceError()){
+        <p>
+          No matching vehicles.
+          <a [routerLink]="previewMode ? '/preview/vehicles' : '/vehicles'"
+            >Add a vehicle</a
+          >
+          or try another search.
+        </p>
+        }@if(selectedVehicle();as vehicle){
+        <p>
+          Customer: {{customerMap().get(vehicle.customerId)?.name}} ·
+          <span class="mono"
+            >{{customerMap().get(vehicle.customerId)?.phone}}</span
+          >
+        </p>
+        }
+        <p class="hint">
+          A new due date replaces any pending reminder for this vehicle.
+        </p>
+        @if(formError()){
+        <p role="alert" class="field-error">{{formError()}}</p>
+        }
+        <footer>
+          <button
+            gcButton
+            type="button"
+            [disabled]="busy() || choosing()"
+            (click)="editorOpen.set(false)"
+          >
+            Cancel</button
+          ><button
+            gcButton
+            variant="primary"
+            type="submit"
+            [disabled]="busy() || choosing()"
+          >
+            {{busy() ? 'Scheduling…' : previewMode ? 'Schedule sample reminder'
+            : 'Schedule reminder'}}
+          </button>
+        </footer>
+      </form>
+    </section>
+    }
+    <section class="directory" aria-label="Reminder directory">
+      <div class="toolbar">
+        <label
+          >Status<select
+            aria-label="Filter reminders by status"
+            [value]="status()"
+            [disabled]="loading() || busy()"
+            (change)="status.set($any($event.target).value); load()"
+          >
+            <option value="">All statuses</option>
+            @for(item of statuses;track item){
+            <option [value]="item">{{item}}</option>
+            }
+          </select></label
+        ><button
+          gcButton
+          [disabled]="loading() || busy() || !ready()"
+          (click)="load()"
+        >
+          Refresh
+        </button>
+      </div>
+      <p class="list-info">{{records().length}} reminders loaded</p>
+      @if(loading()){
+      <p class="state" role="status">Loading reminders…</p>
+      }@if(records().length){
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Reminders table"
+        tabindex="0"
+      >
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Vehicle</th>
+              <th>Service due</th>
+              <th>Scheduled</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(reminder of records();track reminder._id){
+            <tr>
+              <td>{{customerMap().get(reminder.customerId)?.name}}</td>
+              <td class="mono">
+                {{vehicleMap().get(reminder.vehicleId)?.registrationNumber}}
+              </td>
+              <td>{{reminder.dueDate|date:'dd MMM yyyy':'+0530'}}</td>
+              <td>{{reminder.scheduledAt|date:'dd MMM yyyy':'+0530'}}</td>
+              <td>{{reminder.status}}</td>
+              <td>
+                @if(reminder.status==='pending'||reminder.status==='failed'){<button
+                  gcButton
+                  [disabled]="busy()"
+                  (click)="cancelTarget.set(reminder)"
+                >
+                  Cancel reminder</button
+                >}@else{<span>No changes available</span>}
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }@else if(!loading()&&!error()){
+      <div class="state">
+        <h2>No matching reminders</h2>
+        <p>Schedule a follow-up or choose another status.</p>
+      </div>
+      }@if(cursor()){
+      <div class="load-more">
+        <button gcButton [disabled]="loading() || busy()" (click)="load(true)">
+          Load more reminders
+        </button>
+      </div>
+      }
+    </section>
+  </main>
+</div>

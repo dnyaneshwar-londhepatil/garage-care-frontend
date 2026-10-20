@@ -1,0 +1,10 @@
+@mixin action-size {
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 8px 12px;
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  gap: 8px;
+}

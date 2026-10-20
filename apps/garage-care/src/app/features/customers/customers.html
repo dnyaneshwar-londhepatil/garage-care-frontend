@@ -1,0 +1,244 @@
+<div class="workspace">
+  <app-dashboard-shell
+    page="Customers"
+    [previewMode]="previewMode"
+    [search]="search"
+    [garageName]="previewMode ? 'Apex Auto Garage · Sample' : auth.garage()?.name || 'Your garage'"
+    [ownerName]="previewMode ? 'Preview account' : auth.user()?.fullName || 'Owner'"
+    [busy]="busy()"
+    (logout)="logout()"
+  />
+  <main id="main-content" tabindex="-1">
+    @if (previewMode) {
+    <p class="preview" role="note">
+      <strong>Design preview</strong> · Sample customers. Changes last only on
+      this page; no backend records are changed.
+    </p>
+    }
+    <header class="heading">
+      <div>
+        <h1>Customers</h1>
+        <p>Keep customer contact details in one place.</p>
+      </div>
+      <button
+        id="add-customer"
+        gcButton
+        variant="primary"
+        [disabled]="!ready() || busy() || loading() || editorOpen()"
+        (click)="open()"
+      >
+        <app-dashboard-icon name="person_add" />Add Customer
+      </button>
+    </header>
+    @if (notice()) {
+    <p class="notice" role="status">{{ notice() }}</p>
+    } @if (error()) {
+    <div class="error" role="alert">
+      {{ error() }}
+      <button gcButton (click)="load()" [disabled]="loading() || busy()">
+        Retry
+      </button>
+    </div>
+    } @if (editorOpen()) {
+    <section class="editor" aria-labelledby="editor-heading">
+      <h2 id="editor-heading">
+        {{ editing() ? 'Edit customer' : 'Add customer' }}
+      </h2>
+      <p>Name and mobile number are required.</p>
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <fieldset [disabled]="busy()">
+          <div class="fields">
+            <label for="customer-name"
+              ><span id="customer-name-label">Customer name</span
+              ><input
+                id="customer-name"
+                aria-labelledby="customer-name-label"
+                formControlName="name"
+                autocomplete="name"
+                maxlength="200"
+                [attr.aria-invalid]="invalid('name')"
+                aria-describedby="name-error"
+              />@if (invalid('name')) {<small
+                id="name-error"
+                class="field-error"
+                >Enter a customer name.</small
+              >}</label
+            >
+            <label for="customer-phone"
+              ><span id="customer-phone-label">Mobile number</span>
+              <div class="phone">
+                <span>+91</span
+                ><input
+                  id="customer-phone"
+                  aria-labelledby="customer-phone-label"
+                  formControlName="phone"
+                  type="tel"
+                  inputmode="tel"
+                  autocomplete="tel-national"
+                  maxlength="10"
+                  [attr.aria-invalid]="invalid('phone')"
+                  aria-describedby="phone-error"
+                />
+              </div>
+              @if (invalid('phone')) {<small
+                id="phone-error"
+                class="field-error"
+                >Enter a valid 10-digit Indian mobile number.</small
+              >}</label
+            >
+          </div>
+          <details [open]="!!editing()">
+            <summary>More details (optional)</summary>
+            <div class="optional">
+              <label for="customer-email"
+                ><span id="customer-email-label">Email address</span
+                ><input
+                  id="customer-email"
+                  aria-labelledby="customer-email-label"
+                  type="email"
+                  formControlName="email"
+                  autocomplete="email"
+                  maxlength="254"
+                  [attr.aria-invalid]="invalid('email')"
+                  aria-describedby="email-error"
+                />@if (invalid('email')) {<small
+                  id="email-error"
+                  class="field-error"
+                  >Enter a valid email address.</small
+                >}</label
+              >
+              <label for="customer-address"
+                >Address<textarea
+                  id="customer-address"
+                  formControlName="address"
+                  autocomplete="street-address"
+                  maxlength="1000"
+                  rows="2"
+                ></textarea>
+              </label>
+              <label for="customer-notes"
+                >Notes<textarea
+                  id="customer-notes"
+                  formControlName="notes"
+                  maxlength="2000"
+                  rows="2"
+                ></textarea>
+              </label>
+            </div>
+          </details>
+        </fieldset>
+        @if (formError()) {
+        <p class="field-error" role="alert">{{ formError() }}</p>
+        }
+        <footer>
+          <button gcButton type="button" [disabled]="busy()" (click)="close()">
+            Cancel</button
+          ><button gcButton variant="primary" type="submit" [disabled]="busy()">
+            {{ busy() ? 'Saving…' : previewMode ? 'Save sample customer' : 'Save
+            customer' }}
+          </button>
+        </footer>
+      </form>
+    </section>
+    }
+    <section
+      class="directory"
+      aria-label="Customer directory"
+      [attr.aria-busy]="loading()"
+    >
+      <form class="toolbar" (submit)="$event.preventDefault(); load()">
+        <label class="search"
+          ><app-dashboard-icon name="search" /><input
+            type="search"
+            [formControl]="search"
+            placeholder="Search name or mobile number"
+            aria-label="Search customers"
+            maxlength="100" /></label
+        ><button
+          gcButton
+          type="submit"
+          [disabled]="!ready() || loading() || busy()"
+        >
+          Search</button
+        ><button
+          gcButton
+          type="button"
+          [disabled]="!ready() || loading() || busy()"
+          (click)="search.setValue(''); load()"
+        >
+          Reset
+        </button>
+      </form>
+      <p class="list-info">
+        {{ rows().length }} customers {{ query() ? 'matching your search' :
+        'loaded' }}@if (cursor()) { · More available }
+      </p>
+      @if (loading()) {
+      <p class="state" role="status">Loading customers…</p>
+      } @if (rows().length) {
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Customers table"
+        tabindex="0"
+      >
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Mobile number</th>
+              <th>Email</th>
+              <th>WhatsApp consent</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (customer of rows(); track customer._id) {
+            <tr>
+              <td>
+                <strong>{{ customer.name }}</strong>@if (customer.address)
+                {<small>{{ customer.address }}</small>}
+              </td>
+              <td class="mono">{{ customer.phone }}</td>
+              <td>{{ customer.email || 'Not provided' }}</td>
+              <td>
+                <span class="consent"
+                  >{{ customer.whatsappConsent?.status === 'opted_in' ? 'Opted
+                  in' : customer.whatsappConsent?.status === 'opted_out' ?
+                  'Opted out' : 'Not recorded' }}</span
+                >
+              </td>
+              <td>
+                <button
+                  gcButton
+                  [disabled]="busy() || loading() || editorOpen()"
+                  (click)="open(customer)"
+                  [attr.aria-label]="'Edit ' + customer.name"
+                >
+                  Edit
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      } @else if (!loading() && !error()) {
+      <div class="state">
+        <app-dashboard-icon name="group" />
+        <h2>{{ query() ? 'No matching customers' : 'No customers yet' }}</h2>
+        <p>
+          {{ query() ? 'Try a different name or mobile number.' : 'Add your
+          first customer to get started.' }}
+        </p>
+      </div>
+      } @if (cursor()) {
+      <div class="load-more">
+        <button gcButton [disabled]="loading() || busy()" (click)="load(true)">
+          Load more customers
+        </button>
+      </div>
+      }
+    </section>
+  </main>
+</div>

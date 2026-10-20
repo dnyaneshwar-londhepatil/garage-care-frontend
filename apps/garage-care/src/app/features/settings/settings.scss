@@ -1,0 +1,16 @@
+@use 'lib/components/directory-page';
+@include directory-page.styles;
+.workspace {
+  .editor {
+    h3 {
+      font-size: 16px;
+      margin: 24px 0 8px;
+    }
+    .address {
+      margin: 16px 0;
+    }
+    p + p {
+      margin-top: 8px;
+    }
+  }
+}

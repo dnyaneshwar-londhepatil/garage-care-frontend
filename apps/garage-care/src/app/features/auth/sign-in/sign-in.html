@@ -7,15 +7,13 @@
             d="m14 6 4-4a6 6 0 0 1-8 8L4 20l-3-3 10-6a6 6 0 0 1 8-8l-4 4Z"
           /></svg
       ></span>
-      <span>Garage<span class="brand-accent">Care</span></span
-      ><span class="saas">SaaS</span>
+      <span>Garage<span class="brand-accent">Care</span></span>
     </a>
-    <span class="preview-badge">Local testing</span>
   </header>
   <main>
     <section class="signin-card" aria-labelledby="signin-title">
       <p class="portal-label">
-        <span aria-hidden="true"></span>Automotive OS · Workshop Portal
+        <span aria-hidden="true"></span>Garage workspace
       </p>
       <h1 id="signin-title">Welcome back</h1>
       <p class="intro">
@@ -88,14 +86,6 @@
           }
         </div>
         <div class="form-options">
-          <label class="remember-label"
-            ><input
-              type="checkbox"
-              formControlName="rememberMe"
-              [attr.disabled]="true"
-              aria-describedby="signin-preview-note"
-            />Remember me</label
-          >
           <a class="text-link" routerLink="/forgot-password"
             >Forgot password?</a
           >
@@ -123,24 +113,14 @@
         <a class="text-link" routerLink="/sign-up">Create one</a>
       </p>
       <p class="preview-note" id="signin-preview-note">
-        Sign-in uses the local backend. Remember me is unavailable. Dashboard
-        data remains a preview.
+        Sign in with your garage owner account.
       </p>
     </section>
   </main>
   <footer>
     <div>
       © 2026 GarageCare
-      <span class="footer-tagline">· Automotive Workshop Operating Engine</span>
+      <span class="footer-tagline">· Garage management</span>
     </div>
-    <nav aria-label="Footer">
-      <button class="text-link" (click)="unavailable('Privacy Policy')">
-        Privacy Policy</button
-      ><button class="text-link" (click)="unavailable('Terms of Service')">
-        Terms of Service</button
-      ><button class="text-link" (click)="unavailable('Help Center')">
-        Help Center
-      </button>
-    </nav>
   </footer>
 </div>

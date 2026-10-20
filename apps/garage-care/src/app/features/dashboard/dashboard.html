@@ -1,6 +1,7 @@
 <div class="dashboard">
   <app-dashboard-shell
     [search]="search"
+    [previewMode]="previewMode"
     [garageName]="garageName()"
     [ownerName]="ownerName()"
     [busy]="busy()"
@@ -8,36 +9,55 @@
     (previewAction)="preview($event)"
   />
   <main id="main-content" tabindex="-1">
+    @if (previewMode) {
+    <p class="notice" role="note">
+      <strong>Design preview</strong> · Sample records shared with Service Jobs.
+      No server actions are submitted.
+    </p>
+    }
     <div class="welcome">
       <div>
         <h1>
-          <app-dashboard-icon name="wb_sunny" /> Welcome, {{ ownerName() }}!
+          <app-dashboard-icon name="wb_sunny" />{{ greeting() }}, {{ firstName()
+          }}!
         </h1>
-        <p>Garage activity for {{ garageName() }}.</p>
+        <p>
+          Here's what's happening at your garage today —
+          <strong
+            >{{ garageName() }}@if (garageLocation()) {, {{ garageLocation()
+            }}}</strong
+          >.
+        </p>
       </div>
       <div class="header-actions">
-        <button type="button" (click)="preview('Add Customer')">
-          <app-dashboard-icon name="person_add" /> + Add Customer</button
-        ><button
-          class="primary"
+        <button
+          gcButton
+          variant="primary"
           type="button"
-          (click)="preview('New Service Job')"
+          (click)="intakeOpen.set(true)"
         >
-          <app-dashboard-icon name="add_circle" /> + New Service Job
+          <app-dashboard-icon name="add_circle" /> New Service Job
         </button>
       </div>
     </div>
     <div class="snapshot">
       <span class="preview-badge"
-        >{{ loading() ? 'Loading' : failed() ? 'Unavailable' : 'Live data'
-        }}</span
+        >{{ loading() ? 'Loading' : failed() ? 'Unavailable' : previewMode ?
+        'Sample data' : 'Live data' }}</span
       >
-      Your garage workspace
-      <button type="button" [disabled]="loading() || busy()" (click)="load()">
+      @if (today()) {<span class="today">Today, {{ today() }}</span>}
+      <button
+        gcButton
+        type="button"
+        [disabled]="loading() || busy()"
+        (click)="load()"
+      >
         Refresh
       </button>
     </div>
+    @if (notice()) {
     <div class="notice" role="status" aria-live="polite">{{ notice() }}</div>
+    }
     <section class="metrics" aria-label="Garage summary">
       @for (metric of metrics(); track metric.label) {
       <article class="metric">
@@ -59,31 +79,11 @@
             <p>{{ metric.description }}</p>
             <span class="metric-detail">{{ metric.detail }}</span>
           </div>
-          <app-dashboard-icon name="arrow_forward" />
         </div>
       </article>
       }
     </section>
-    <section class="quick-actions" aria-label="Quick actions">
-      <div class="section-caption">
-        <span>QUICK ACTIONS</span><span>Workshop essentials</span>
-      </div>
-      <div class="action-grid">
-        @for (action of actions; track action.title) {
-        <button
-          type="button"
-          (click)="action.title === 'Find Vehicle' ? findVehicle() : preview(action.title)"
-        >
-          <span class="action-icon" aria-hidden="true"
-            ><app-dashboard-icon [name]="action.icon" /></span
-          ><span
-            ><strong>{{ action.title }}</strong
-            ><small>{{ action.detail }}</small></span
-          >
-        </button>
-        }
-      </div>
-    </section>
+
     <div class="operations">
       <section class="job-section" aria-labelledby="jobs-heading">
         <div class="section-heading">
@@ -120,31 +120,15 @@
           (clearFilters)="findVehicle()"
         />
         } @if (nextCursor()) {
-        <button type="button" [disabled]="loading()" (click)="load(true)">
+        <button
+          gcButton
+          type="button"
+          [disabled]="loading()"
+          (click)="load(true)"
+        >
           Load more jobs
         </button>
         }
-        <div class="throughput">
-          <div>
-            <h3><app-dashboard-icon name="speed" /> Bay Throughput Rate</h3>
-            <p>
-              Turnaround measurement
-              <strong class="mono">unavailable</strong> per vehicle
-            </p>
-          </div>
-          <svg
-            viewBox="0 0 180 50"
-            aria-label="Illustrative throughput trend"
-            role="img"
-          >
-            <path
-              d="M2 43 L22 33 L42 38 L62 21 L82 27 L102 15 L122 22 L142 7 L162 13 L178 3"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="3"
-            /></svg
-          ><strong>—<small>No measured trend</small></strong>
-        </div>
       </section>
       <app-dashboard-overview
         [reminders]="reminders()"
@@ -161,3 +145,11 @@
     </footer>
   </main>
 </div>
+
+@if (intakeOpen()) {
+<app-quick-intake
+  [previewMode]="previewMode"
+  (closed)="intakeOpen.set(false)"
+  (created)="intakeOpen.set(false); load()"
+/>
+}

@@ -1,0 +1,39 @@
+@use 'lib/components/directory-page';
+@use '../../../../../../libs/shared/styles/src/lib/abstracts/colors' as palette;
+@include directory-page.styles;
+.workspace {
+  select {
+    font: inherit;
+    border: 1px solid palette.$color-border-brand;
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: palette.$color-white;
+    color: palette.$color-text-primary;
+    max-width: 100%;
+  }
+  .editor {
+    select {
+      width: 100%;
+    }
+    .vehicle-search {
+      display: flex;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 8px;
+      label {
+        flex: 1;
+        min-width: 160px;
+      }
+    }
+    .hint {
+      margin-top: 16px;
+      font-size: 12px;
+    }
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+}

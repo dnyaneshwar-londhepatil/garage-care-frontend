@@ -30,6 +30,16 @@ export class DashboardShell {
     'Reminders',
     'Settings',
   ];
+  readonly navigationPaths = [
+    '/dashboard',
+    '/service-jobs',
+    '/customers',
+    '/vehicles',
+    '/parts',
+    '/invoices',
+    '/reminders',
+    '/settings',
+  ];
   readonly navigationIcons = [
     'space_dashboard',
     'car_repair',

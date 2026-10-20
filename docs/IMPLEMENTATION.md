@@ -127,3 +127,41 @@ A successful backend response creates the account and session, clears password f
 
 Verification includes an opt-in real local signup test: set RUN_LOCAL_BACKEND=1 and run Playwright with apps/garage-care-e2e/playwright.config.mts. This creates a test garage/owner with a unique example.invalid email and random password in the development database. Default browser runs skip this database-dependent case.
 Signup wireframe restored: only full name, garage name, email, mobile, password and confirmation are collected. Address/GST fields are deferred with no fake values; invoice issuance is blocked by GARAGE_SETUP_PENDING until setup exists. Messaging remains disabled and the backend password minimum remains 12 characters.
+
+## Customers page — local UI review (2026-10-19)
+
+- `/customers` is protected by the existing session guard and uses `CustomersApi` for cursor-based list/search, read-before-edit, create, and update. Mobile numbers use `+91` with ten digits. The page does not send garage IDs or fabricate messaging consent.
+- `/preview/customers` reuses the fictional customer records from the Service Jobs preview. Add/edit/search interactions stay in memory on that page and make no API calls. Preview edits are discarded on navigation or reload.
+- Visual reference: the existing approved Dashboard and Service Jobs layout, as requested by the user; no new Stitch screen is claimed. The page reuses the shared shell, fonts, palette, and 40px action buttons.
+- Name and mobile number are required; email, address, and notes are optional. Existing email addresses can be replaced but not removed because the current API accepts an omitted or valid email, not a null/empty email. Consent is displayed without changing it. No delete endpoint is exposed by the backend.
+- Customers is the first of the additional requested pages. Vehicles, Parts & Services, Invoices, Reminders, and Settings remain subsequent pages. This work stays local for UI review; no push or merge is authorized.
+
+## Vehicles page — local UI review (2026-10-19)
+
+- `/vehicles` uses the session guard and `VehiclesApi` for cursor-based list/search, read-before-edit, create, and update. The list resolves customer names and phone numbers through `CustomersApi`.
+- The editor uses an explicit customer selector with server-side search and cursor pagination. Owners cannot be reassigned: edit requests omit `customerId`. Registration is normalized to uppercase without spaces or hyphens. Optional odometer readings are whole kilometres from 0 to 10,000,000; zero is preserved. Saved optional fields can be replaced, but not removed through the current API.
+- `/preview/vehicles` shares the Service Jobs sample vehicle/customer records. Edits remain local to this page and never call the backend. No service history, deletion, inventory, or ownership-transfer endpoint is invented.
+- Visual reference is the existing Dashboard, Service Jobs, and Customers layout requested by the user. Customers and Vehicles reuse the directory-page Sass mixin, palette, typography, shared shell, and 40px action buttons.
+- Local verification: production build, 45 app unit tests, and 9 Chromium Customers/Vehicles checks passed, including desktop/tablet/mobile layout, zero backend calls from previews, normalized create payloads, and ownership-free edit payloads. Existing style-budget and dashboard lint warnings remain.
+- Vehicles is the second additional page. Parts & Services is next; Invoices, Reminders, and Settings follow. Changes remain local for review without a push or merge.
+
+## Remaining workspace pages — local review (2026-10-19)
+
+Implemented the remaining pages in the requested order without pausing for approval. These changes remain local; no commit, push, pull request, deployment, or merge was performed.
+
+- Parts & Services (`/parts`): cursor-based catalog search, create, read-before-edit, and update through `PartsApi`. Decimal INR input is converted to integer paise without floating-point multiplication. This is a parts catalog, not stock management or a separate service catalog. Labour belongs to service jobs; the backend does not expose standalone service-catalog CRUD.
+- Invoices (`/invoices`): cursor-based invoice-number search, immutable snapshot summaries, PDF download, and explicit confirmation before requesting WhatsApp delivery. Current customer consent and phone are fetched before confirmation. Delivery retries retain their idempotency key; accepted/queued requests are never presented as delivered. Issued amounts remain distinct from collected payments. No invoice create/edit/delete endpoint is invented.
+- Reminders (`/reminders`): paginated status-filtered records, searchable/paginated vehicle selection, India-local due dates, scheduling, and explicit cancellation of pending/failed records. The customer ID comes from the selected vehicle. Backend schedules and statuses are authoritative. The UI explains replacement of prior pending reminders and never claims that scheduling confirms delivery. Preview repeats remain idempotent and cannot reactivate cancelled sample reminders.
+- Settings (`/settings`): garage name, Indian mobile number, and complete optional address through `GarageApi`. Successful profile updates refresh the shared garage identity. Partial addresses are blocked; unknown GST mode is not assumed unregistered. Tax registration, invoice numbering, and account credentials are displayed as information where available and are not writable through this profile API.
+- Each page has a matching `/preview/...` route with explicitly fictional local data and no backend calls. All eight pages are available from the shared navigation. Visual references remain the user-approved Dashboard, Service Jobs, Customers, and Vehicles layouts, with the shared palette, typography, directory styling, and buttons.
+- Verification: 56 app unit tests and 29 Chromium browser checks passed, including desktop/tablet/mobile previews, no preview API calls, decimal pricing, consent/idempotency, PDF downloads, cancellation, profile updates, and existing page regression coverage. API workflows were tested with mocked responses; no real messages were sent. Production build and lint pass with non-blocking style-budget warnings and the existing dashboard non-null lint warning.
+
+## SPA navigation responsiveness (2026-10-19)
+
+- Enabled Angular router preloading for lazy page components. The router downloads page code after initial navigation without instantiating pages or fetching private API data.
+- Protected page switches reuse the owner session already restored in memory by login, registration, or the initial cookie-session check. A fresh app instance still calls `/auth/me`; no session credentials or private API responses are persisted or cached.
+- A global HTTP error interceptor invalidates owner/garage state and CSRF state on a 401 response. Other HTTP errors do not clear the session. API authorization remains server-owned; normal page error handling redirects expired sessions to sign-in.
+- Browser verification confirms the same document stays loaded across all workspace navigation, no page-code fetch is needed after preloading, and `/auth/me` runs once across those switches. With the Service Jobs API response deliberately held pending, the page header and loading state render before the response arrives. Expired sessions are invalidated and checked again on subsequent protected navigation.
+- Local click-to-render tracing measured approximately 40 ms for Dashboard → Service Jobs. Earlier end-to-end automation timings included roughly one second waiting before dispatching the click, so those timings are not treated as Angular rendering latency. Actual initial startup and API response times still depend on the browser and server.
+- Verification: production build, 61 app unit tests, 35 shared data-access tests, 30 distinct Chromium browser checks, and app/data-access lint passed. Existing non-blocking style-size and dashboard lint warnings remain. The Vehicles browser success selector was narrowed to distinguish a saved notice from a simultaneous background-loading notice.
+- Changes remain local. Refresh the preview once to load the new router configuration before testing sidebar switches.

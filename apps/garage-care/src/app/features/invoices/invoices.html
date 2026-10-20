@@ -1,0 +1,201 @@
+<div class="workspace">
+  <app-dashboard-shell
+    page="Invoices"
+    [previewMode]="previewMode"
+    [search]="search"
+    [garageName]="previewMode ? 'Apex Auto Garage · Sample' : auth.garage()?.name || 'Your garage'"
+    [ownerName]="previewMode ? 'Preview account' : auth.user()?.fullName || 'Owner'"
+    [busy]="busy()"
+    (logout)="logout()"
+  />
+  <main id="main-content" tabindex="-1">
+    @if(previewMode){
+    <p class="preview" role="note">
+      <strong>Design preview</strong> · Sample data. No backend records are
+      changed and no messages are sent.
+    </p>
+    }
+    <header class="heading">
+      <div>
+        <h1>Invoices</h1>
+        <p>Review issued invoices and download their PDFs.</p>
+      </div>
+    </header>
+    @if(notice()){
+    <p class="notice" role="status">{{notice()}}</p>
+    }@if(error()){
+    <div class="error" role="alert">
+      {{error()}}
+      <button gcButton (click)="load()" [disabled]="loading() || busy()">
+        Retry
+      </button>
+    </div>
+    }
+    <p class="notice">
+      Invoices are issued when a service job is completed. These amounts are
+      billed totals, not collected payments.
+    </p>
+    @if(delivery();as candidate){
+    <section class="editor" aria-label="Confirm invoice delivery">
+      <h2>Send invoice through WhatsApp?</h2>
+      <p>
+        Send {{candidate.invoice.invoiceNumber}} to {{candidate.name}} at
+        <span class="mono">{{candidate.phone}}</span>. Customer consent is
+        recorded.
+      </p>
+      <div class="actions">
+        <button gcButton [disabled]="busy()" (click)="delivery.set(null)">
+          Keep unsent</button
+        ><button
+          gcButton
+          variant="primary"
+          [disabled]="busy()"
+          (click)="send()"
+        >
+          {{busy() ? 'Requesting…' : 'Confirm send'}}
+        </button>
+      </div>
+    </section>
+    } @if(selected();as invoice){
+    <section class="editor" aria-label="Invoice details">
+      <div class="heading">
+        <h2>{{invoice.invoiceNumber}}</h2>
+        <button gcButton [disabled]="busy()" (click)="selected.set(null)">
+          Close details
+        </button>
+      </div>
+      <p>Customer: {{field(invoice,'customer','name')}}</p>
+      <p>Vehicle: {{field(invoice,'vehicle','registrationNumber')}}</p>
+      <p>Invoice status: {{invoice.status}} · PDF: {{invoice.pdfStatus}}</p>
+      <p>
+        Total:
+        <strong class="mono"
+          >{{money(invoice.snapshot.totals.grandTotalPaise)}}</strong
+        >
+      </p>
+      <p>
+        Issued details are preserved in the invoice snapshot and cannot be
+        edited here.
+      </p>
+    </section>
+    }
+    <section class="directory" aria-label="Invoice directory">
+      <form class="toolbar" (submit)="$event.preventDefault(); load()">
+        <label class="search"
+          ><app-dashboard-icon name="search" /><input
+            type="search"
+            [formControl]="search"
+            maxlength="100"
+            aria-label="Search invoices"
+            placeholder="Search invoice number" /></label
+        ><button
+          gcButton
+          type="submit"
+          [disabled]="!ready() || loading() || busy()"
+        >
+          Search</button
+        ><button
+          gcButton
+          type="button"
+          [disabled]="loading() || busy()"
+          (click)="search.setValue(''); load()"
+        >
+          Reset
+        </button>
+      </form>
+      <p class="list-info">{{records().length}} invoices loaded</p>
+      @if(loading()){
+      <p class="state" role="status">Loading invoices…</p>
+      }@if(records().length){
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Invoices table"
+        tabindex="0"
+      >
+        <table>
+          <thead>
+            <tr>
+              <th>Invoice</th>
+              <th>Customer / Vehicle</th>
+              <th>Issued</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(invoice of records();track invoice._id){
+            <tr>
+              <td class="mono">{{invoice.invoiceNumber}}</td>
+              <td>
+                {{field(invoice,'customer','name')}}<small class="mono"
+                  >{{field(invoice,'vehicle','registrationNumber')}}</small
+                >
+              </td>
+              <td>
+                {{invoice.finalizedAt ? (invoice.finalizedAt|date:'dd MMM
+                yyyy':'+0530') : 'Not recorded'}}
+              </td>
+              <td class="mono">
+                {{money(invoice.snapshot.totals.grandTotalPaise)}}
+              </td>
+              <td>
+                {{invoice.status}}<small>PDF: {{invoice.pdfStatus}}</small
+                >@if(deliveries().get(invoice._id);as notification){<small
+                  >WhatsApp: {{notification.status}}</small
+                >}
+              </td>
+              <td>
+                <div class="actions">
+                  <button
+                    gcButton
+                    [disabled]="busy()"
+                    (click)="view(invoice)"
+                    [attr.aria-label]="'View '+invoice.invoiceNumber"
+                  >
+                    View</button
+                  ><button
+                    gcButton
+                    [disabled]="busy() || invoice.pdfStatus!=='ready'"
+                    (click)="download(invoice)"
+                  >
+                    PDF</button
+                  >@if(deliveries().has(invoice._id)){<button
+                    gcButton
+                    [disabled]="busy()"
+                    (click)="check(invoice)"
+                  >
+                    Check delivery</button
+                  >}@else{<button
+                    gcButton
+                    [disabled]="busy() || invoice.pdfStatus!=='ready'"
+                    (click)="prepare(invoice)"
+                  >
+                    WhatsApp</button
+                  >}
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }@else if(!loading()&&!error()){
+      <div class="state">
+        <h2>No matching invoices</h2>
+        <p>
+          Complete a service job to issue an invoice, or try another invoice
+          number.
+        </p>
+      </div>
+      }@if(cursor()){
+      <div class="load-more">
+        <button gcButton [disabled]="loading() || busy()" (click)="load(true)">
+          Load more invoices
+        </button>
+      </div>
+      }
+    </section>
+  </main>
+</div>

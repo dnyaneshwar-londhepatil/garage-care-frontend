@@ -1,4 +1,6 @@
 @use '../abstracts/colors' as palette;
+@use '../abstracts/controls' as buttons;
+
 @mixin styles {
   .page-header {
     width: 100%;
@@ -118,8 +120,9 @@
     position: absolute;
     right: 0;
     top: 0;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
+    top: 2px;
     display: grid;
     place-items: center;
     border: 0;
@@ -136,19 +139,16 @@
     stroke-width: 1.6;
   }
   .submit-button {
-    min-height: 44px;
-    border: 0;
+    @include buttons.action-size;
+    border: 1px solid palette.$color-transparent;
     border-radius: 8px;
     background: palette.$color-brand;
     color: palette.$color-white;
-    font: inherit;
-    font-size: 16px;
-    font-weight: 600;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+
     box-shadow: 0 3px 6px palette.$color-brand-alpha-32;
     &:hover {
       background: palette.$color-brand-hover;

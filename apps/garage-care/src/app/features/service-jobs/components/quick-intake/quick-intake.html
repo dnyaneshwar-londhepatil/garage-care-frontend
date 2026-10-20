@@ -11,10 +11,10 @@
     <div>
       <div class="title">
         <h2 id="intake-title">New Service Job</h2>
-        <span class="badge">{{job()?.serviceNumber || 'QUICK INTAKE'}}</span>
+        <span class="badge">{{job()?.serviceNumber || 'NEW JOB'}}</span>
       </div>
       <p id="intake-description">
-        Quick intake to get the vehicle onto the workshop floor.
+        Enter the customer, vehicle, and work requested.
       </p>
     </div>
     <button
@@ -67,16 +67,10 @@
           >}
         </div>
       </div>
-      <div class="messaging">
-        <label
-          ><input type="checkbox" disabled /><app-dashboard-icon
-            name="chat"
-          />Send real-time status & job card via WhatsApp</label
-        ><small>Not available yet. No message will be sent.</small>
-      </div>
+
       <div class="row vehicle-row">
         <div class="field">
-          <label for="intake-plate">Reg. plate number</label>
+          <label for="intake-plate">Registration number</label>
           <div class="plate">
             <span aria-hidden="true">IND</span
             ><input
@@ -122,23 +116,9 @@
           >}
         </div>
       </div>
+
       <div class="field">
-        <span class="label" id="category-title">Quick category</span>
-        <div class="categories" role="group" aria-labelledby="category-title">
-          @for(item of categories;track item){<button
-            type="button"
-            gcButton
-            [variant]="category()===item ? 'primary' : 'subtle'"
-            [attr.aria-pressed]="category()===item"
-            [disabled]="!!job()"
-            (click)="category.set(item)"
-          >
-            {{item}}</button
-          >}
-        </div>
-      </div>
-      <div class="field">
-        <label for="intake-complaint">Primary complaint / scope</label
+        <label for="intake-complaint">Work requested</label
         ><textarea
           id="intake-complaint"
           formControlName="complaint"

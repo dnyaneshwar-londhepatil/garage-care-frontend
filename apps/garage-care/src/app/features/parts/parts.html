@@ -1,0 +1,228 @@
+<div class="workspace">
+  <app-dashboard-shell
+    page="Parts & Services"
+    [previewMode]="previewMode"
+    [search]="search"
+    [garageName]="previewMode ? 'Apex Auto Garage · Sample' : auth.garage()?.name || 'Your garage'"
+    [ownerName]="previewMode ? 'Preview account' : auth.user()?.fullName || 'Owner'"
+    [busy]="busy()"
+    (logout)="logout()"
+  />
+  <main id="main-content" tabindex="-1">
+    @if(previewMode){
+    <p class="preview" role="note">
+      <strong>Design preview</strong> · Sample data. No backend records are
+      changed and no messages are sent.
+    </p>
+    }
+    <header class="heading">
+      <div>
+        <h1>Parts & Services</h1>
+        <p>Manage your parts catalog and pricing.</p>
+      </div>
+      <button
+        gcButton
+        id="add-part"
+        variant="primary"
+        [disabled]="!ready() || busy() || loading() || editorOpen()"
+        (click)="open()"
+      >
+        <app-dashboard-icon name="add" />Add Part
+      </button>
+    </header>
+    @if(notice()){
+    <p class="notice" role="status">{{notice()}}</p>
+    }@if(error()){
+    <div class="error" role="alert">
+      {{error()}}
+      <button gcButton (click)="load()" [disabled]="loading() || busy()">
+        Retry
+      </button>
+    </div>
+    }
+    <p class="notice">
+      Labour belongs to
+      <a [routerLink]="previewMode ? '/preview/service-jobs' : '/service-jobs'"
+        >service jobs</a
+      >. This catalog stores parts and MRP; it does not track stock.
+    </p>
+    @if(editorOpen()){
+    <section class="editor" aria-labelledby="editor-heading">
+      <h2 id="editor-heading">{{editing() ? 'Edit part' : 'Add part'}}</h2>
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <fieldset [disabled]="busy()">
+          <div class="fields">
+            <label for="part-name"
+              ><span id="part-name-label">Part name</span
+              ><input
+                id="part-name"
+                aria-labelledby="part-name-label"
+                formControlName="name"
+                maxlength="200"
+                [attr.aria-invalid]="invalid('name')"
+                aria-describedby="part-name-error"
+              />@if(invalid('name')){<small
+                class="field-error"
+                id="part-name-error"
+                >Enter a valid part name.</small
+              >}</label
+            ><label for="part-category"
+              ><span id="part-category-label">Category</span
+              ><input
+                id="part-category"
+                aria-labelledby="part-category-label"
+                formControlName="category"
+                maxlength="200"
+                [attr.aria-invalid]="invalid('category')"
+                aria-describedby="part-category-error"
+              />@if(invalid('category')){<small
+                class="field-error"
+                id="part-category-error"
+                >Enter a valid category.</small
+              >}</label
+            ><label for="part-price"
+              ><span id="part-price-label">MRP (INR)</span
+              ><input
+                id="part-price"
+                aria-labelledby="part-price-label"
+                formControlName="price"
+                inputmode="decimal"
+                placeholder="0.00"
+                maxlength="12"
+                [attr.aria-invalid]="invalid('price')"
+                aria-describedby="part-price-error"
+              />@if(invalid('price')){<small
+                class="field-error"
+                id="part-price-error"
+                >Enter a valid mrp (inr).</small
+              >}</label
+            ><label for="part-brand"
+              ><span id="part-brand-label">Brand (optional)</span
+              ><input
+                id="part-brand"
+                aria-labelledby="part-brand-label"
+                formControlName="brand"
+                maxlength="200"
+                [attr.aria-invalid]="invalid('brand')"
+                aria-describedby="part-brand-error"
+              />@if(invalid('brand')){<small
+                class="field-error"
+                id="part-brand-error"
+                >Enter a valid brand (optional).</small
+              >}</label
+            ><label for="part-number"
+              ><span id="part-number-label">Part number (optional)</span
+              ><input
+                id="part-number"
+                aria-labelledby="part-number-label"
+                formControlName="partNumber"
+                maxlength="200"
+                [attr.aria-invalid]="invalid('partNumber')"
+                aria-describedby="part-number-error"
+              />@if(invalid('partNumber')){<small
+                class="field-error"
+                id="part-number-error"
+                >Enter a valid part number (optional).</small
+              >}</label
+            >
+          </div>
+        </fieldset>
+        @if(formError()){
+        <p class="field-error" role="alert">{{formError()}}</p>
+        }
+        <footer>
+          <button gcButton type="button" [disabled]="busy()" (click)="close()">
+            Cancel</button
+          ><button gcButton variant="primary" type="submit" [disabled]="busy()">
+            {{busy() ? 'Saving…' : previewMode ? 'Save sample part' : 'Save
+            part'}}
+          </button>
+        </footer>
+      </form>
+    </section>
+    }
+    <section class="directory" aria-label="Parts catalog">
+      <form class="toolbar" (submit)="$event.preventDefault(); load()">
+        <label class="search"
+          ><app-dashboard-icon name="search" /><input
+            type="search"
+            [formControl]="search"
+            maxlength="100"
+            aria-label="Search parts"
+            placeholder="Search parts" /></label
+        ><button
+          gcButton
+          type="submit"
+          [disabled]="!ready() || loading() || busy()"
+        >
+          Search</button
+        ><button
+          gcButton
+          type="button"
+          [disabled]="loading() || busy()"
+          (click)="search.setValue(''); load()"
+        >
+          Reset
+        </button>
+      </form>
+      <p class="list-info">{{records().length}} parts loaded</p>
+      @if(loading()){
+      <p class="state" role="status">Loading parts…</p>
+      }@if(records().length){
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Parts table"
+        tabindex="0"
+      >
+        <table>
+          <thead>
+            <tr>
+              <th>Part</th>
+              <th>Category</th>
+              <th>Brand / Part number</th>
+              <th>MRP</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(part of records();track part._id){
+            <tr>
+              <td><strong>{{part.name}}</strong></td>
+              <td>{{part.category}}</td>
+              <td>
+                {{part.brand||'Not provided'}}<small class="mono"
+                  >{{part.partNumber}}</small
+                >
+              </td>
+              <td class="mono">{{money(part.mrpPaise)}}</td>
+              <td>
+                <button
+                  gcButton
+                  [disabled]="busy() || loading() || editorOpen()"
+                  [attr.aria-label]="'Edit '+part.name"
+                  (click)="open(part)"
+                >
+                  Edit
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }@else if(!loading()&&!error()){
+      <div class="state">
+        <h2>No matching parts</h2>
+        <p>Add your first part or try another search.</p>
+      </div>
+      }@if(cursor()){
+      <div class="load-more">
+        <button gcButton [disabled]="loading() || busy()" (click)="load(true)">
+          Load more parts
+        </button>
+      </div>
+      }
+    </section>
+  </main>
+</div>

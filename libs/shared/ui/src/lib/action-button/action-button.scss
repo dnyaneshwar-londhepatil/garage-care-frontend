@@ -1,17 +1,13 @@
 @use '../../../../styles/src/lib/abstracts/colors' as palette;
+@use '../../../../styles/src/lib/abstracts/controls' as buttons;
 :host {
+  @include buttons.action-size;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
   width: auto;
-  padding: 4px 10px;
   border: 1px solid palette.$color-transparent;
   border-radius: 8px;
-  font-family: var(--font-family-base);
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   transition:
@@ -20,21 +16,22 @@
   &.subtle {
     background: palette.$color-surface-action;
     color: palette.$color-text-primary;
-    padding: 4px 10px;
   }
   &.outline {
     background: palette.$color-white;
     color: palette.$color-brand;
     border-color: palette.$color-border-brand;
-    padding: 4px 10px;
   }
   &.primary {
     background: palette.$color-brand;
     color: palette.$color-white;
-    padding: 6px 12px;
     box-shadow: 0 1px 3px palette.$color-navy-alpha-10;
   }
   &.square {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    padding: 8px;
     border-radius: 4px;
     color: palette.$color-brand;
   }
