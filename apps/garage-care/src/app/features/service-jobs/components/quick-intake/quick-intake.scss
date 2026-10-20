@@ -180,11 +180,6 @@ dialog {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        button {
-          font-size: 12px;
-          min-height: 32px;
-          padding: 6px 10px;
-        }
       }
       .field-error {
         color: palette.$color-error;
@@ -247,11 +242,6 @@ dialog {
       > div {
         display: flex;
         gap: 8px;
-      }
-      button {
-        font-size: 12px;
-        min-height: 36px;
-        padding: 8px 12px;
       }
     }
   }

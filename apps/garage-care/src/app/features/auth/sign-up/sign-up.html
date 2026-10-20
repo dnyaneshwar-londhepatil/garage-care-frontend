@@ -7,10 +7,8 @@
             d="m14 6 4-4a6 6 0 0 1-8 8L4 20l-3-3 10-6a6 6 0 0 1 8-8l-4 4Z"
           /></svg
       ></span>
-      <span>Garage<span class="brand-accent">Care</span></span
-      ><span class="saas">SaaS</span>
+      <span>Garage<span class="brand-accent">Care</span></span>
     </a>
-    <span class="preview-badge">Local testing</span>
   </header>
   <main>
     <section class="signup-card" aria-labelledby="signup-title">
@@ -265,12 +263,6 @@
             Please accept the terms to continue.
           </p>
           }
-          <label class="checkbox-label"
-            ><input type="checkbox" formControlName="updates" /><span
-              >Send me job tracking updates via WhatsApp &amp; SMS
-              (optional).</span
-            ></label
-          >
         </div>
         <button
           class="submit-button"
@@ -290,8 +282,8 @@
           <a class="text-link" routerLink="/sign-in">Sign In</a>
         </p>
         <p class="preview-note">
-          Account creation is connected. Garage address and GST setup come
-          later. Messaging preferences are unavailable.
+          Create your owner account. Garage address and tax details can be set
+          up later.
         </p>
         @if (notice()) {
         <p class="notice" role="status">{{ notice() }}</p>
@@ -302,16 +294,7 @@
   <footer>
     <div>
       © 2026 GarageCare
-      <span class="footer-tagline">· Automotive Workshop Operating Engine</span>
+      <span class="footer-tagline">· Garage management</span>
     </div>
-    <nav aria-label="Footer">
-      <button class="text-link" (click)="unavailable('Privacy Policy')">
-        Privacy Policy</button
-      ><button class="text-link" (click)="unavailable('Terms of Service')">
-        Terms of Service</button
-      ><button class="text-link" (click)="unavailable('Help Center')">
-        Help Center
-      </button>
-    </nav>
   </footer>
 </div>

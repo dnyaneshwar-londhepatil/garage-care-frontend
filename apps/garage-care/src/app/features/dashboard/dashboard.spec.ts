@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   AuthApi,
@@ -20,33 +20,29 @@ describe('Live dashboard', () => {
   const reminders = vi.fn();
   const logout = vi.fn();
   beforeEach(() => {
-    summary
-      .mockReset()
-      .mockResolvedValue({
-        serviceCounts: { draft: 1, inProgress: 1, completed: 0, cancelled: 0 },
-        customers: 7,
-        upcomingReminders: 0,
-        recentInvoices: [],
-        revenueSummary: {
-          issuedInvoiceTotalPaise: 125050,
-          paidTotalPaise: null,
+    summary.mockReset().mockResolvedValue({
+      serviceCounts: { draft: 1, inProgress: 1, completed: 0, cancelled: 0 },
+      customers: 7,
+      upcomingReminders: 0,
+      recentInvoices: [],
+      revenueSummary: {
+        issuedInvoiceTotalPaise: 125050,
+        paidTotalPaise: null,
+      },
+    });
+    list.mockReset().mockResolvedValue({
+      data: [
+        {
+          _id: 'job',
+          customerId: 'customer',
+          vehicleId: 'vehicle',
+          complaint: 'Oil change',
+          status: 'in_progress',
+          version: 1,
         },
-      });
-    list
-      .mockReset()
-      .mockResolvedValue({
-        data: [
-          {
-            _id: 'job',
-            customerId: 'customer',
-            vehicleId: 'vehicle',
-            complaint: 'Oil change',
-            status: 'in_progress',
-            version: 1,
-          },
-        ],
-        page: { limit: 20, nextCursor: null },
-      });
+      ],
+      page: { limit: 20, nextCursor: null },
+    });
     reminders
       .mockReset()
       .mockResolvedValue({ data: [], page: { limit: 20, nextCursor: null } });
@@ -54,6 +50,7 @@ describe('Live dashboard', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
+        { provide: ActivatedRoute, useValue: { snapshot: { data: {} } } },
         {
           provide: AuthApi,
           useValue: {
@@ -71,25 +68,21 @@ describe('Live dashboard', () => {
         {
           provide: CustomersApi,
           useValue: {
-            get: vi
-              .fn()
-              .mockResolvedValue({
-                name: 'Real Customer',
-                phone: '+919876543210',
-              }),
+            get: vi.fn().mockResolvedValue({
+              name: 'Real Customer',
+              phone: '+919876543210',
+            }),
           },
         },
         {
           provide: VehiclesApi,
           useValue: {
-            get: vi
-              .fn()
-              .mockResolvedValue({
-                brand: 'Honda',
-                model: 'City',
-                vehicleType: 'car',
-                registrationNumber: 'MH12AB1234',
-              }),
+            get: vi.fn().mockResolvedValue({
+              brand: 'Honda',
+              model: 'City',
+              vehicleType: 'car',
+              registrationNumber: 'MH12AB1234',
+            }),
           },
         },
         { provide: RemindersApi, useValue: { list: reminders } },
@@ -131,7 +124,18 @@ describe('Live dashboard', () => {
     component.nextCursor.set('next-id');
     list.mockResolvedValue({ data: [], page: { limit: 20, nextCursor: null } });
     await component.load(true);
-    expect(list).toHaveBeenLastCalledWith({ limit: 20, cursor: 'next-id' });
+    expect(list).toHaveBeenLastCalledWith({ limit: 100, cursor: 'next-id' });
     expect(component.jobs()).toHaveLength(1);
+  });
+  it('uses India-local time for the greeting and current date', () => {
+    const component = TestBed.createComponent(Dashboard).componentInstance;
+    component.now.set(new Date('2026-10-14T03:30:00Z'));
+    expect(component.greeting()).toBe('Good morning');
+    expect(component.firstName()).toBe('Test');
+    component.now.set(new Date('2026-10-14T08:30:00Z'));
+    expect(component.greeting()).toBe('Good afternoon');
+    component.now.set(new Date('2026-10-14T19:30:00Z'));
+    expect(component.greeting()).toBe('Good morning');
+    expect(component.today()).toContain('15');
   });
 });

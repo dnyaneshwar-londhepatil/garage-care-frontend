@@ -1,0 +1,44 @@
+@use 'lib/components/directory-page';
+@use '../../../../../../libs/shared/styles/src/lib/abstracts/colors' as palette;
+@include directory-page.styles;
+.workspace {
+  .editor {
+    select {
+      font: inherit;
+      color: palette.$color-text-primary;
+      border: 1px solid palette.$color-border-brand;
+      border-radius: 8px;
+      background: palette.$color-white;
+      padding: 10px 12px;
+      width: 100%;
+      min-width: 0;
+    }
+    .plate {
+      text-transform: uppercase;
+    }
+    .owner-picker {
+      margin-top: 20px;
+      border-bottom: 1px solid palette.$color-surface-action;
+      padding-bottom: 20px;
+      display: grid;
+      gap: 12px;
+      .hint {
+        font-size: 12px;
+      }
+      .customer-search {
+        margin: 0;
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 8px;
+        label {
+          flex: 1;
+          min-width: 160px;
+        }
+      }
+      a {
+        color: palette.$color-brand;
+      }
+    }
+  }
+}

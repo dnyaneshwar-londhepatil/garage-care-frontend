@@ -1,5 +1,6 @@
 export interface Job {
   id: string;
+  number?: string;
   name: string;
   initials: string;
   phone: string;

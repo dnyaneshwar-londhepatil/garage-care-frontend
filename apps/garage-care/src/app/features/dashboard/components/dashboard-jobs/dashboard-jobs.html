@@ -50,6 +50,7 @@
         ><span class="status-dot" aria-hidden="true"></span> {{ job.status
         }}</span
       ><button
+        gcButton
         type="button"
         gcButton
         variant="subtle"
@@ -61,8 +62,10 @@
         View<span class="sr-only"> {{ job.id }}</span>
       </button>
       <button
+        gcButton
         type="button"
         class="more"
+        [square]="true"
         [attr.aria-label]="'More options for ' + job.id"
         (click)="previewAction.emit('Job options for ' + job.id)"
       >
@@ -71,10 +74,11 @@
     </div>
     @if (selectedJob()?.id === job.id) {
     <div class="job-details">
-      <strong>{{ job.id }} · Service details</strong>
+      <strong>{{ job.number || job.id }} · Service details</strong>
       <p class="mono">{{ job.registration }}</p>
       <p>{{ job.service }}</p>
       <button
+        gcButton
         type="button"
         [disabled]="busy()"
         (click)="jobAction.emit({kind: 'history', job})"
@@ -83,6 +87,7 @@
       </button>
       @if (job.invoiceId) {
       <button
+        gcButton
         type="button"
         [disabled]="busy()"
         (click)="jobAction.emit({kind: 'pdf', job})"
@@ -91,6 +96,7 @@
       </button>
       }
       <button
+        gcButton
         type="button"
         (click)="selectedJob.set(null)"
         [attr.aria-label]="'Close ' + job.id + ' details'"
@@ -104,7 +110,9 @@
   <div class="empty">
     <h3>No matching service jobs</h3>
     <p>Try another customer, vehicle, registration, or status.</p>
-    <button type="button" (click)="clearFilters.emit()">Clear filters</button>
+    <button gcButton type="button" (click)="clearFilters.emit()">
+      Clear filters
+    </button>
   </div>
   }
 </div>

@@ -8,6 +8,8 @@ export const sessionGuard: CanActivateFn = async () => {
   if (!isPlatformBrowser(inject(PLATFORM_ID))) return true;
   const auth = inject(AuthApi);
   const router = inject(Router);
+  // A restored session is kept only in memory; API requests still enforce authorization.
+  if (auth.user()) return true;
   try {
     await auth.me();
     return true;

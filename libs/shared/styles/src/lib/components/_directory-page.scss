@@ -1,0 +1,240 @@
+@use '../abstracts/colors' as palette;
+@mixin styles {
+  :host {
+    display: block;
+    color: palette.$color-text-primary;
+    font-family: var(--font-family-base);
+  }
+  * {
+    box-sizing: border-box;
+  }
+  .workspace {
+    min-height: 100vh;
+    background: palette.$color-background;
+    main {
+      margin-left: 288px;
+      padding: 24px;
+      @media (max-width: 800px) {
+        margin-left: 0;
+        padding: 16px;
+      }
+    }
+    h1 {
+      font-size: 24px;
+      line-height: 32px;
+      font-weight: 600;
+      margin: 0 0 4px;
+    }
+    h2 {
+      font-size: 18px;
+      margin: 0 0 8px;
+    }
+    p {
+      color: palette.$color-text-secondary;
+      font-size: 14px;
+      line-height: 20px;
+      margin: 0;
+    }
+    .heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      @media (max-width: 600px) {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+    .preview,
+    .notice,
+    .error {
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      border-radius: 8px;
+      background: palette.$color-surface-tint;
+    }
+    .error,
+    .field-error {
+      color: palette.$color-error;
+    }
+    .mono {
+      font-family: var(--font-family-mono);
+    }
+    input,
+    textarea {
+      font: inherit;
+      color: palette.$color-text-primary;
+      border: 1px solid palette.$color-border-brand;
+      border-radius: 8px;
+      background: palette.$color-white;
+      padding: 10px 12px;
+      width: 100%;
+      min-width: 0;
+    }
+    input[aria-invalid='true'] {
+      border-color: palette.$color-error;
+    }
+    textarea {
+      resize: vertical;
+    }
+    :focus-visible {
+      outline: 3px solid palette.$color-focus-blue;
+      outline-offset: 3px;
+    }
+    .editor {
+      background: palette.$color-white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      @media (max-width: 600px) {
+        padding: 16px;
+      }
+      form {
+        margin-top: 20px;
+      }
+      fieldset {
+        border: 0;
+        padding: 0;
+        margin: 0;
+        min-width: 0;
+      }
+      .fields {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        @media (max-width: 600px) {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+      label {
+        display: grid;
+        align-content: start;
+        gap: 8px;
+        font-size: 14px;
+      }
+      .phone {
+        display: flex;
+        align-items: center;
+        border: 1px solid palette.$color-border-brand;
+        border-radius: 8px;
+        overflow: hidden;
+        span {
+          padding: 10px;
+          background: palette.$color-surface-tint;
+          font-family: var(--font-family-mono);
+        }
+        input {
+          border: 0;
+          border-radius: 0;
+          font-family: var(--font-family-mono);
+        }
+      }
+      details {
+        margin-top: 20px;
+        summary {
+          cursor: pointer;
+          font-size: 14px;
+        }
+        .optional {
+          margin-top: 16px;
+          display: grid;
+          gap: 16px;
+        }
+      }
+      .field-error {
+        font-size: 12px;
+      }
+      footer {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 20px;
+      }
+    }
+    .directory {
+      background: palette.$color-white;
+      border-radius: 12px;
+      overflow: hidden;
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 16px;
+        .search {
+          flex: 1;
+          min-width: 160px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          app-dashboard-icon {
+            color: palette.$color-text-muted;
+          }
+          input {
+            padding: 8px 12px;
+            min-height: 40px;
+            font-size: 14px;
+          }
+        }
+      }
+      .list-info {
+        padding: 0 16px 16px;
+        font-size: 12px;
+      }
+      .table-scroll {
+        overflow-x: auto;
+        table {
+          border-collapse: collapse;
+          width: 100%;
+          text-align: left;
+          font-size: 14px;
+          th {
+            background: palette.$color-surface-tint;
+            color: palette.$color-text-secondary;
+            font-size: 12px;
+            font-weight: 600;
+          }
+          th,
+          td {
+            padding: 16px;
+            border-bottom: 1px solid palette.$color-surface-action;
+          }
+          td {
+            vertical-align: top;
+            overflow-wrap: anywhere;
+            min-width: 130px;
+            small {
+              display: block;
+              color: palette.$color-text-secondary;
+              max-width: 260px;
+              margin-top: 4px;
+            }
+          }
+          .mono {
+            white-space: nowrap;
+          }
+          .consent {
+            white-space: nowrap;
+            border-radius: 20px;
+            background: palette.$color-surface-tint;
+            padding: 4px 8px;
+            font-size: 12px;
+          }
+        }
+      }
+      .state {
+        text-align: center;
+        padding: 40px 16px;
+        app-dashboard-icon {
+          color: palette.$color-brand;
+          margin-bottom: 12px;
+        }
+      }
+      .load-more {
+        padding: 16px;
+        text-align: center;
+      }
+    }
+  }
+}

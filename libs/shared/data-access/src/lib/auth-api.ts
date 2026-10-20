@@ -50,6 +50,9 @@ export class AuthApi {
     this.user.set(data.user);
     this.garage.set(data.garage);
   }
+  invalidateSession(): void {
+    this.clear();
+  }
   private clear(): void {
     this.user.set(null);
     this.garage.set(null);

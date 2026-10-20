@@ -1,0 +1,351 @@
+<div class="workspace">
+  <app-dashboard-shell
+    page="Vehicles"
+    [previewMode]="previewMode"
+    [search]="search"
+    [garageName]="previewMode ? 'Apex Auto Garage · Sample' : auth.garage()?.name || 'Your garage'"
+    [ownerName]="previewMode ? 'Preview account' : auth.user()?.fullName || 'Owner'"
+    [busy]="busy()"
+    (logout)="logout()"
+  />
+  <main id="main-content" tabindex="-1">
+    @if(previewMode){
+    <p class="preview" role="note">
+      <strong>Design preview</strong> · Sample vehicles and customers. Changes
+      last only on this page; no backend records are changed.
+    </p>
+    }
+    <header class="heading">
+      <div>
+        <h1>Vehicles</h1>
+        <p>Manage vehicles and their customer details.</p>
+      </div>
+      <button
+        id="add-vehicle"
+        gcButton
+        variant="primary"
+        [disabled]="!ready() || busy() || loading() || editorOpen()"
+        (click)="open()"
+      >
+        <app-dashboard-icon name="add" />Add Vehicle
+      </button>
+    </header>
+    @if(notice()){
+    <p class="notice" role="status">{{notice()}}</p>
+    } @if(error()){
+    <div class="error" role="alert">
+      {{error()}}
+      <button gcButton [disabled]="loading() || busy()" (click)="load()">
+        Retry
+      </button>
+    </div>
+    } @if(editorOpen()){
+    <section class="editor" aria-labelledby="editor-heading">
+      <h2 id="editor-heading">
+        {{editing() ? 'Edit vehicle' : 'Add vehicle'}}
+      </h2>
+      <p>
+        Link the vehicle to a customer and enter its registration and model.
+      </p>
+      <div class="owner-picker">
+        @if(editing()) {
+        <p>
+          <strong>Customer:</strong> {{selectedOwner()?.name}} ·
+          <span class="mono">{{selectedOwner()?.phone}}</span>
+        </p>
+        <p class="hint">
+          The customer linked to this vehicle cannot be changed.
+        </p>
+        } @else {
+        <form
+          class="customer-search"
+          (submit)="$event.preventDefault(); findCustomers()"
+        >
+          <label for="owner-query"
+            >Find a customer<input
+              id="owner-query"
+              [formControl]="customerSearch"
+              maxlength="100"
+              placeholder="Search name or mobile number" /></label
+          ><button gcButton type="submit" [disabled]="choosing() || busy()">
+            Search customers
+          </button>
+        </form>
+        @if(choosing()){
+        <p role="status">Loading customers…</p>
+        } @if(customerError()){
+        <p class="field-error" role="alert">{{customerError()}}</p>
+        <button
+          gcButton
+          (click)="findCustomers()"
+          [disabled]="choosing() || busy()"
+        >
+          Retry customer search</button
+        >}
+        <label for="vehicle-customer"
+          ><span id="vehicle-customer-label">Customer</span
+          ><select
+            id="vehicle-customer"
+            aria-labelledby="vehicle-customer-label"
+            [value]="form.controls.customerId.value"
+            [disabled]="choosing() || busy()"
+            (change)="selectOwner($any($event.target).value)"
+            [attr.aria-invalid]="invalid('customerId')"
+            aria-describedby="customer-error"
+          >
+            <option value="">Select a customer</option>
+            @for(customer of choices();track customer._id){
+            <option [value]="customer._id">
+              {{customer.name}} · {{customer.phone}}
+            </option>
+            }
+          </select></label
+        >
+        @if(invalid('customerId')){<small
+          class="field-error"
+          id="customer-error"
+          >Select the customer who owns this vehicle.</small
+        >} @if(customerCursor()){<button
+          gcButton
+          (click)="findCustomers(true)"
+          [disabled]="choosing() || busy()"
+        >
+          Load more customers</button
+        >} @if(!choosing() && !choices().length && !customerError()){
+        <p>
+          No matching customers.
+          <a [routerLink]="previewMode ? '/preview/customers' : '/customers'"
+            >Add a customer</a
+          >
+          first, or try another search.
+        </p>
+        } }
+      </div>
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <fieldset [disabled]="busy() || choosing()">
+          <div class="fields">
+            <label for="vehicle-registration"
+              ><span id="registration-label">Registration number</span
+              ><input
+                id="vehicle-registration"
+                formControlName="registrationNumber"
+                class="mono plate"
+                maxlength="20"
+                placeholder="MH 12 AB 1234"
+                aria-labelledby="registration-label"
+                [attr.aria-invalid]="invalid('registrationNumber')"
+                aria-describedby="registration-error"
+              />@if(invalid('registrationNumber')){<small
+                id="registration-error"
+                class="field-error"
+                >Enter a registration number with 4–20 characters.</small
+              >}</label
+            >
+            <label for="vehicle-type"
+              ><span id="vehicle-type-label">Vehicle type</span
+              ><select
+                id="vehicle-type"
+                aria-labelledby="vehicle-type-label"
+                formControlName="vehicleType"
+              >
+                @for(type of types;track type.value){
+                <option [value]="type.value">{{type.label}}</option>
+                }
+              </select></label
+            >
+            <label for="vehicle-brand"
+              ><span id="brand-label">Make</span
+              ><input
+                id="vehicle-brand"
+                formControlName="brand"
+                maxlength="200"
+                placeholder="e.g. Hyundai"
+                aria-labelledby="brand-label"
+                [attr.aria-invalid]="invalid('brand')"
+                aria-describedby="brand-error"
+              />@if(invalid('brand')){<small
+                id="brand-error"
+                class="field-error"
+                >Enter the vehicle make.</small
+              >}</label
+            >
+            <label for="vehicle-model"
+              ><span id="model-label">Model</span
+              ><input
+                id="vehicle-model"
+                formControlName="model"
+                maxlength="200"
+                placeholder="e.g. Creta SX"
+                aria-labelledby="model-label"
+                [attr.aria-invalid]="invalid('model')"
+                aria-describedby="model-error"
+              />@if(invalid('model')){<small
+                id="model-error"
+                class="field-error"
+                >Enter the vehicle model.</small
+              >}</label
+            >
+          </div>
+          <details [open]="!!editing()">
+            <summary>More details (optional)</summary>
+            <div class="fields optional">
+              <label for="vehicle-fuel"
+                >Fuel type<input
+                  id="vehicle-fuel"
+                  formControlName="fuelType"
+                  maxlength="200"
+                  placeholder="e.g. Petrol, diesel, electric"
+              /></label>
+              <label for="vehicle-km"
+                ><span id="km-label">Odometer (km)</span
+                ><input
+                  id="vehicle-km"
+                  type="number"
+                  min="0"
+                  max="10000000"
+                  step="1"
+                  formControlName="currentKm"
+                  aria-labelledby="km-label"
+                  [attr.aria-invalid]="invalid('currentKm')"
+                  aria-describedby="km-error"
+                />@if(invalid('currentKm')){<small
+                  id="km-error"
+                  class="field-error"
+                  >Enter a whole number from 0 to 10,000,000.</small
+                >}</label
+              >
+            </div>
+          </details>
+        </fieldset>
+        @if(formError()){
+        <p class="field-error" role="alert">{{formError()}}</p>
+        }
+        <footer>
+          <button
+            gcButton
+            type="button"
+            [disabled]="busy() || choosing()"
+            (click)="close()"
+          >
+            Cancel</button
+          ><button
+            gcButton
+            variant="primary"
+            type="submit"
+            [disabled]="busy() || choosing()"
+          >
+            {{busy() ? 'Saving…' : previewMode ? 'Save sample vehicle' : 'Save
+            vehicle'}}
+          </button>
+        </footer>
+      </form>
+    </section>
+    }
+    <section
+      class="directory"
+      aria-label="Vehicle directory"
+      [attr.aria-busy]="loading()"
+    >
+      <form class="toolbar" (submit)="$event.preventDefault(); load()">
+        <label class="search"
+          ><app-dashboard-icon name="search" /><input
+            type="search"
+            [formControl]="search"
+            maxlength="100"
+            aria-label="Search vehicles"
+            placeholder="Search registration, make, or model" /></label
+        ><button
+          gcButton
+          type="submit"
+          [disabled]="!ready() || loading() || busy()"
+        >
+          Search</button
+        ><button
+          gcButton
+          type="button"
+          [disabled]="!ready() || loading() || busy()"
+          (click)="search.setValue(''); load()"
+        >
+          Reset
+        </button>
+      </form>
+      <p class="list-info">
+        {{rows().length}} vehicles {{query() ? 'matching your search' :
+        'loaded'}}@if(cursor()){ · More available }
+      </p>
+      @if(loading()){
+      <p class="state" role="status">Loading vehicles…</p>
+      } @if(rows().length){
+      <div
+        class="table-scroll"
+        role="region"
+        aria-label="Vehicles table"
+        tabindex="0"
+      >
+        <table>
+          <thead>
+            <tr>
+              <th>Registration</th>
+              <th>Vehicle</th>
+              <th>Customer</th>
+              <th>Odometer</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(vehicle of rows();track vehicle._id){
+            <tr>
+              <td class="mono">
+                <strong>{{vehicle.registrationNumber}}</strong>
+              </td>
+              <td>
+                <strong>{{vehicle.brand}} {{vehicle.model}}</strong
+                ><small
+                  >{{vehicle.vehicleType}}@if(vehicle.fuelType){ ·
+                  {{vehicle.fuelType}}}</small
+                >
+              </td>
+              <td>
+                <strong>{{owners().get(vehicle.customerId)?.name}}</strong
+                ><small class="mono"
+                  >{{owners().get(vehicle.customerId)?.phone}}</small
+                >
+              </td>
+              <td class="mono">
+                {{vehicle.currentKm === undefined ? 'Not recorded' :
+                vehicle.currentKm + ' km'}}
+              </td>
+              <td>
+                <button
+                  gcButton
+                  [disabled]="busy() || loading() || editorOpen()"
+                  [attr.aria-label]="'Edit ' + vehicle.registrationNumber"
+                  (click)="open(vehicle)"
+                >
+                  Edit
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      } @else if(!loading() && !error()){
+      <div class="state">
+        <app-dashboard-icon name="directions_car" />
+        <h2>{{query() ? 'No matching vehicles' : 'No vehicles yet'}}</h2>
+        <p>
+          {{query() ? 'Try another registration, make, or model.' : 'Add a
+          customer, then register their vehicle.'}}
+        </p>
+      </div>
+      } @if(cursor()){
+      <div class="load-more">
+        <button gcButton [disabled]="loading() || busy()" (click)="load(true)">
+          Load more vehicles
+        </button>
+      </div>
+      }
+    </section>
+  </main>
+</div>

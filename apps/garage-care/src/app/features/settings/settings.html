@@ -1,0 +1,221 @@
+<div class="workspace">
+  <app-dashboard-shell
+    page="Settings"
+    [previewMode]="previewMode"
+    [search]="search"
+    [garageName]="previewMode ? 'Apex Auto Garage · Sample' : auth.garage()?.name || 'Your garage'"
+    [ownerName]="previewMode ? 'Preview account' : auth.user()?.fullName || 'Owner'"
+    [busy]="busy()"
+    (logout)="logout()"
+  />
+  <main id="main-content" tabindex="-1">
+    @if(previewMode){
+    <p class="preview" role="note">
+      <strong>Design preview</strong> · Sample data. No backend records are
+      changed and no messages are sent.
+    </p>
+    }
+    <header class="heading">
+      <div>
+        <h1>Settings</h1>
+        <p>Update your garage profile and contact details.</p>
+      </div>
+    </header>
+    @if(notice()){
+    <p class="notice" role="status">{{notice()}}</p>
+    }@if(error()){
+    <div class="error" role="alert">
+      {{error()}}
+      <button gcButton (click)="load()" [disabled]="loading() || busy()">
+        Retry
+      </button>
+    </div>
+    }@if(loading()){
+    <p class="notice" role="status">Loading settings…</p>
+    }@if(garage();as record){
+    <section class="editor" aria-labelledby="profile-heading">
+      <h2 id="profile-heading">Garage profile</h2>
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <fieldset [disabled]="busy() || loading()">
+          <div class="fields">
+            <label for="garage-name"
+              ><span id="garage-name-label">Garage name</span
+              ><input
+                id="garage-name"
+                aria-labelledby="garage-name-label"
+                formControlName="name"
+                maxlength="200"
+                autocomplete="organization"
+                [attr.aria-invalid]="invalid('name')"
+                aria-describedby="garage-name-error"
+              />@if(invalid('name')){<small
+                class="field-error"
+                id="garage-name-error"
+                >Enter a valid garage name.</small
+              >}</label
+            ><label for="garage-phone"
+              ><span id="garage-phone-label">Mobile number (without +91)</span
+              ><input
+                id="garage-phone"
+                aria-labelledby="garage-phone-label"
+                formControlName="phone"
+                maxlength="10"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel-national"
+                [attr.aria-invalid]="invalid('phone')"
+                aria-describedby="garage-phone-error"
+              />@if(invalid('phone')){<small
+                class="field-error"
+                id="garage-phone-error"
+                >Enter a valid mobile number (without +91).</small
+              >}</label
+            >
+          </div>
+          <h3>Garage address</h3>
+          <p>
+            Address details can be added later. If provided, complete all fields
+            except address line 2.
+          </p>
+          <div class="fields address">
+            <label for="garage-line1"
+              ><span id="garage-line1-label">Street address</span
+              ><input
+                id="garage-line1"
+                aria-labelledby="garage-line1-label"
+                formControlName="line1"
+                maxlength="200"
+                autocomplete="address-line1"
+                [attr.aria-invalid]="invalid('line1')"
+                aria-describedby="garage-line1-error"
+              />@if(invalid('line1')){<small
+                class="field-error"
+                id="garage-line1-error"
+                >Enter a valid street address.</small
+              >}</label
+            ><label for="garage-line2"
+              ><span id="garage-line2-label">Address line 2 (optional)</span
+              ><input
+                id="garage-line2"
+                aria-labelledby="garage-line2-label"
+                formControlName="line2"
+                maxlength="200"
+                autocomplete="address-line2"
+                [attr.aria-invalid]="invalid('line2')"
+                aria-describedby="garage-line2-error"
+              />@if(invalid('line2')){<small
+                class="field-error"
+                id="garage-line2-error"
+                >Enter a valid address line 2 (optional).</small
+              >}</label
+            ><label for="garage-city"
+              ><span id="garage-city-label">City</span
+              ><input
+                id="garage-city"
+                aria-labelledby="garage-city-label"
+                formControlName="city"
+                maxlength="200"
+                autocomplete="address-level2"
+                [attr.aria-invalid]="invalid('city')"
+                aria-describedby="garage-city-error"
+              />@if(invalid('city')){<small
+                class="field-error"
+                id="garage-city-error"
+                >Enter a valid city.</small
+              >}</label
+            ><label for="garage-state"
+              ><span id="garage-state-label">State</span
+              ><input
+                id="garage-state"
+                aria-labelledby="garage-state-label"
+                formControlName="state"
+                maxlength="200"
+                autocomplete="address-level1"
+                [attr.aria-invalid]="invalid('state')"
+                aria-describedby="garage-state-error"
+              />@if(invalid('state')){<small
+                class="field-error"
+                id="garage-state-error"
+                >Enter a valid state.</small
+              >}</label
+            ><label for="garage-code"
+              ><span id="garage-code-label">State code (2 digits)</span
+              ><input
+                id="garage-code"
+                aria-labelledby="garage-code-label"
+                formControlName="stateCode"
+                maxlength="2"
+                inputmode="numeric"
+                placeholder="e.g. 29"
+                [attr.aria-invalid]="invalid('stateCode')"
+                aria-describedby="garage-code-error"
+              />@if(invalid('stateCode')){<small
+                class="field-error"
+                id="garage-code-error"
+                >Enter a valid state code (2 digits).</small
+              >}</label
+            ><label for="garage-postal"
+              ><span id="garage-postal-label">Postal code</span
+              ><input
+                id="garage-postal"
+                aria-labelledby="garage-postal-label"
+                formControlName="postalCode"
+                maxlength="6"
+                inputmode="numeric"
+                autocomplete="postal-code"
+                [attr.aria-invalid]="invalid('postalCode')"
+                aria-describedby="garage-postal-error"
+              />@if(invalid('postalCode')){<small
+                class="field-error"
+                id="garage-postal-error"
+                >Enter a valid postal code.</small
+              >}</label
+            >
+          </div>
+          <p>Country: India</p>
+        </fieldset>
+        <footer>
+          <button
+            gcButton
+            type="button"
+            [disabled]="busy() || loading()"
+            (click)="load()"
+          >
+            Discard changes</button
+          ><button
+            gcButton
+            type="submit"
+            variant="primary"
+            [disabled]="busy() || loading()"
+          >
+            {{busy() ? 'Saving…' : previewMode ? 'Save sample settings' : 'Save
+            settings'}}
+          </button>
+        </footer>
+      </form>
+    </section>
+    <section class="editor" aria-label="Account and billing information">
+      <h2>Account and billing</h2>
+      <p>
+        Owner: {{previewMode ? 'Preview account' : auth.user()?.fullName ||
+        'Owner'}}
+      </p>
+      <p>
+        Email: {{previewMode ? 'owner@example.invalid' : auth.user()?.email}}
+      </p>
+      <p>Currency: INR · Timezone: Asia/Kolkata</p>
+      <p>
+        GST registration mode: {{record.gst?.registrationMode || 'Not
+        configured'}}
+      </p>
+      <p>
+        Verification: {{record.gst?.verificationStatus || 'Not configured'}}
+      </p>
+      <p>
+        Tax registration, invoice numbering, and account credentials cannot be
+        changed through garage profile settings.
+      </p>
+    </section>
+    }
+  </main>
+</div>

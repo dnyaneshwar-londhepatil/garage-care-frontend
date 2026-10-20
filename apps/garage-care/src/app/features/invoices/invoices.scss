@@ -1,0 +1,10 @@
+@use 'lib/components/directory-page';
+@include directory-page.styles;
+.workspace {
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+}

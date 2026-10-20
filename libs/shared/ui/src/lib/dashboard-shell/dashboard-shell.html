@@ -5,14 +5,16 @@
   aria-label="Workspace navigation"
   id="workspace-navigation"
 >
-  <a class="brand" routerLink="/dashboard"
+  <a
+    class="brand"
+    [routerLink]="previewMode() ? '/preview/dashboard' : '/dashboard'"
     ><span class="brand-icon" aria-hidden="true"
       ><app-dashboard-icon name="build" /></span
-    ><span>GarageCare<small>AUTOMOTIVE OS</small></span></a
+    ><span>GarageCare<small>Garage workspace</small></span></a
   >
   <div class="garage">
     <app-dashboard-icon name="garage" />
-    <div><strong>{{ garageName() }}</strong><small>Single garage</small></div>
+    <div><strong>{{ garageName() }}</strong></div>
   </div>
   <nav aria-label="Main navigation">
     @for (item of navigation; track item; let i = $index) {
@@ -20,8 +22,8 @@
       type="button"
       [class.active]="item === page()"
       [attr.aria-current]="item === page() ? 'page' : null"
-      [routerLink]="!previewMode() && i < 2 ? (i === 0 ? '/dashboard' : '/service-jobs') : null"
-      (click)="item === page() || (!previewMode() && i < 2) ? menuOpen.set(false) : preview(item)"
+      [routerLink]="(previewMode() ? '/preview' : '') + navigationPaths[i]"
+      (click)="menuOpen.set(false)"
     >
       <span class="nav-icon" aria-hidden="true"
         ><app-dashboard-icon [name]="navigationIcons[i]" /></span
@@ -30,7 +32,9 @@
     }
   </nav>
   <div class="account">
-    <span class="avatar">AA</span>
+    <span class="avatar" aria-hidden="true"
+      ><app-dashboard-icon name="person"
+    /></span>
     <div>
       <strong>{{ garageName() }}</strong><small>{{ ownerName() }}</small>
     </div>
@@ -59,30 +63,14 @@
     Workspace <app-dashboard-icon name="chevron_right" />
     <strong>{{ page() }}</strong>
   </div>
-  <label class="search"
+  @if (page() === 'Dashboard') {<label class="search"
     ><app-dashboard-icon name="search" /><input
       type="search"
       [formControl]="search()"
-      placeholder="Search vehicle, customer, job card #..."
+      placeholder="Search customer or vehicle…"
       aria-label="Search loaded service jobs"
   /></label>
-  <button
-    class="icon-button"
-    type="button"
-    aria-label="Help"
-    (click)="preview('Help')"
-  >
-    <app-dashboard-icon name="help_outline" />
-  </button>
-  <button
-    class="icon-button"
-    type="button"
-    aria-label="View reminder summary"
-    (click)="preview('Reminder notifications')"
-  >
-    <app-dashboard-icon name="notifications" />
-  </button>
-  <span class="avatar small-avatar" [attr.aria-label]="ownerName()"
+  }<span class="avatar small-avatar" [attr.aria-label]="ownerName()"
     ><app-dashboard-icon name="person"
   /></span>
 </header>

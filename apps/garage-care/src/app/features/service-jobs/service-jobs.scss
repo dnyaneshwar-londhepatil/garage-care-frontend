@@ -9,7 +9,6 @@
   * {
     box-sizing: border-box;
   }
-  button,
   input,
   select {
     font: inherit;
@@ -76,14 +75,8 @@
       }
     }
     .overview {
-      padding: 24px;
-      background: palette.$color-white;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px palette.$color-navy-alpha-10;
       margin-bottom: 24px;
-      @media (max-width: 500px) {
-        padding: 16px;
-      }
+
       .heading-row {
         display: flex;
         align-items: center;
@@ -100,14 +93,14 @@
           }
         }
         h1 {
-          font-size: 36px;
-          line-height: 44px;
-          letter-spacing: -1.08px;
-          margin: 4px 0 0;
-          font-weight: 700;
+          font-size: 24px;
+          line-height: 32px;
+          letter-spacing: -0.48px;
+          margin: 0 0 4px;
+          font-weight: 600;
           @media (max-width: 500px) {
-            font-size: 28px;
-            line-height: 36px;
+            font-size: 23px;
+            line-height: 32px;
           }
         }
         p {
@@ -120,10 +113,6 @@
           display: flex;
           flex-wrap: wrap;
           gap: 8px;
-          button {
-            min-height: 40px;
-            padding: 10px 14px;
-          }
         }
       }
       .metrics {

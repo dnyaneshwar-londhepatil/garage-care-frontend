@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -25,17 +25,26 @@ import {
   Reminder,
   apiErrorMessage,
 } from '@garage-care/shared/data-access';
-import { DashboardIcon, DashboardShell } from '@garage-care/shared/ui';
+import {
+  ActionButton,
+  DashboardIcon,
+  DashboardShell,
+} from '@garage-care/shared/ui';
 import {
   DashboardOverview,
   DashboardReminder,
 } from './components/dashboard-overview/dashboard-overview';
 import { Job } from './dashboard.models';
+import { QuickIntake } from '../service-jobs/components/quick-intake/quick-intake';
+import { PREVIEW_JOBS } from '../service-jobs/service-jobs.preview';
+import { STATUS_LABELS } from '../service-jobs/service-jobs.models';
 import { DashboardJobs } from './components/dashboard-jobs/dashboard-jobs';
 
 @Component({
   selector: 'app-dashboard',
   imports: [
+    QuickIntake,
+    ActionButton,
     ReactiveFormsModule,
     DashboardIcon,
     DashboardShell,
@@ -47,6 +56,8 @@ import { DashboardJobs } from './components/dashboard-jobs/dashboard-jobs';
 })
 export class Dashboard {
   readonly auth = inject(AuthApi);
+  readonly previewMode =
+    inject(ActivatedRoute).snapshot.data['preview'] === true;
   private readonly dashboardApi = inject(DashboardApi);
   private readonly customersApi = inject(CustomersApi);
   private readonly vehiclesApi = inject(VehiclesApi);
@@ -56,6 +67,42 @@ export class Dashboard {
   private readonly notificationsApi = inject(NotificationsApi);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  readonly intakeOpen = signal(false);
+  readonly now = signal<Date | null>(null);
+  readonly greeting = computed(() => {
+    const date = this.now();
+    if (!date) return 'Welcome';
+    const hour = Number(
+      new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Kolkata',
+        hour: 'numeric',
+        hourCycle: 'h23',
+      }).format(date),
+    );
+    return hour < 12
+      ? 'Good morning'
+      : hour < 17
+        ? 'Good afternoon'
+        : 'Good evening';
+  });
+  readonly today = computed(() =>
+    this.now()
+      ? new Intl.DateTimeFormat('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        }).format(this.now()!)
+      : '',
+  );
+  readonly firstName = computed(() =>
+    this.previewMode
+      ? 'Rajesh'
+      : this.auth.user()?.fullName?.trim().split(/\s+/)[0] || 'Owner',
+  );
+  readonly garageLocation = computed(() =>
+    this.previewMode ? 'Indiranagar' : this.auth.garage()?.address?.city || '',
+  );
   readonly notice = signal('');
   readonly loading = signal(true);
   readonly busy = signal(false);
@@ -79,11 +126,15 @@ export class Dashboard {
   private readonly statusValue = toSignal(this.status.valueChanges, {
     initialValue: 'All statuses',
   });
-  readonly ownerName = computed(
-    () => this.auth.user()?.fullName || this.auth.user()?.email || 'Owner',
+  readonly ownerName = computed(() =>
+    this.previewMode
+      ? 'Preview account'
+      : this.auth.user()?.fullName || this.auth.user()?.email || 'Owner',
   );
-  readonly garageName = computed(
-    () => this.auth.garage()?.name || 'Your garage',
+  readonly garageName = computed(() =>
+    this.previewMode
+      ? 'Apex Auto Garage · Sample'
+      : this.auth.garage()?.name || 'Your garage',
   );
   readonly metrics = computed(() => {
     const data = this.summary();
@@ -146,17 +197,77 @@ export class Dashboard {
       (job) =>
         (this.statusValue() === 'All statuses' ||
           job.status === this.statusValue()) &&
-        [job.name, job.phone, job.vehicle, job.registration, job.id].some(
-          (value) => value.toLowerCase().includes(query),
+        [
+          job.name,
+          job.phone,
+          job.vehicle,
+          job.registration,
+          job.id,
+          job.number || '',
+          job.service,
+        ].some(
+          (value) =>
+            value.toLowerCase().includes(query) ||
+            value
+              .toLowerCase()
+              .replace(/[\s-]/g, '')
+              .includes(query.replace(/[\s-]/g, '')),
         ),
     );
   });
   constructor() {
+    if (this.previewMode) this.loadPreview();
     afterNextRender(() => {
+      this.now.set(new Date());
+      const clock = setInterval(() => this.now.set(new Date()), 60000);
+      this.destroyRef.onDestroy(() => clearInterval(clock));
       void this.load();
     });
   }
+  private loadPreview(): void {
+    this.jobs.set(
+      PREVIEW_JOBS.map(({ job, customer, vehicle }) => ({
+        id: job._id,
+        number: job.serviceNumber,
+        name: customer.name,
+        initials: customer.name
+          .split(' ')
+          .map((word) => word[0])
+          .slice(0, 2)
+          .join(''),
+        phone: customer.phone,
+        vehicle: vehicle.brand + ' ' + vehicle.model,
+        vehicleDescription: vehicle.vehicleType,
+        registration: vehicle.registrationNumber,
+        vehicles: 1,
+        status: STATUS_LABELS[job.status],
+        service: job.complaint || '',
+        version: job.version,
+      })),
+    );
+    this.summary.set({
+      serviceCounts: {
+        draft: PREVIEW_JOBS.filter((row) => row.job.status === 'draft').length,
+        inProgress: PREVIEW_JOBS.filter(
+          (row) => row.job.status === 'in_progress',
+        ).length,
+        completed: PREVIEW_JOBS.filter((row) => row.job.status === 'completed')
+          .length,
+        cancelled: PREVIEW_JOBS.filter((row) => row.job.status === 'cancelled')
+          .length,
+      },
+      customers: new Set(PREVIEW_JOBS.map((row) => row.customer._id)).size,
+      upcomingReminders: 0,
+      recentInvoices: [],
+      revenueSummary: { issuedInvoiceTotalPaise: 0, paidTotalPaise: null },
+    });
+    this.loading.set(false);
+  }
   async load(append = false): Promise<void> {
+    if (this.previewMode) {
+      this.loadPreview();
+      return;
+    }
     this.loading.set(true);
     this.failed.set(false);
     try {
@@ -164,7 +275,7 @@ export class Dashboard {
       const [summary, servicePage, reminderPage] = await Promise.all([
         this.dashboardApi.summary(),
         this.servicesApi.list({
-          limit: 20,
+          limit: 100,
           cursor: append ? (this.nextCursor() ?? undefined) : undefined,
         }),
         this.remindersApi.list({ limit: 20, status: 'pending' }),
@@ -201,6 +312,7 @@ export class Dashboard {
                   : 'Draft';
           return {
             id: record._id,
+            number: record.serviceNumber,
             name: owner.name,
             initials: owner.name
               .split(' ')
@@ -267,6 +379,10 @@ export class Dashboard {
     };
   }
   async logout(): Promise<void> {
+    if (this.previewMode) {
+      this.notice.set('Preview account. No session was changed.');
+      return;
+    }
     if (this.busy()) return;
     this.busy.set(true);
     try {
@@ -296,6 +412,10 @@ export class Dashboard {
     kind: 'history' | 'whatsapp' | 'pdf';
     job: Job;
   }): Promise<void> {
+    if (this.previewMode) {
+      this.notice.set('Sample preview. No server action was submitted.');
+      return;
+    }
     if (this.busy()) return;
     this.busy.set(true);
     try {
@@ -346,6 +466,11 @@ export class Dashboard {
     } finally {
       this.busy.set(false);
     }
+  }
+  openJobs(): void {
+    void this.router.navigateByUrl(
+      this.previewMode ? '/preview/service-jobs' : '/service-jobs',
+    );
   }
   preview(action: string): void {
     this.notice.set(

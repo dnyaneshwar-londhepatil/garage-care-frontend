@@ -1,17 +1,10 @@
-<aside class="right-column" aria-label="Reminders and workshop overview">
+<aside class="right-column" aria-label="Upcoming service reminders">
   <section class="reminders">
     <div class="section-heading">
       <div class="reminders-title">
         <h2>Upcoming Reminders</h2>
         <span class="attention-dot" aria-hidden="true"></span>
       </div>
-      <button
-        class="view-all"
-        type="button"
-        (click)="previewAction.emit('All reminders')"
-      >
-        View All ({{ total() }})<app-dashboard-icon name="east" />
-      </button>
     </div>
     @for (reminder of reminders(); track reminder.id ?? reminder.name) {
     <article class="reminder">
@@ -52,31 +45,5 @@
       Showing {{ reminders().length }} of {{ total() }} pending reminders.
       Scheduling and delivery are managed by the server.
     </p>
-  </section>
-  <section class="floor">
-    <div class="floor-heading">
-      <h2><app-dashboard-icon name="analytics" /> Workshop Snapshot</h2>
-      <span class="sample-label">LIVE</span>
-    </div>
-    <div class="floor-stats">
-      <div class="floor-stat">
-        <span>Bays in use</span><strong>Unavailable</strong>
-        <div class="progress"><span style="width: 0%"></span></div>
-      </div>
-      <div class="floor-stat">
-        <span>Completed jobs</span><strong>{{ completedJobs() }} total</strong>
-        <div class="progress completed-progress">
-          <span
-            [style.width.%]="totalJobs() ? completedJobs() / totalJobs() * 100 : 0"
-          ></span>
-        </div>
-      </div>
-    </div>
-    <div class="floor-note">
-      <app-dashboard-icon name="check_circle" /><span
-        >Bay occupancy is not measured. Invoice billing and collected payments
-        remain separate.</span
-      >
-    </div>
   </section>
 </aside>

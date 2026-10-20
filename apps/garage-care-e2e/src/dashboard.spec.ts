@@ -141,7 +141,9 @@ test('dashboard restores the owner session and uses real API response data and a
   await mockGarage(page);
   await page.goto('/dashboard');
   await expect(
-    page.getByRole('heading', { name: 'Welcome, Test Owner!' }),
+    page.getByRole('heading', {
+      name: /Good (morning|afternoon|evening), Test!/,
+    }),
   ).toBeVisible();
   await expect(page.locator('.job')).toHaveCount(1);
   await expect(page.locator('.metrics')).toContainText('₹1,250.50');
@@ -223,4 +225,86 @@ test('unauthenticated dashboard access redirects to sign-in', async ({
   );
   await page.goto('/dashboard');
   await expect(page).toHaveURL(/\/sign-in$/);
+});
+
+test('preview navigation shares service records and uses consistent action sizes', async ({
+  page,
+}) => {
+  let apiRequests = 0;
+  page.on('request', (request) => {
+    if (request.url().includes('/api/v1/')) apiRequests++;
+  });
+  await page.goto('/preview/dashboard');
+  await expect(page.locator('.job')).toHaveCount(5);
+  await expect(page.locator('.metrics').first()).toContainText('2');
+  await expect(
+    page.getByRole('heading', { name: 'Ramesh Kumar' }),
+  ).toBeVisible();
+  const spacing = await page.evaluate(() => {
+    const title = document.querySelector('.welcome').getBoundingClientRect();
+    const header = document.querySelector('.topbar').getBoundingClientRect();
+    const metrics = document.querySelector('.metrics').getBoundingClientRect();
+    const operations = document
+      .querySelector('.operations')
+      .getBoundingClientRect();
+    return {
+      top: title.top - header.bottom,
+      section: operations.top - metrics.bottom,
+    };
+  });
+  expect(spacing.top).toBeGreaterThanOrEqual(24);
+  expect(spacing.section).toBe(32);
+  await page
+    .getByRole('navigation', { name: 'Main navigation' })
+    .getByRole('button', { name: 'Service Jobs', exact: true })
+    .click();
+  await expect(page).toHaveURL(new RegExp('/preview/service-jobs$'));
+  await expect(page.locator('tbody > tr')).toHaveCount(5);
+  const heights = await page
+    .locator('button[gcButton]:visible')
+    .evaluateAll((buttons) =>
+      buttons.map((button) =>
+        Math.round(button.getBoundingClientRect().height),
+      ),
+    );
+  expect(heights.every((height) => height === 40)).toBe(true);
+  await page
+    .getByRole('button', { name: 'New Service Job', exact: true })
+    .click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(
+    page.getByRole('dialog').getByLabel('Customer name', { exact: true }),
+  ).toBeFocused();
+  const modalHeights = await page
+    .getByRole('dialog')
+    .locator('button[gcButton]')
+    .evaluateAll((buttons) =>
+      buttons.map((button) =>
+        Math.round(button.getBoundingClientRect().height),
+      ),
+    );
+  expect(modalHeights.every((height) => height === 40)).toBe(true);
+  await page.keyboard.press('Escape');
+  await page
+    .getByRole('navigation', { name: 'Main navigation' })
+    .getByRole('button', { name: 'Dashboard', exact: true })
+    .click();
+  await expect(page).toHaveURL(new RegExp('/preview/dashboard$'));
+  await expect(page.locator('.job')).toHaveCount(5);
+  expect(apiRequests).toBe(0);
+  for (const route of [
+    'sign-in',
+    'sign-up',
+    'forgot-password',
+    'reset-password',
+  ]) {
+    await page.goto('/' + route);
+    const submit = page.locator('.submit-button');
+    if (await submit.count())
+      expect(
+        await submit.evaluate((button) =>
+          Math.round(button.getBoundingClientRect().height),
+        ),
+      ).toBe(40);
+  }
 });

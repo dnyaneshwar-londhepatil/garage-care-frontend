@@ -63,14 +63,6 @@ export class QuickIntake {
   readonly customer = signal<Customer | null>(null);
   readonly vehicle = signal<Vehicle | null>(null);
   readonly job = signal<ServiceJob | null>(null);
-  readonly category = signal('Periodic Service');
-  readonly categories = [
-    'Periodic Service',
-    'Oil Change',
-    'Brake Repair',
-    'AC / Electrical',
-    'Dent & Paint',
-  ];
   readonly form = new FormGroup({
     name: requiredText(),
     phone: new FormControl('', {
@@ -288,7 +280,7 @@ export class QuickIntake {
           customerId: customer._id,
           vehicleId: vehicle._id,
           serviceDate: intakeDate(value.serviceDate),
-          complaint: `[${this.category()}] ${value.complaint.trim()}`,
+          complaint: value.complaint.trim(),
           items: [],
         });
         this.job.set(job);

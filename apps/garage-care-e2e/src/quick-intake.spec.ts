@@ -7,12 +7,12 @@ async function fillIntake(page: Page) {
     .fill('Test Customer');
   await dialog.getByLabel('Mobile number', { exact: true }).fill('9876543210');
   await dialog
-    .getByLabel('Reg. plate number', { exact: true })
+    .getByLabel('Registration number', { exact: true })
     .fill('mh12 ab-1234');
   await dialog.getByLabel('Vehicle make', { exact: true }).fill('Honda');
   await dialog.getByLabel('Vehicle model', { exact: true }).fill('City');
   await dialog
-    .getByLabel('Primary complaint / scope', { exact: true })
+    .getByLabel('Work requested', { exact: true })
     .fill('Brake inspection');
   await dialog.getByLabel('Service date', { exact: true }).fill('2026-10-14');
   return dialog;
@@ -89,7 +89,7 @@ test('creates records in order and retries start without duplicate records', asy
         customerId: 'c',
         vehicleId: 'v',
         serviceDate: '2026-10-13T18:30:00.000Z',
-        complaint: '[Brake Repair] Brake inspection',
+        complaint: 'Brake inspection',
         items: [],
       });
       job = {
@@ -128,9 +128,7 @@ test('creates records in order and retries start without duplicate records', asy
     .getByRole('button', { name: 'New Service Job', exact: true })
     .click();
   const dialog = await fillIntake(page);
-  await dialog
-    .getByRole('button', { name: 'Brake Repair', exact: true })
-    .click();
+
   await dialog
     .getByRole('button', { name: 'Create Service Job', exact: true })
     .click();

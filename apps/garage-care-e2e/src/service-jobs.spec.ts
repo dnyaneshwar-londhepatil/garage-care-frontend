@@ -124,7 +124,7 @@ test('preview supports combined filters, selection, summary, settings and CSV ex
   await expect(page.locator('tbody > tr')).toHaveCount(1);
   await expect(page.getByText('Suresh Patil', { exact: true })).toBeVisible();
   await page
-    .getByRole('button', { name: 'View Settings', exact: true })
+    .getByRole('button', { name: 'Table options', exact: true })
     .click();
   await page
     .getByRole('checkbox', { name: 'Compact table rows', exact: true })
